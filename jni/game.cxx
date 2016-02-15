@@ -1,3 +1,5 @@
+#include <GLES2/gl2.h>
+
 class MyQuad
 {
   typedef struct Vec2   { GLint x, y; } Vec2;
@@ -11,6 +13,8 @@ class MyQuad
 
   typedef QuadVertex Quad[4];
   Quad q;
+
+public:
 
   MyQuad(GLint x, GLint y, GLint w, GLint h, GLbyte r, GLbyte g, GLbyte b)
   {
@@ -26,11 +30,11 @@ class MyQuad
       q[i].txtrcrds = (Vec2)   {( i^(i>>1) ) & 1, i>>1}; // 00 > 10 > 11 > 01
     }
   }
-}
+};
 
 int main()
 {
-  MyQuad q;
+  MyQuad q(30, 30, 40, 40, 255, 0, 255);
 
   
 }

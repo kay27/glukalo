@@ -1,0 +1,16 @@
+http://androidblog.reindustries.com/a-real-open-gl-es-2-0-2d-tutorial-part-1/
+http://androidblog.reindustries.com/a-real-opengl-es-2-0-2d-tutorial-part-3/
+http://blog.db-in.com/all-about-opengl-es-2-x-part-1/
+https://habrahabr.ru/post/199396/
+http://stackoverflow.com/questions/10299918/how-to-re-write-2d-opengl-app-for-opengl-es
+http://www.helloworld.ru/texts/comp/games/opengl/opengl/2.htm
+
+http://www.codeproject.com/Questions/64657/how-to-draw-a-filled-circle-in-opengl
+
+http://androidblog.reindustries.com/a-real-open-gl-es-2-0-2d-tutorial-part-1/
+
+PATH:
+C:\ProgramData\Oracle\Java\javapath;C:\Program Files\Embarcadero\Studio\14.0\bin;C:\Users\Public\Documents\Embarcadero\Studio\14.0\Bpl;C:\PROGRA~1\Borland\CBUILD~1\Bin;C:\PROGRA~1\Borland\CBUILD~1\Projects\Bpl;C:\Program Files\PC Connectivity Solution\;%SystemRoot%\system32;%SystemRoot%;%SystemRoot%\System32\Wbem;%SYSTEMROOT%\System32\WindowsPowerShell\v1.0\;C:\Program Files\ATI Technologies\ATI.ACE\Core-Static;C:\Program Files\QuickTime\QTSystem\;C:\Program Files\Common Files\Acronis\SnapAPI\;C:\Program Files\Git\cmd;C:\Program Files\Subversion\bin;C:\Program Files\CMake 2.8\bin;C:\Program Files\Microsoft Visual Studio 10.0\VC\bin;C:\Tools\depot_tools;C:\Tools;C:\Program Files\Microsoft SQL Server\Client SDK\ODBC\110\Tools\Binn\;C:\Program Files\Microsoft SQL Server\120\Tools\Binn\ManagementStudio\;C:\Program Files\Microsoft SQL Server\120\Tools\Binn\;C:\Program Files\Microsoft SQL Server\120\DTS\Binn\;C:\Program Files\Skype\Phone\;G:\Android\sdk\tools;G:\Android\android-ndk-r10e;G:\Android\sdk\platform-tools;C:\Program Files\Java\jdk1.7.0_02\bin
+
+JAVA_HOME:
+C:\Program Files\Java\jdk1.7.0_02

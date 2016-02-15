@@ -1,4 +1,12 @@
 #include <GLES2/gl2.h>
+#include <jni.h>
+
+/* filled circle
+glEnable(GL_POINT_SMOOTH);
+glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
+glPointSize(radius << 1);
+glPoint(x, y, z);
+*/
 
 class MyQuad
 {
@@ -31,6 +39,10 @@ public:
     }
   }
 };
+
+JNIEXPORT void Java_com_android_glukalo_MyRenderer_nativeInit(JNIEnv* env)
+{
+}
 
 int main()
 {

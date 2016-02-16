@@ -64,6 +64,7 @@ JNIEXPORT void Java_com_android_glukalo_MyRenderer_nativeResume(JNIEnv* env)
 
 JNIEXPORT void Java_com_android_glukalo_MyRenderer_nativeInit(JNIEnv* env)
 {
+  MyQuad q(30, 30, 40, 40, 255, 0, 255);
 }
 
 JNIEXPORT void Java_com_android_glukalo_MyRenderer_nativeResize(JNIEnv* env, jobject thiz, jint w, jint h)
@@ -75,11 +76,4 @@ JNIEXPORT void Java_com_android_glukalo_MyRenderer_nativeResize(JNIEnv* env, job
 
 JNIEXPORT void Java_com_android_glukalo_MyRenderer_nativeRender(JNIEnv* env)
 {
-}
-
-int main()
-{
-  MyQuad q(30, 30, 40, 40, 255, 0, 255);
-
-  
 }

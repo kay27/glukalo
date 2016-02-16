@@ -1,3 +1,4 @@
+@set name=glukalo
 @set ndkbuild=D:\Android\android-ndk-r10e\ndk-build.cmd
 @set android=D:\Android\sdk\tools\android.bat
 @set ant=D:\Android\apache-ant-1.9.6\bin\ant.bat
@@ -17,7 +18,7 @@ if %step% leq 0 (
   if "%only%" equ "only" exit /b 0
 )
 if %step% leq 1 (
-  set ccmd=%android% update project --name glukalo --path . --target "%platform%"
+  set ccmd=%android% update project --name %name% --path . --target "%platform%"
   call:callandlog "Step 1: Android project update" update.log
   if errorlevel 1 exit /b %errorlevel%
   if "%only%" equ "only" exit /b 0

@@ -5,25 +5,36 @@
 @set platform=android-23
 @echo off
 
-set step=%1 && if "%step%" equ "" set step=0
+set step=%1
+if "%step%" equ "" set step=0
+if "%step:~-1%"==" " set step=%step:~0,-1%
+set only=%2
 
 if %step% leq 0 (
   set ccmd=clear
-  call:callandlog "Step 0: Clear" clear.log
+  call:callandlog "Step 0: Clear" nul
+  if errorlevel 1 exit /b %errorlevel%
+  if "%only%" equ "only" exit /b 0
 )
 if %step% leq 1 (
   set ccmd=%android% update project --name glukalo --path . --target "%platform%"
   call:callandlog "Step 1: Android project update" update.log
+  if errorlevel 1 exit /b %errorlevel%
+  if "%only%" equ "only" exit /b 0
 )
 if %step% leq 2 (
   set ccmd=%ndkbuild%
   call:callandlog "Step 2: NDK Build" ndkbuild.log
+  if errorlevel 1 exit /b %errorlevel%
+  if "%only%" equ "only" exit /b 0
 )
 if %step% leq 3 (
   set ccmd=%ant% %target%
   call:callandlog "Step 3: Ant %target%" ant.log
+  if errorlevel 1 exit /b %errorlevel%
+  if "%only%" equ "only" exit /b 0
 )
-goto:eof
+exit /b 0
 
 :callandlog
   echo %~1
@@ -33,6 +44,4 @@ goto:eof
     exit /b %errorlevel%
   )
   echo Done. See %~2 for details
-  echo.
-goto:eof
-
+  exit /b 0

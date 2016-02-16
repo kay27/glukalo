@@ -1,6 +1,10 @@
 #include <GLES2/gl2.h>
 #include <jni.h>
 
+static int  sWindowWidth  = 720;
+static int  sWindowHeight = 1280;
+static int  sStopped      = 0;
+
 /* filled circle
 glEnable(GL_POINT_SMOOTH);
 glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
@@ -40,7 +44,36 @@ public:
   }
 };
 
+JNIEXPORT void Java_com_android_glukalo_MyRenderer_nativeKeyPress(JNIEnv* env)
+{
+}
+
+JNIEXPORT void Java_com_android_glukalo_MyRenderer_nativeKeyRelease(JNIEnv* env)
+{
+}
+
+JNIEXPORT void Java_com_android_glukalo_MyRenderer_nativePause(JNIEnv* env)
+{
+  sStopped = 1;
+}
+
+JNIEXPORT void Java_com_android_glukalo_MyRenderer_nativeResume(JNIEnv* env)
+{
+  sStopped = 0;
+}
+
 JNIEXPORT void Java_com_android_glukalo_MyRenderer_nativeInit(JNIEnv* env)
+{
+}
+
+JNIEXPORT void Java_com_android_glukalo_MyRenderer_nativeResize(JNIEnv* env, jobject thiz, jint w, jint h)
+{
+  sWindowWidth  = w;
+  sWindowHeight = h;
+//  __android_log_print(ANDROID_LOG_INFO, "Glukalo", "resize w=%d h=%d", w, h);
+}
+
+JNIEXPORT void Java_com_android_glukalo_MyRenderer_nativeRender(JNIEnv* env)
 {
 }
 

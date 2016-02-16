@@ -89,5 +89,4 @@ class MyRenderer implements GLSurfaceView.Renderer
   private static native void nativeInit();
   private static native void nativeResize(int w, int h);
   private static native void nativeRender();
-  private static native void nativeDone();
 }

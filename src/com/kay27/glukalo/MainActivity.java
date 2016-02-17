@@ -52,7 +52,7 @@ public class MainActivity extends Activity
 
   private MyGLSurfaceView mGLView;
 
-//  static { System.loadLibrary("glukalo"); }
+  static { System.loadLibrary("glukalo"); }
 
 }
 
@@ -95,12 +95,12 @@ class MyGLSurfaceView extends GLSurfaceView
   }
 
   private MyRenderer mRenderer;
-/*
+
   private static native void nativePause();
   private static native void nativeResume();
   private static native void nativeKeyPress();
   private static native void nativeKeyRelease();
-*/
+
 }
 
 class MyRenderer implements GLSurfaceView.Renderer
@@ -113,13 +113,13 @@ class MyRenderer implements GLSurfaceView.Renderer
     GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
   }
 
-  public void onSurfaceCreated(GL10 gl, EGLConfig config) { /* nativeInit(); */ }
+  public void onSurfaceCreated(GL10 gl, EGLConfig config) { nativeInit(); }
   public void onSurfaceChanged(GL10 gl, int w, int h) { /* nativeResize(w, h); */
     GLES20.glViewport(0, 0, w, h);
  }
 //  public void onDrawFrame(GL10 gl) { nativeRender(); }
 
-//  private static native void nativeInit();
-//  private static native void nativeResize(int w, int h);
-//  private static native void nativeRender();
+  private static native void nativeInit();
+  private static native void nativeResize(int w, int h);
+  private static native void nativeRender();
 }

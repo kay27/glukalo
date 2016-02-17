@@ -2,6 +2,7 @@
 @set ndkbuild=g:\Android\android-ndk-r10e\ndk-build.cmd
 @set android=g:\Android\sdk\tools\android.bat
 @set ant=g:\Android\apache-ant-1.9.6\bin\ant.bat
+@set adb=g:\Android\sdk\platform-tools\adb.exe
 @set target=debug
 @set platform=android-23
 @echo off
@@ -32,6 +33,12 @@ if %step% leq 2 (
 if %step% leq 3 (
   set ccmd=%ant% %target%
   call:callandlog "Step 3: Ant %target%" ant.log
+  if errorlevel 1 exit /b %errorlevel%
+  if "%only%" equ "only" exit /b 0
+)
+if %step% leq 4 (
+  set ccmd=%adb% install bin\glukalo-%target%.apk
+  call:callandlog "Step 4: ADB" adb.log
   if errorlevel 1 exit /b %errorlevel%
   if "%only%" equ "only" exit /b 0
 )

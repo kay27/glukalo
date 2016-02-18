@@ -11,11 +11,6 @@ import android.view.WindowManager;
 import android.util.Log;
 import javax.microedition.khronos.opengles.GL10;
 import javax.microedition.khronos.egl.EGLConfig;
-////TEMP////
-import android.opengl.GLES20;
-//import android.opengl.GLES20;
-////TEMP////
-
 
 public class MainActivity extends Activity
 {
@@ -30,7 +25,7 @@ public class MainActivity extends Activity
     {
 //      getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
       mGLView = new MyGLSurfaceView(this);
-      setContentView(mGLView); //???this? fix
+      setContentView(mGLView);
     }
     else
       Log.e("OpenGLES 2", "Your device doesn't support ES2. (" + info.reqGlEsVersion + ")");
@@ -63,7 +58,7 @@ class MyGLSurfaceView extends GLSurfaceView
     super(context);
     setEGLContextClientVersion(2);
     mRenderer = new MyRenderer();
-    setPreserveEGLContextOnPause(true);
+    setPreserveEGLContextOnPause(true); //???fix
     setRenderer(mRenderer);
     requestRender(); //temp
   }
@@ -101,19 +96,9 @@ class MyGLSurfaceView extends GLSurfaceView
 
 class MyRenderer implements GLSurfaceView.Renderer
 {
-  public void onDrawFrame(GL10 arg0)
-  {
-////TEMP////
-    GLES20.glClearColor(0.8f, 0.0f, 0.0f, 1.0f);
-////TEMP////
-    GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT | GLES20.GL_DEPTH_BUFFER_BIT);
-  }
-
   public void onSurfaceCreated(GL10 gl, EGLConfig config) { nativeInit(); }
-  public void onSurfaceChanged(GL10 gl, int w, int h) { /* nativeResize(w, h); */
-    GLES20.glViewport(0, 0, w, h);
- }
-//  public void onDrawFrame(GL10 gl) { nativeRender(); }
+  public void onSurfaceChanged(GL10 gl, int w, int h) { nativeResize(w, h); }
+  public void onDrawFrame(GL10 gl) { nativeRender(); }
 
   private static native void nativeInit();
   private static native void nativeResize(int w, int h);

@@ -66,20 +66,21 @@ extern "C"
   }
 
   JNIEXPORT void Java_com_kay27_Glukalo_MyRenderer_nativeInit(JNIEnv* env)
-  //                  com.kay27.Glukalo.MyRenderer.nativeInit
   {
-  //  MyQuad q(30, 30, 40, 40, 255, 0, 255);
-    usleep(5000000);
+    sStopped = 0;
   }
 
   JNIEXPORT void Java_com_kay27_Glukalo_MyRenderer_nativeResize(JNIEnv* env, jobject thiz, jint w, jint h)
   {
     sWindowWidth  = w;
     sWindowHeight = h;
+    glViewport(0, 0, w, h); //???FIX
   //  __android_log_print(ANDROID_LOG_INFO, "Glukalo", "resize w=%d h=%d", w, h);
   }
 
   JNIEXPORT void Java_com_kay27_Glukalo_MyRenderer_nativeRender(JNIEnv* env)
   {
+    glClearColor(0.0, 0.0, 0.8, 1.0);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   }
 }

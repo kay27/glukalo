@@ -4,7 +4,7 @@
 @set ant=c:\Android\apache-ant-1.9.6\bin\ant.bat
 @set adb=c:\Android\sdk\platform-tools\adb.exe
 @set target=debug
-@set platform=android-23
+@set platform=android-19
 @echo off
 
 set step=%1

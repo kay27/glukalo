@@ -1,4 +1,5 @@
 #include <unistd.h>
+#include <cstdlib>
 #include <GLES2/gl2.h>
 #include <jni.h>
 
@@ -45,6 +46,11 @@ public:
   }
 };
 
+float myrand()
+{
+  return static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+}
+
 extern "C"
 {
   JNIEXPORT void Java_com_kay27_Glukalo_MyGLSurfaceView_nativeKeyPress(JNIEnv* env)
@@ -80,7 +86,7 @@ extern "C"
 
   JNIEXPORT void Java_com_kay27_Glukalo_MyRenderer_nativeRender(JNIEnv* env)
   {
-    glClearColor(0.0, 0.0, 0.8, 1.0);
+    glClearColor(myrand(), myrand(), myrand(), 1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
   }
 }

@@ -65,13 +65,9 @@ class MyGLSurfaceView extends GLSurfaceView
     mRenderer = new MyRenderer();
     setPreserveEGLContextOnPause(true);
     setRenderer(mRenderer);
-//    setRenderMode (GLSurfaceView.RENDERMODE_WHEN_DIRTY);
     requestRender(); //temp
-//    try{ Thread.sleep(20000); } catch(InterruptedException e) {} //temp
-//    System.out.format("done%n"); //temp
-
   }
-/*
+
   public boolean onTouchEvent(final MotionEvent event)
   {
     int action = event.getAction();
@@ -79,19 +75,19 @@ class MyGLSurfaceView extends GLSurfaceView
     else if(action == MotionEvent.ACTION_UP) nativeKeyRelease();
     return true;
   }
-*/
+
   @Override
   public void onPause()
   {
     super.onPause();
-//    nativePause();
+    nativePause();
   }
 
   @Override
   public void onResume()
   {
     super.onResume();
-//    nativeResume();
+    nativeResume();
   }
 
   private MyRenderer mRenderer;

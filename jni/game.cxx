@@ -47,20 +47,20 @@ public:
 
 extern "C"
 {
-  JNIEXPORT void Java_com_kay27_Glukalo_MyRenderer_nativeKeyPress(JNIEnv* env)
+  JNIEXPORT void Java_com_kay27_Glukalo_MyGLSurfaceView_nativeKeyPress(JNIEnv* env)
   {
   }
 
-  JNIEXPORT void Java_com_kay27_Glukalo_MyRenderer_nativeKeyRelease(JNIEnv* env)
+  JNIEXPORT void Java_com_kay27_Glukalo_MyGLSurfaceView_nativeKeyRelease(JNIEnv* env)
   {
   }
 
-  JNIEXPORT void Java_com_kay27_Glukalo_MyRenderer_nativePause(JNIEnv* env)
+  JNIEXPORT void Java_com_kay27_Glukalo_MyGLSurfaceView_nativePause(JNIEnv* env)
   {
     sStopped = 1;
   }
 
-  JNIEXPORT void Java_com_kay27_Glukalo_MyRenderer_nativeResume(JNIEnv* env)
+  JNIEXPORT void Java_com_kay27_Glukalo_MyGLSurfaceView_nativeResume(JNIEnv* env)
   {
     sStopped = 0;
   }

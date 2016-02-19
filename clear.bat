@@ -6,6 +6,7 @@ del *.keystore
 del ant.log
 del ndkbuild.log
 del update.log
+del adb.log
 
 rmdir /s /q bin
 rmdir /s /q obj

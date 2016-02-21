@@ -9,12 +9,16 @@ static int sStopped      = 0;
 GLuint program           = 0; //class?//fixme
 GLint pos                = 0;
 GLint color              = 0;
+GLint yoffset            = 0;
 GLuint vb;
+GLfloat yOffs            = 0;
+GLfloat speed            = 0;
 
 struct Vertex {
     GLfloat pos[3];
     GLubyte rgba[4];
 };
+
 
 const Vertex data[] = {
   {{  0.0f,  0.5f,  0.0f }, {0, 160, 255, 255}},
@@ -25,9 +29,10 @@ const Vertex data[] = {
 //static const char vertShader[] =
 static const char * squareVertexShader =
   "attribute vec4 vPosition;\n"
+  "uniform vec4 vOffset;\n"
   "void main()\n"
   "{\n"
-  "  gl_Position = vPosition;\n"
+  "  gl_Position = vPosition + vOffset;\n"
   "}\n"
 ;
 
@@ -81,6 +86,7 @@ extern "C"
 {
   JNIEXPORT void Java_com_kay27_Glukalo_MyGLSurfaceView_nativeKeyPress(JNIEnv* env)
   {
+    yOffs += 0.3; speed = 0;
   }
 
   JNIEXPORT void Java_com_kay27_Glukalo_MyGLSurfaceView_nativeKeyRelease(JNIEnv* env)
@@ -116,12 +122,15 @@ extern "C"
 
     pos = glGetAttribLocation(program, "vPosition");
     color = glGetUniformLocation(program, "vColor");
+    yoffset = glGetUniformLocation(program, "vOffset");
 
     glGenBuffers(1, &vb);
     glBindBuffer(GL_ARRAY_BUFFER, vb);
 //    glBufferData(GL_ARRAY_BUFFER, sizeof(QUAD), &QUAD[0], GL_STATIC_DRAW);
     glBufferData(GL_ARRAY_BUFFER, sizeof(data), &data[0], GL_STATIC_DRAW);
 
+    yOffs            = 0;
+    speed            = 0;
   }
 
   JNIEXPORT void Java_com_kay27_Glukalo_MyRenderer_nativeResize(JNIEnv* env, jobject thiz, jint w, jint h)
@@ -134,7 +143,7 @@ extern "C"
 
   JNIEXPORT void Java_com_kay27_Glukalo_MyRenderer_nativeRender(JNIEnv* env)
   {
-    glClearColor(myrand(), myrand(), myrand(), 1.0);
+    glClearColor(myrand()/50, myrand()/20, myrand()/8, 1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     glUseProgram(program);
@@ -143,9 +152,15 @@ extern "C"
 //    glVertexPointer(3, GL_FLOAT, sizeof(float)*3, vertices);
     glEnableVertexAttribArray(pos);
     glEnableVertexAttribArray(color);
+    glEnableVertexAttribArray(yoffset);
     glVertexAttribPointer(pos, 3, GL_FLOAT, false, sizeof(Vertex), (void*)offsetof(Vertex,pos));
 
+    speed+=0.001;
+    yOffs-=speed;
+    if(yOffs<-2) yOffs+=4;
+
     glUniform4f(color, 0, 0.6, 1, 1);
+    glUniform4f(yoffset, 0, yOffs, 0, 0);
 //    glVertexAttribPointer(color, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex) /*stride*/, (void*)offsetof(Vertex,rgba));
 
 //    glDrawArrays(GL_TRIANGLES, 0, 3);

@@ -10,6 +10,7 @@ GLuint program           = 0; //class?//fixme
 GLint pos                = 0;
 GLint color              = 0;
 GLint yoffset            = 0;
+GLint pixradius          = 0;
 GLuint vb;
 GLfloat yOffs            = 0;
 GLfloat speed            = 0;
@@ -28,6 +29,24 @@ const Vertex data[] = {
   {{  0.5f, -0.5f,  0.0f }, {0, 160, 255, 255}}
 };
 
+const char font[12*14*1] =
+{
+ 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
+ 1, 2, 2, 2, 2, 2, 2, 2, 1, 1,
+ 1, 2, 2, 2, 2, 2, 2, 2, 1, 1,
+ 1, 2, 2, 2, 2, 2, 2, 2, 1, 1,
+ 1, 2, 2, 2, 1, 2, 2, 2, 1, 1,
+ 1, 2, 2, 2, 1, 2, 2, 2, 1, 1,
+ 1, 2, 2, 2, 1, 2, 2, 2, 1, 1,
+ 1, 2, 2, 2, 1, 2, 2, 2, 1, 1,
+ 1, 2, 2, 2, 1, 2, 2, 2, 1, 1,
+ 1, 2, 2, 2, 1, 2, 2, 2, 1, 1,
+ 1, 2, 2, 2, 2, 2, 2, 2, 1, 1,
+ 1, 2, 2, 2, 2, 2, 2, 2, 1, 1,
+ 1, 2, 2, 2, 2, 2, 2, 2, 1, 1,
+ 0, 1, 1, 1, 1, 1, 1, 1, 1, 1
+};
+
 
 static const char * squareVertexShader =
   "attribute vec4 vPosition;\n"
@@ -40,10 +59,23 @@ static const char * squareVertexShader =
 
 static const char * squareFragmentShader =
   "precision mediump float;\n"
+  "uniform vec4 vOffset;\n"
   "uniform vec4 vColor;\n"
+  "uniform float vPixRadius;\n"
   "void main()\n"
   "{\n"
-  "  gl_FragColor = vColor;\n"
+  " // if(sqrt(pow(gl_PointCoord.x,2)+pow(gl_PointCoord.x-vOffset.y,2)) >= vPixRadius)\n"
+  " //   gl_FragColor = vColor;\n"
+  " // else\n"
+  " //if(distance(gl_PointCoord.xy,vec2(0,vOffset)) <= 20)\n"
+  " //  gl_FragColor = vColor;\n"
+  " //else discard;\n"
+  "//  if(vOffset>0.000001*vPixRadius)\n"
+  " //   gl_FragColor = vColor;\n"
+  "//  else\n"
+  " //   gl_FragColor = vec4(1,0,0,1);\n"
+  "//  gl_FragColor = vec4(vOffset.y,gl_PointCoord.y,vColor.z,1);\n"
+  "  gl_FragColor = vec4(gl_PointCoord.y,vColor.y,vColor.z,1);\n"
   "}\n"
 ;
 
@@ -130,6 +162,7 @@ extern "C"
     pos = glGetAttribLocation(program, "vPosition");
     color = glGetUniformLocation(program, "vColor");
     yoffset = glGetUniformLocation(program, "vOffset");
+    pixradius = glGetUniformLocation(program, "vPixRadius");
 
     glGenBuffers(1, &vb);
     glBindBuffer(GL_ARRAY_BUFFER, vb);
@@ -164,18 +197,20 @@ extern "C"
 //    glEnableClientState(GL_VERTEX_ARRAY);
 //    glVertexPointer(3, GL_FLOAT, sizeof(float)*3, vertices);
     glEnableVertexAttribArray(pos);
-    glEnableVertexAttribArray(color);
-    glEnableVertexAttribArray(yoffset);
+//    glEnableVertexAttribArray(color);
+//   glEnableVertexAttribArray(yoffset);
+//    glEnableVertexAttribArray(pixradius);
     glVertexAttribPointer(pos, 3, GL_FLOAT, false, sizeof(Vertex), (void*)offsetof(Vertex,pos));
 
-    if(impulse) {impulse=0; speed=-0.11;}
+    if(impulse) {impulse=0; speed=-0.06;}
     speed+=delta/5000000;
-    yOffs-=delta/30000*speed;
+    yOffs-=delta/27000*speed;
     if(yOffs<-0.8) { yOffs=-0.8; speed=0; /* echo BANG!!! */ }
     if(yOffs>1.5) { yOffs=1.5; speed=0; /* echo BANG!!! */ }
 
     glUniform4f(color, 0, 0.6, 1, 1);
     glUniform4f(yoffset, 0, yOffs, 0, 0);
+//    glUniform1f(pixradius, sWindowHeight/10);
 //    glVertexAttribPointer(color, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex) /*stride*/, (void*)offsetof(Vertex,rgba));
 
 //    glDrawArrays(GL_TRIANGLES, 0, 3);

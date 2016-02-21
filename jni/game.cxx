@@ -12,25 +12,15 @@ GLint color              = 0;
 GLuint vb;
 
 struct Vertex {
-    GLfloat pos[2];
+    GLfloat pos[3];
     GLubyte rgba[4];
 };
-const Vertex QUAD[4] = {
-    // Square with diagonal < 2 so that it fits in a [-1 .. 1]^2 square
-    // regardless of rotation.
-    {{-0.7f, -0.7f}, {0x00, 0xFF, 0x00}},
-    {{ 0.7f, -0.7f}, {0x00, 0x00, 0xFF}},
-    {{-0.7f,  0.7f}, {0xFF, 0x00, 0x00}},
-    {{ 0.7f,  0.7f}, {0xFF, 0xFF, 0xFF}},
-};
 
-const float vertices[] =
-{
-   0.0f,  0.5f,  0.0f,
-  -0.5f, -0.5f,  0.0f,
-   0.5f, -0.5f,  0.0f
+const Vertex data[] = {
+  {{  0.0f,  0.5f,  0.0f }, {0, 160, 255, 255}},
+  {{ -0.5f, -0.5f,  0.0f }, {0, 160, 255, 255}},
+  {{  0.5f, -0.5f,  0.0f }, {0, 160, 255, 255}}
 };
-const float clr[] = {0.0f, 0.6f, 1.0f, 1.0f};
 
 //static const char vertShader[] =
 static const char * squareVertexShader =
@@ -130,7 +120,7 @@ extern "C"
     glGenBuffers(1, &vb);
     glBindBuffer(GL_ARRAY_BUFFER, vb);
 //    glBufferData(GL_ARRAY_BUFFER, sizeof(QUAD), &QUAD[0], GL_STATIC_DRAW);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), &vertices[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(data), &data[0], GL_STATIC_DRAW);
 
   }
 
@@ -151,10 +141,18 @@ extern "C"
 //    glTranslatef(0.0f, 0.0f, -0.5f);
 //    glEnableClientState(GL_VERTEX_ARRAY);
 //    glVertexPointer(3, GL_FLOAT, sizeof(float)*3, vertices);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
-    glDrawArrays(GL_TRIANGLES, 0, 3);
-    glDisableVertexAttribArray(0);
+    glEnableVertexAttribArray(pos);
+    glEnableVertexAttribArray(color);
+    glVertexAttribPointer(pos, 3, GL_FLOAT, false, sizeof(Vertex), (void*)offsetof(Vertex,pos));
+
+    glUniform4f(color, 0, 0.6, 1, 1);
+//    glVertexAttribPointer(color, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex) /*stride*/, (void*)offsetof(Vertex,rgba));
+
+//    glDrawArrays(GL_TRIANGLES, 0, 3);
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 3);
+
+//    glDisableVertexAttribArray(1);
+//    glDisableVertexAttribArray(0);
 
 //    glDisableClientState(GL_VERTEX_ARRAY);
 

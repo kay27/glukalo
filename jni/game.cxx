@@ -24,9 +24,10 @@ struct Vertex {
 
 
 const Vertex data[] = {
-  {{  0.0f,  0.5f,  0.0f }, {0, 160, 255, 255}},
   {{ -0.5f, -0.5f,  0.0f }, {0, 160, 255, 255}},
-  {{  0.5f, -0.5f,  0.0f }, {0, 160, 255, 255}}
+  {{ -0.5f,  0.5f,  0.0f }, {0, 160, 255, 255}},
+  {{  0.5f, -0.5f,  0.0f }, {0, 160, 255, 255}},
+  {{  0.5f,  0.5f,  0.0f }, {0, 160, 255, 255}},
 };
 
 const char font[12*14*1] =
@@ -66,18 +67,20 @@ static const char * squareFragmentShader =
   "uniform float vPixRadius;\n"
   "void main()\n"
   "{\n"
-  " // if(sqrt(pow(gl_PointCoord.x,2)+pow(gl_PointCoord.x-vOffset.y,2)) >= vPixRadius)\n"
-  " //   gl_FragColor = vColor;\n"
-  " // else\n"
-  "// if(distance(gl_PointCoord.xy,vp.xy) <= 20)\n"
-  "  // gl_FragColor = vColor;\n"
+  " // if ( true )\n"
+  "//  if ( distance(vec2(360,640), gl_PointCoord) < 300 )\n"
+  " // if ( distance(vec2(0,vp.y), vec2(gl_FragCoord.x*2-1,gl_FragCoord.y*2-1)) < 2000 )\n"
+  "   // gl_FragColor = vColor;\n"
+  "  //else\n"
+  "    gl_FragColor = vec4(gl_FragCoord.x,gl_FragCoord.y,vColor.z,1);\n" //nulllllls
+  " //   gl_FragColor = vec4(gl_PointCoord.x,gl_PointCoord.y,vColor.z,1);\n" //nulllllls
+  " // } else { gl_FragColor = vec4(vp.y,gl_PointCoord.y,vColor.z,1); }\n"
   " //else discard;\n"
   "//  if(vp.y>0.000001*vPixRadius)\n"
   " //   gl_FragColor = vColor;\n"
   " // else\n"
   " //   gl_FragColor = vec4(1,0,0,1);\n"
   " //   gl_FragColor = vColor;\n"
-  "  gl_FragColor = vec4(vp.y,gl_PointCoord.y,vColor.z,1);\n"
   "//  gl_FragColor = vec4(vOffset.x,gl_PointCoord.y,vColor.z,1);\n"
   "}\n"
 ;
@@ -217,7 +220,7 @@ extern "C"
 //    glVertexAttribPointer(color, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex) /*stride*/, (void*)offsetof(Vertex,rgba));
 
 //    glDrawArrays(GL_TRIANGLES, 0, 3);
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, 3);
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
 //    glDisableVertexAttribArray(1);
 //    glDisableVertexAttribArray(0);

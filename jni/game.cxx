@@ -51,15 +51,17 @@ const char font[12*14*1] =
 static const char * squareVertexShader =
   "attribute vec4 vPosition;\n"
   "uniform vec4 vOffset;\n"
+  "varying vec4 vp;\n"
   "void main()\n"
   "{\n"
   "  gl_Position = vPosition + vOffset;\n"
+  "  vp = vOffset;\n"
   "}\n"
 ;
 
 static const char * squareFragmentShader =
   "precision mediump float;\n"
-  "uniform vec4 vOffset;\n"
+  "varying vec4 vp;\n"
   "uniform vec4 vColor;\n"
   "uniform float vPixRadius;\n"
   "void main()\n"
@@ -67,15 +69,16 @@ static const char * squareFragmentShader =
   " // if(sqrt(pow(gl_PointCoord.x,2)+pow(gl_PointCoord.x-vOffset.y,2)) >= vPixRadius)\n"
   " //   gl_FragColor = vColor;\n"
   " // else\n"
-  " //if(distance(gl_PointCoord.xy,vec2(0,vOffset)) <= 20)\n"
-  " //  gl_FragColor = vColor;\n"
+  "// if(distance(gl_PointCoord.xy,vp.xy) <= 20)\n"
+  "  // gl_FragColor = vColor;\n"
   " //else discard;\n"
-  "//  if(vOffset>0.000001*vPixRadius)\n"
+  "//  if(vp.y>0.000001*vPixRadius)\n"
   " //   gl_FragColor = vColor;\n"
-  "//  else\n"
+  " // else\n"
   " //   gl_FragColor = vec4(1,0,0,1);\n"
-  "//  gl_FragColor = vec4(vOffset.y,gl_PointCoord.y,vColor.z,1);\n"
-  "  gl_FragColor = vec4(gl_PointCoord.y,vColor.y,vColor.z,1);\n"
+  " //   gl_FragColor = vColor;\n"
+  "  gl_FragColor = vec4(vp.y,gl_PointCoord.y,vColor.z,1);\n"
+  "//  gl_FragColor = vec4(vOffset.x,gl_PointCoord.y,vColor.z,1);\n"
   "}\n"
 ;
 
@@ -210,7 +213,7 @@ extern "C"
 
     glUniform4f(color, 0, 0.6, 1, 1);
     glUniform4f(yoffset, 0, yOffs, 0, 0);
-//    glUniform1f(pixradius, sWindowHeight/10);
+    glUniform1f(pixradius, sWindowHeight/10);
 //    glVertexAttribPointer(color, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex) /*stride*/, (void*)offsetof(Vertex,rgba));
 
 //    glDrawArrays(GL_TRIANGLES, 0, 3);

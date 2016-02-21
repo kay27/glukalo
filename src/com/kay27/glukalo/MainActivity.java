@@ -11,6 +11,7 @@ import android.view.WindowManager;
 import android.util.Log;
 import javax.microedition.khronos.opengles.GL10;
 import javax.microedition.khronos.egl.EGLConfig;
+import android.widget.Toast;
 
 public class MainActivity extends Activity
 {
@@ -23,12 +24,13 @@ public class MainActivity extends Activity
     boolean supportES2 = (info.reqGlEsVersion >= 0x20000);
     if(supportES2)
     {
+      Toast.makeText(this, "Your device supports ES2! (" + info.reqGlEsVersion + ")", Toast.LENGTH_LONG).show();
 //      getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
       mGLView = new MyGLSurfaceView(this);
       setContentView(mGLView);
     }
     else
-      Log.e("OpenGLES 2", "Your device doesn't support ES2. (" + info.reqGlEsVersion + ")");
+      Toast.makeText(this, "Your device doesn't support ES2. (" + info.reqGlEsVersion + ")", Toast.LENGTH_LONG).show();
   }
 
   @Override
@@ -43,6 +45,11 @@ public class MainActivity extends Activity
   {
     super.onResume();
     mGLView.onResume();
+  }
+
+  private void ErrorCallback(int depth) //??????????????????????
+  {
+    System.exit(0);
   }
 
   private MyGLSurfaceView mGLView;

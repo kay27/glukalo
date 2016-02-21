@@ -6,34 +6,49 @@
 static int sWindowWidth  = 720;
 static int sWindowHeight = 1280;
 static int sStopped      = 0;
+GLuint program           = 0; //class?//fixme
+GLint pos                = 0;
+GLint color              = 0;
+GLuint vb;
 
-/* filled circle
-glEnable(GL_POINT_SMOOTH);
-glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
-glPointSize(radius << 1);
-glPoint(x, y, z);
-*/
+struct Vertex {
+    GLfloat pos[2];
+    GLubyte rgba[4];
+};
+const Vertex QUAD[4] = {
+    // Square with diagonal < 2 so that it fits in a [-1 .. 1]^2 square
+    // regardless of rotation.
+    {{-0.7f, -0.7f}, {0x00, 0xFF, 0x00}},
+    {{ 0.7f, -0.7f}, {0x00, 0x00, 0xFF}},
+    {{-0.7f,  0.7f}, {0xFF, 0x00, 0x00}},
+    {{ 0.7f,  0.7f}, {0xFF, 0xFF, 0xFF}},
+};
 
-static const char VERTEX_SHADER[] =
-  "#version 100\n"
-  "uniform mat2 scaleRot;\n"
-  "uniform vec2 offset;\n"
-  "attribute vec2 pos;\n"
-  "attribute vec4 color;\n"
-  "varying vec4 vColor;\n"
-  "void main() {\n"
-  "    gl_Position = vec4(scaleRot*pos + offset, 0.0, 1.0);\n"
-  "    vColor = color;\n"
-  "}\n";
+const float vertices[] =
+{
+   0.0f,  0.5f,  0.0f,
+  -0.5f, -0.5f,  0.0f,
+   0.5f, -0.5f,  0.0f
+};
+const float clr[] = {0.0f, 0.6f, 1.0f, 1.0f};
 
-static const char FRAGMENT_SHADER[] =
-    "#version 100\n"
-    "precision mediump float;\n"
-    "varying vec4 vColor;\n"
-    "void main() {\n"
-    "    gl_FragColor = vColor;\n"
-    "}\n";
+//static const char vertShader[] =
+static const char * squareVertexShader =
+  "attribute vec4 vPosition;\n"
+  "void main()\n"
+  "{\n"
+  "  gl_Position = vPosition;\n"
+  "}\n"
+;
 
+static const char * squareFragmentShader =
+  "precision mediump float;\n"
+  "uniform vec4 vColor;\n"
+  "void main()\n"
+  "{\n"
+  "  gl_FragColor = vColor;\n"
+  "}\n"
+;
 
 class MyQuad
 {
@@ -94,17 +109,28 @@ extern "C"
 
   JNIEXPORT void Java_com_kay27_Glukalo_MyRenderer_nativeInit(JNIEnv* env)
   {
-    mProgram = createProgram(VERTEX_SHADER, FRAGMENT_SHADER);
-    if(!mProgram) { sStopped = 1; return; }
+    program = glCreateProgram(); // handle error //fixme // callback and toast?
+    if(!program) return;
 
-    mPosAttrib = glGetAttribLocation(mProgram, "pos");
-    mColorAttrib = glGetAttribLocation(mProgram, "color");
-    mScaleRotUniform = glGetUniformLocation(mProgram, "scaleRot");
-    mOffsetUniform = glGetUniformLocation(mProgram, "offset");
+    GLint s = glCreateShader(GL_VERTEX_SHADER); // handle error //fixme // callback and toast? AND BELOW!!!
+    if(!s) return;
+    glShaderSource(s, 1, &squareVertexShader, NULL); glCompileShader(s); glAttachShader(program, s);
 
-    glGenBuffers(1, &mVB);
-    glBindBuffer(GL_ARRAY_BUFFER, mVB);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(QUAD), &QUAD[0], GL_STATIC_DRAW);
+    s = glCreateShader(GL_FRAGMENT_SHADER);
+    if(!s) return;
+    glShaderSource(s, 1, &squareFragmentShader, NULL); glCompileShader(s); glAttachShader(program, s);
+
+    glLinkProgram(program);
+
+    if(!program) return;
+
+    pos = glGetAttribLocation(program, "vPosition");
+    color = glGetUniformLocation(program, "vColor");
+
+    glGenBuffers(1, &vb);
+    glBindBuffer(GL_ARRAY_BUFFER, vb);
+//    glBufferData(GL_ARRAY_BUFFER, sizeof(QUAD), &QUAD[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), &vertices[0], GL_STATIC_DRAW);
 
   }
 
@@ -120,5 +146,38 @@ extern "C"
   {
     glClearColor(myrand(), myrand(), myrand(), 1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    glUseProgram(program);
+//    glTranslatef(0.0f, 0.0f, -0.5f);
+//    glEnableClientState(GL_VERTEX_ARRAY);
+//    glVertexPointer(3, GL_FLOAT, sizeof(float)*3, vertices);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
+    glDrawArrays(GL_TRIANGLES, 0, 3);
+    glDisableVertexAttribArray(0);
+
+//    glDisableClientState(GL_VERTEX_ARRAY);
+
+/*
+    glEnableVertexAttribArray(pos);
+    glVertexAttribPointer(pos, 3, GL_FLOAT, false, 0, &vertices);
+    glUniform4fv(color, 1, clr);
+    glDrawArrays(GL_TRIANGLES, 0, 3);
+    glDisableVertexAttribArray(pos);
+*/
+//    glBindBuffer(GL_ARRAY_BUFFER, vb);
+
+/*
+    GLfloat vertices[] = {-0.5, -0.5, 0, // bottom left corner
+                          -0.5,  0.5, 0, // top left corner
+                           0.5,  0.5, 0, // top right corner
+                           0.5, -0.5, 0}; // bottom right corner
+
+    GLubyte indices[] = {0,1,2, // first triangle (bottom left - top left - top right)
+                         0,2,3}; // second triangle (bottom left - top right - bottom right)
+
+    glVertexPointer(3, GL_FLOAT, 0, vertices);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, indices);
+*/
   }
 }

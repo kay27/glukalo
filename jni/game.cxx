@@ -1,7 +1,8 @@
-#include <unistd.h>
-#include <cstdlib>
-#include <GLES2/gl2.h>
-#include <jni.h>
+#include<unistd.h>
+#include<cstdlib>
+#include<GLES2/gl2.h>
+#include<jni.h>
+#include<chrono>
 
 static int sWindowWidth  = 720;
 static int sWindowHeight = 1280;
@@ -13,6 +14,7 @@ GLint yoffset            = 0;
 GLuint vb;
 GLfloat yOffs            = 0;
 GLfloat speed            = 0;
+std::chrono::time_point<std::chrono::system_clock> lastTime;
 
 struct Vertex {
     GLfloat pos[3];
@@ -26,7 +28,7 @@ const Vertex data[] = {
   {{  0.5f, -0.5f,  0.0f }, {0, 160, 255, 255}}
 };
 
-//static const char vertShader[] =
+
 static const char * squareVertexShader =
   "attribute vec4 vPosition;\n"
   "uniform vec4 vOffset;\n"
@@ -44,6 +46,7 @@ static const char * squareFragmentShader =
   "  gl_FragColor = vColor;\n"
   "}\n"
 ;
+
 
 class MyQuad
 {
@@ -86,7 +89,7 @@ extern "C"
 {
   JNIEXPORT void Java_com_kay27_Glukalo_MyGLSurfaceView_nativeKeyPress(JNIEnv* env)
   {
-    yOffs += 0.3; speed = 0;
+    speed = -0.1;
   }
 
   JNIEXPORT void Java_com_kay27_Glukalo_MyGLSurfaceView_nativeKeyRelease(JNIEnv* env)
@@ -100,11 +103,14 @@ extern "C"
 
   JNIEXPORT void Java_com_kay27_Glukalo_MyGLSurfaceView_nativeResume(JNIEnv* env)
   {
+    lastTime = std::chrono::system_clock::now();
     sStopped = 0;
   }
 
   JNIEXPORT void Java_com_kay27_Glukalo_MyRenderer_nativeInit(JNIEnv* env)
   {
+    lastTime = std::chrono::system_clock::now();
+
     program = glCreateProgram(); // handle error //fixme // callback and toast?
     if(!program) return;
 
@@ -143,6 +149,10 @@ extern "C"
 
   JNIEXPORT void Java_com_kay27_Glukalo_MyRenderer_nativeRender(JNIEnv* env)
   {
+    auto now = std::chrono::system_clock::now();
+    float delta = std::chrono::duration_cast<std::chrono::microseconds>(lastTime-now).count();
+    lastTime = now;
+
     glClearColor(myrand()/50, myrand()/20, myrand()/8, 1.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -155,9 +165,10 @@ extern "C"
     glEnableVertexAttribArray(yoffset);
     glVertexAttribPointer(pos, 3, GL_FLOAT, false, sizeof(Vertex), (void*)offsetof(Vertex,pos));
 
-    speed+=0.001;
+    speed+=delta/500000;
     yOffs-=speed;
-    if(yOffs<-2) yOffs+=4;
+    if(yOffs<-0.8) { yOffs=-0.8; speed=0; /* echo BANG!!! */ }
+    if(yOffs>1.5) { yOffs=1.5; speed=0; /* echo BANG!!! */ }
 
     glUniform4f(color, 0, 0.6, 1, 1);
     glUniform4f(yoffset, 0, yOffs, 0, 0);

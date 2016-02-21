@@ -2,7 +2,6 @@
 #include<cstdlib>
 #include<GLES2/gl2.h>
 #include<jni.h>
-#include<chrono>
 
 static int sWindowWidth  = 720;
 static int sWindowHeight = 1280;
@@ -14,7 +13,8 @@ GLint yoffset            = 0;
 GLuint vb;
 GLfloat yOffs            = 0;
 GLfloat speed            = 0;
-std::chrono::time_point<std::chrono::system_clock> lastTime;
+struct timeval lastTime;
+int impulse              = 0;
 
 struct Vertex {
     GLfloat pos[3];
@@ -89,7 +89,7 @@ extern "C"
 {
   JNIEXPORT void Java_com_kay27_Glukalo_MyGLSurfaceView_nativeKeyPress(JNIEnv* env)
   {
-    speed = -0.1;
+    impulse = 1;
   }
 
   JNIEXPORT void Java_com_kay27_Glukalo_MyGLSurfaceView_nativeKeyRelease(JNIEnv* env)
@@ -103,13 +103,14 @@ extern "C"
 
   JNIEXPORT void Java_com_kay27_Glukalo_MyGLSurfaceView_nativeResume(JNIEnv* env)
   {
-    lastTime = std::chrono::system_clock::now();
+    gettimeofday(&lastTime, NULL);
     sStopped = 0;
+    impulse  = 0;
   }
 
   JNIEXPORT void Java_com_kay27_Glukalo_MyRenderer_nativeInit(JNIEnv* env)
   {
-    lastTime = std::chrono::system_clock::now();
+    gettimeofday(&lastTime, NULL);
 
     program = glCreateProgram(); // handle error //fixme // callback and toast?
     if(!program) return;
@@ -137,6 +138,7 @@ extern "C"
 
     yOffs            = 0;
     speed            = 0;
+    impulse          = 0;
   }
 
   JNIEXPORT void Java_com_kay27_Glukalo_MyRenderer_nativeResize(JNIEnv* env, jobject thiz, jint w, jint h)
@@ -149,8 +151,9 @@ extern "C"
 
   JNIEXPORT void Java_com_kay27_Glukalo_MyRenderer_nativeRender(JNIEnv* env)
   {
-    auto now = std::chrono::system_clock::now();
-    float delta = std::chrono::duration_cast<std::chrono::microseconds>(lastTime-now).count();
+    struct timeval now;
+    gettimeofday(&now, NULL);
+    float delta = (now.tv_sec - lastTime.tv_sec) * 1000000 + ((int)now.tv_usec - (int)lastTime.tv_usec);
     lastTime = now;
 
     glClearColor(myrand()/50, myrand()/20, myrand()/8, 1.0);
@@ -165,8 +168,9 @@ extern "C"
     glEnableVertexAttribArray(yoffset);
     glVertexAttribPointer(pos, 3, GL_FLOAT, false, sizeof(Vertex), (void*)offsetof(Vertex,pos));
 
-    speed+=delta/500000;
-    yOffs-=speed;
+    if(impulse) {impulse=0; speed=-0.11;}
+    speed+=delta/5000000;
+    yOffs-=delta/30000*speed;
     if(yOffs<-0.8) { yOffs=-0.8; speed=0; /* echo BANG!!! */ }
     if(yOffs>1.5) { yOffs=1.5; speed=0; /* echo BANG!!! */ }
 

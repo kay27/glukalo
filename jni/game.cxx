@@ -83,7 +83,7 @@ static const char * squareFragmentShader =
   "uniform float vRadius;\n"
   "void main()\n"
   "{\n"
-  "  gl_FragColor = vec4(vColor.x,tc.x,tc.x,tc.y);\n"
+  "  gl_FragColor = vec4(vp.y,tc.y,tc.x,1);\n"
   "//  if(vColor == vec4(1,1,1,1)\n"
   "//  {\n"
   "//  float distanceFromCenter = distance(vec2(0.5, vp.y/2+0.5), tc);\n"
@@ -200,22 +200,44 @@ extern "C"
     program = glCreateProgram();
     if(!program) return Quit("Could not create OpenGL ES program: " + glGetError());
 
+    GLint tmp[1];
+    char l[512];
+
     GLint s = glCreateShader(GL_VERTEX_SHADER);
     if(!s) return Quit("Could not create vertex shader: " + glGetError());
-
     glShaderSource(s, 1, &squareVertexShader, NULL);
     glCompileShader(s);
+    glGetShaderiv(s, GL_COMPILE_STATUS, tmp);
+    if(!tmp[0])
+    {
+      glGetShaderInfoLog(s,512,tmp,l);
+      Quit(strcat("Could not compile vertex shader: ", l));
+      return;
+    }
     glAttachShader(program, s);
 
     s = glCreateShader(GL_FRAGMENT_SHADER);
-    if(!s) return Quit("Could not create fragment shader: " + glGetError());
-
+    if(!s) { Quit("Could not create fragment shader: " + glGetError()); return; }
     glShaderSource(s, 1, &squareFragmentShader, NULL);
     glCompileShader(s);
+    glGetShaderiv(s, GL_COMPILE_STATUS, tmp);
+    if(!tmp[0])
+    {
+      glGetShaderInfoLog(s,512,tmp,l);
+      Quit(strcat("Could not compile fragment shader: ", l));
+      return;
+    }
     glAttachShader(program, s);
 
     glLinkProgram(program);
-    if(!program) return Quit("GL program error: " + glGetError());
+    glGetProgramiv(program, GL_LINK_STATUS, tmp);
+    if(tmp[0] != GL_TRUE)
+    {
+      glGetProgramInfoLog(program, 512, tmp, l);
+      glDeleteProgram(program);
+      Quit(strcat("GL program link error: ", l));
+      return;
+    }
 
     glGenBuffers(1, &vb);
     glBindBuffer(GL_ARRAY_BUFFER, vb);

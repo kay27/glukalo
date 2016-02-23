@@ -16,22 +16,18 @@ import javax.microedition.khronos.egl.EGLConfig;
 
 public class MainActivity extends Activity
 {
-  private static Context context;
   private static Activity activity;
-//  public static Context getAppContext() { return context; }
 
   @Override
   protected void onCreate(Bundle savedInstanceState)
   {
     super.onCreate(savedInstanceState);
-    context = getApplicationContext();
     activity = this;
     ActivityManager am = (ActivityManager)getSystemService(Context.ACTIVITY_SERVICE);
     ConfigurationInfo info = am.getDeviceConfigurationInfo();
     boolean supportES2 = (info.reqGlEsVersion >= 0x20000);
     if(supportES2)
     {
-//      Toast.makeText(this, "Your device supports ES2! (" + info.reqGlEsVersion + ")", Toast.LENGTH_LONG).show();
 //      getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
       mGLView = new MyGLSurfaceView(this);
       setContentView(mGLView);
@@ -57,16 +53,14 @@ public class MainActivity extends Activity
   public static void ErrorCallback(final String message)
   {
     activity.runOnUiThread(new Runnable() {
-      public void run(){ Toast.makeText(activity, message, Toast.LENGTH_SHORT).show(); } } );
+      public void run(){ Toast.makeText(activity, message, Toast.LENGTH_LONG).show(); } } );
+    activity.finish();
+  }
 
-//    finish();
-//    Toast.makeText(context, message, Toast.LENGTH_LONG).show();
-//    Toast.makeText(context, "Error callback: " + message + " :)", Toast.LENGTH_LONG).show();
-//    Toast.makeText(this, "Error callback!", Toast.LENGTH_LONG).show();
-//    ((Activity)context).finish();
-//    finish();
-//    try
-//    { Thread.sleep(Toast.LENGTH_LONG); } catch(InterruptedException ex) {}
+  public static void ToastCallback(final String message)
+  {
+    activity.runOnUiThread(new Runnable() {
+      public void run(){ Toast.makeText(activity, message, Toast.LENGTH_SHORT).show(); } } );
   }
 
   private MyGLSurfaceView mGLView;

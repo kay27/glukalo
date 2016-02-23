@@ -81,7 +81,7 @@ static const char * squareFragmentShader =
   "uniform float vRadius;\n"
   "void main()\n"
   "{\n"
-  "  gl_FragColor = vecr(vColor.x,vColor.y,tc.x,tc.y);\n"
+  "  gl_FragColor = vec4(vColor.x,vColor.y,tc.x,tc.y);\n"
   "//  if(vColor == vec4(1,1,1,1)\n"
   "//  {\n"
   "//  float distanceFromCenter = distance(vec2(0.5, vp.y/2+0.5), tc);\n"
@@ -130,44 +130,20 @@ float myrand()
 
 void Quit(const char *message)
 {
-/*
-  if(jclass Toast = jnienv->FindClass("android/widget/Toast"))
-  {
-    if(jmethodID makeText = jnienv->GetStaticMethodID(Toast, "makeText", "(Landroid/content/Context;Ljava/lang/CharSequence;I)Landroid/widget/Toast;"))
-    {
-      if(jobject toast = jnienv->CallStaticObjectMethod(Toast, makeText, jo, jnienv->NewStringUTF(message), 3000))
-      {
-        if(jmethodID show = jnienv->GetMethodID(Toast,"show","()V"))
-        {
-          jnienv->CallVoidMethod(toast,show);
-          return; // toast launched and will deleted in time
-        }
-        delete toast;
-      }
-      delete makeText;
-    }
-    delete Toast;
-  }
-*/
   if(!jo) return;
   if(!jnienv) return;
   if(jclass c = jnienv->FindClass("com.kay27.Glukalo.MainActivity"))
-//  if(jclass c = jnienv->GetObjectClass(jo))
     if(jmethodID m = jnienv->GetStaticMethodID(c, "ErrorCallback", "(Ljava/lang/String;)V"))
       jnienv->CallStaticVoidMethod(c, m, jnienv->NewStringUTF(message));
-//  return;
+}
 
-//  if(!jvm) { if(!jnienv) return; jnienv->GetJavaVM(&jvm); if(!jvm) return; }
-
-
-
-//  JNIEnv *env;
-
-//  if(jvm->AttachCurrentThread(&env, NULL) < 0) return;
-//  if(jclass c = env->GetObjectClass(jo))
-//    if(jmethodID m = env->GetMethodID(c, "ErrorCallback", "(Ljava/lang/String;)V"))
-//      env->CallVoidMethod(c, m, env->NewStringUTF(message));
-//  jvm->DetachCurrentThread();
+void Toast(const char *message)
+{
+  if(!jo) return;
+  if(!jnienv) return;
+  if(jclass c = jnienv->FindClass("com.kay27.Glukalo.MainActivity"))
+    if(jmethodID m = jnienv->GetStaticMethodID(c, "ToastCallback", "(Ljava/lang/String;)V"))
+      jnienv->CallStaticVoidMethod(c, m, jnienv->NewStringUTF(message));
 }
 
 extern "C"
@@ -240,7 +216,7 @@ extern "C"
     yOffs            = 0;
     speed            = 0;
     impulse          = 0;
-Quit("Test error message just for fun");
+
   }
 
   JNIEXPORT void Java_com_kay27_Glukalo_MyRenderer_nativeResize(JNIEnv* env, jobject thiz, jint w, jint h)

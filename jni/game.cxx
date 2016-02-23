@@ -83,7 +83,7 @@ static const char * squareFragmentShader =
   "uniform float vRadius;\n"
   "void main()\n"
   "{\n"
-  "  gl_FragColor = vec4(vColor.x,vColor.y,tc.x,tc.y);\n"
+  "  gl_FragColor = vec4(vColor.x,tc.x,tc.x,tc.y);\n"
   "//  if(vColor == vec4(1,1,1,1)\n"
   "//  {\n"
   "//  float distanceFromCenter = distance(vec2(0.5, vp.y/2+0.5), tc);\n"
@@ -265,7 +265,7 @@ extern "C"
     if(impulse) {impulse=0; speed=-0.06;}
     if(started)speed+=delta/5000000;
     yOffs-=delta/27000*speed;
-    if(yOffs<-0.801) { Toast("BANG!!! Game over"); Restart(); }
+    if(yOffs<-0.8998) { Toast("BANG!!! Game over"); Restart(); }
     if(yOffs>1.1) { yOffs=1.1; speed=0; }
 
     glUniform4f(color, 0, 0.6, 1, 1);

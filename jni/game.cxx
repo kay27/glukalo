@@ -2,7 +2,8 @@
 #include<cstdlib>
 #include<GLES2/gl2.h>
 #include<jni.h>
-#include<string.h>
+//#include<string.h>
+//#include<cmath>
 
 using namespace std;
 
@@ -32,6 +33,7 @@ int firstTime = 1;
 GLfloat speed            = 0;
 struct timeval lastTime;
 int impulse              = 0;
+float vect=-0.01;
 
 struct Vertex {
     GLfloat pos[3];
@@ -166,6 +168,7 @@ void Restart()
   started          = 0;
   if(firstTime) Toast("Tap to play");
   firstTime = 0;
+  vect = -0.0023;
 }
 
 extern "C"
@@ -278,6 +281,7 @@ extern "C"
     struct timeval now;
     gettimeofday(&now, NULL);
     float delta = (now.tv_sec - lastTime.tv_sec) * 1000000 + ((int)now.tv_usec - (int)lastTime.tv_usec);
+//    float progress = float(now.tv_sec)*1000 + float(now.tv_usec)/1000;
     lastTime = now;
 
     glClearColor(myrand()/50, myrand()/20, myrand()/8, 1.0);
@@ -299,6 +303,13 @@ extern "C"
     if(impulse) {impulse=0; speed=-0.06;}
     if(started)speed+=delta/5000000;
     yOffs-=delta/27000*speed;
+    if(!started)
+    {
+      yOffs+=vect*delta/253427; // more: slower initial animation
+      if(yOffs>0.008) {yOffs=0.008; vect=-0.0095;}
+      if(yOffs<-0.006) {yOffs=-0.006; vect=0.011;}
+    }
+
     if(yOffs<-0.8998) { Toast("BANG!!! Game over"); Restart(); }
     if(yOffs>1.1) { yOffs=1.1; speed=0; }
 

@@ -86,7 +86,7 @@ static const char * squareFragmentShader =
   "uniform float vRadius;\n"
   "void main()\n"
   "{\n"
-  "  float distanceFromCenter = distance(vec2(0.5, vp.y/2+0.5), tc);\n"
+  "  float distanceFromCenter = distance(vec2(0.5, vp.y/2.0+0.5), tc);\n"
   "  gl_FragColor = vec4(distanceFromCenter,tc.y,tc.x,1);\n"
   "//  gl_FragColor = vec4(vp.y,tc.y,tc.x,1);\n"
   "//  if(vColor == vec4(1,1,1,1)\n"

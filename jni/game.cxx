@@ -73,7 +73,7 @@ static const char * squareVertexShader =
   "void main()\n"
   "{\n"
   "  gl_Position = vPosition + vOffset;\n"
-  "  vp = vOffset;\n"
+  "  vp = vPosition;\n"
   "  tc = vTextureCoordinate.xy;\n"
   "}\n"
 ;

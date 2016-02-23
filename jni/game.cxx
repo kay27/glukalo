@@ -97,7 +97,8 @@ static const char * squareFragmentShader =
   "void main()\n"
   "{\n"
   "  float distanceFromCenter = distance(vec2(0, vp.y/2.0), vec2((tc.x-0.5)*vMul,tc.y-0.5));\n"
-  "  float checkForPresenceWithinCircle = step(distanceFromCenter, vRadius);\n"
+  "  float checkForPresenceWithinCircle = 1.0 - smoothstep(vRadius-0.05, vRadius+0.05, distanceFromCenter);\n"
+  "  if(checkForPresenceWithinCircle<0.01) discard;\n"
   "  gl_FragColor = vColor * checkForPresenceWithinCircle;\n"
   "}\n"
 ;

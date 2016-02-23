@@ -2,6 +2,9 @@
 #include<cstdlib>
 #include<GLES2/gl2.h>
 #include<jni.h>
+#include<string.h>
+
+using namespace std;
 
 //#include <JNIHelp.h>
 //#include <android_runtime/AndroidRuntime.h>
@@ -83,7 +86,9 @@ static const char * squareFragmentShader =
   "uniform float vRadius;\n"
   "void main()\n"
   "{\n"
-  "  gl_FragColor = vec4(vp.y,tc.y,tc.x,1);\n"
+  "  float distanceFromCenter = distance(vec2(0.5, vp.y/2+0.5), tc);\n"
+  "  gl_FragColor = vec4(distanceFromCenter,tc.y,tc.x,1);\n"
+  "//  gl_FragColor = vec4(vp.y,tc.y,tc.x,1);\n"
   "//  if(vColor == vec4(1,1,1,1)\n"
   "//  {\n"
   "//  float distanceFromCenter = distance(vec2(0.5, vp.y/2+0.5), tc);\n"
@@ -211,7 +216,7 @@ extern "C"
     if(!tmp[0])
     {
       glGetShaderInfoLog(s,512,tmp,l);
-      Quit(strcat("Could not compile vertex shader: ", l));
+      Toast("Could not compile vertex shader:"); Quit(l);
       return;
     }
     glAttachShader(program, s);
@@ -224,7 +229,7 @@ extern "C"
     if(!tmp[0])
     {
       glGetShaderInfoLog(s,512,tmp,l);
-      Quit(strcat("Could not compile fragment shader: ", l));
+      Toast("Could not compile fragment shader:"); Quit(l);
       return;
     }
     glAttachShader(program, s);
@@ -235,7 +240,7 @@ extern "C"
     {
       glGetProgramInfoLog(program, 512, tmp, l);
       glDeleteProgram(program);
-      Quit(strcat("GL program link error: ", l));
+      Toast("GL program link error:"); Quit(l);
       return;
     }
 

@@ -28,7 +28,7 @@ public class MainActivity extends Activity
     boolean supportES2 = (info.reqGlEsVersion >= 0x20000);
     if(supportES2)
     {
-//      getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+      getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
       mGLView = new MyGLSurfaceView(this);
       setContentView(mGLView);
     }

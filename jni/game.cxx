@@ -14,8 +14,8 @@ using namespace std;
 static JavaVM *jvm = NULL;
 static JNIEnv *jnienv = NULL;
 jobject jo = NULL;
-static int sWindowWidth  = 720;
-static int sWindowHeight = 1280;
+static int sWindowWidth  = 333;
+static int sWindowHeight = 155;
 static int sPaused      = 0;
 GLuint program           = 0; //class?//fixme
 GLint pos                = 0;
@@ -23,6 +23,8 @@ GLint color              = 0;
 GLint yoffset            = 0;
 GLint radius             = 0;
 GLint textureCoords      = 0;
+GLint ymul               = 0;
+float yMulValue          = 1;
 GLuint vb;
 GLfloat yOffs            = 0;
 int started = 0;
@@ -37,12 +39,19 @@ struct Vertex {
     GLfloat txtcrds[2];
 };
 
-
+/*
 const Vertex data[] = {
   {{ -0.05f, -0.05f,  0.0f }, {0.0f, 0.0f}},
   {{ -0.05f,  0.05f,  0.0f }, {0.0f, 1.0f}},
   {{  0.05f, -0.05f,  0.0f }, {1.0f, 0.0f}},
   {{  0.05f,  0.05f,  0.0f }, {1.0f, 1.0f}}, //fixme: why texture crds are float? :)
+};
+*/
+const Vertex data[] = {
+  {{ -0.10f, -0.10f,  0.0f }, {0.0f, 0.0f}},
+  {{ -0.10f,  0.10f,  0.0f }, {0.0f, 1.0f}},
+  {{  0.10f, -0.10f,  0.0f }, {1.0f, 0.0f}},
+  {{  0.10f,  0.10f,  0.0f }, {1.0f, 1.0f}}, //fixme: why texture crds are float? :)
 };
 
 const char font[12*14*1] =
@@ -84,17 +93,12 @@ static const char * squareFragmentShader =
   "varying vec2 tc;\n"
   "uniform vec4 vColor;\n"
   "uniform float vRadius;\n"
+  "uniform float vMul;\n"
   "void main()\n"
   "{\n"
-  "//  float distanceFromCenter = distance(vec2(0.5, vp.y/2.0+0.5), tc);\n"
-  "//  gl_FragColor = vec4(distanceFromCenter,tc.y,tc.x,1);\n"
-  "//  gl_FragColor = vec4(vp.y,tc.y,tc.x,1);\n"
-  "//  if(vColor == vec4(1,1,1,1)\n"
-  "//  {\n"
-  "  float distanceFromCenter = distance(vec2(0.5, vp.y/2.0+0.5), tc);\n"
+  "  float distanceFromCenter = distance(vec2(0, vp.y/2.0), vec2((tc.x-0.5)*vMul,tc.y-0.5));\n"
   "  float checkForPresenceWithinCircle = step(distanceFromCenter, vRadius);\n"
   "  gl_FragColor = vColor * checkForPresenceWithinCircle;\n"
-  "//  }\n"
   "}\n"
 ;
 
@@ -253,6 +257,7 @@ extern "C"
     color = glGetUniformLocation(program, "vColor");
     yoffset = glGetUniformLocation(program, "vOffset");
     radius = glGetUniformLocation(program, "vRadius");
+    ymul = glGetUniformLocation(program, "vMul");
 
     Restart();
   }
@@ -261,6 +266,7 @@ extern "C"
   {
     sWindowWidth  = w;
     sWindowHeight = h;
+    if(h>0)yMulValue = float(w)/h;
     glViewport(0, 0, w, h); //???FIX
   //  __android_log_print(ANDROID_LOG_INFO, "Glukalo", "resize w=%d h=%d", w, h);
   }
@@ -297,7 +303,8 @@ extern "C"
 
     glUniform4f(color, 0, 0.6, 1, 1);
     glUniform4f(yoffset, 0, yOffs, 0, 0);
-    glUniform1f(radius, 0.5);
+    glUniform1f(radius, 0.25);
+    glUniform1f(ymul, yMulValue);
 //    glVertexAttribPointer(color, 4, GL_UNSIGNED_BYTE, GL_TRUE, sizeof(Vertex) /*stride*/, (void*)offsetof(Vertex,rgba));
 
 //    glDrawArrays(GL_TRIANGLES, 0, 3);

@@ -13,7 +13,7 @@ static JNIEnv *jnienv = NULL;
 jobject jo = NULL;
 static int sWindowWidth  = 720;
 static int sWindowHeight = 1280;
-static int sStopped      = 0;
+static int sPaused      = 0;
 GLuint program           = 0; //class?//fixme
 GLint pos                = 0;
 GLint color              = 0;
@@ -22,6 +22,8 @@ GLint radius             = 0;
 GLint textureCoords      = 0;
 GLuint vb;
 GLfloat yOffs            = 0;
+int started = 0;
+int firstTime = 1;
 GLfloat speed            = 0;
 struct timeval lastTime;
 int impulse              = 0;
@@ -146,6 +148,16 @@ void Toast(const char *message)
       jnienv->CallStaticVoidMethod(c, m, jnienv->NewStringUTF(message));
 }
 
+void Restart()
+{
+  yOffs            = 0;
+  speed            = 0;
+  impulse          = 0;
+  started          = 0;
+  if(firstTime) Toast("Tap to play");
+  firstTime = 0;
+}
+
 extern "C"
 {
 
@@ -158,6 +170,7 @@ extern "C"
   JNIEXPORT void Java_com_kay27_Glukalo_MyGLSurfaceView_nativeKeyPress(JNIEnv* env)
   {
     impulse = 1;
+    started = 1;
   }
 
   JNIEXPORT void Java_com_kay27_Glukalo_MyGLSurfaceView_nativeKeyRelease(JNIEnv* env)
@@ -166,13 +179,13 @@ extern "C"
 
   JNIEXPORT void Java_com_kay27_Glukalo_MyGLSurfaceView_nativePause(JNIEnv* env)
   {
-    sStopped = 1;
+    sPaused = 1;
   }
 
   JNIEXPORT void Java_com_kay27_Glukalo_MyGLSurfaceView_nativeResume(JNIEnv* env)
   {
     gettimeofday(&lastTime, NULL);
-    sStopped = 0;
+    sPaused = 0;
     impulse  = 0;
   }
 
@@ -180,6 +193,7 @@ extern "C"
   {
     jo = obj;
     jnienv = env;
+    firstTime = 1;
 
     gettimeofday(&lastTime, NULL);
 
@@ -213,10 +227,7 @@ extern "C"
     yoffset = glGetUniformLocation(program, "vOffset");
     radius = glGetUniformLocation(program, "vRadius");
 
-    yOffs            = 0;
-    speed            = 0;
-    impulse          = 0;
-
+    Restart();
   }
 
   JNIEXPORT void Java_com_kay27_Glukalo_MyRenderer_nativeResize(JNIEnv* env, jobject thiz, jint w, jint h)
@@ -229,6 +240,7 @@ extern "C"
 
   JNIEXPORT void Java_com_kay27_Glukalo_MyRenderer_nativeRender(JNIEnv* env)
   {
+//    if(sPaused) return;
     struct timeval now;
     gettimeofday(&now, NULL);
     float delta = (now.tv_sec - lastTime.tv_sec) * 1000000 + ((int)now.tv_usec - (int)lastTime.tv_usec);
@@ -251,10 +263,10 @@ extern "C"
 //    glAttrib2f(textureCoords, 0.5, 0.4);
 
     if(impulse) {impulse=0; speed=-0.06;}
-    speed+=delta/5000000;
+    if(started)speed+=delta/5000000;
     yOffs-=delta/27000*speed;
-    if(yOffs<-0.8) { yOffs=-0.8; speed=0; /* echo BANG!!! */ }
-    if(yOffs>1.5) { yOffs=1.5; speed=0; /* echo BANG!!! */ }
+    if(yOffs<-0.801) { Toast("BANG!!! Game over"); Restart(); }
+    if(yOffs>1.1) { yOffs=1.1; speed=0; }
 
     glUniform4f(color, 0, 0.6, 1, 1);
     glUniform4f(yoffset, 0, yOffs, 0, 0);

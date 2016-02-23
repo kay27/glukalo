@@ -2,29 +2,36 @@ package com.kay27.Glukalo;
 
 import android.app.Activity;
 import android.app.ActivityManager;
-import android.os.Bundle;
-import android.opengl.GLSurfaceView;
 import android.content.Context;
 import android.content.pm.ConfigurationInfo;
+import android.opengl.GLSurfaceView;
+import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.WindowManager;
-import android.util.Log;
+import android.widget.Toast;
+//import java.lang.Thread;
 import javax.microedition.khronos.opengles.GL10;
 import javax.microedition.khronos.egl.EGLConfig;
-import android.widget.Toast;
 
 public class MainActivity extends Activity
 {
+  private static Context context;
+  private static Activity activity;
+//  public static Context getAppContext() { return context; }
+
   @Override
   protected void onCreate(Bundle savedInstanceState)
   {
     super.onCreate(savedInstanceState);
+    context = getApplicationContext();
+    activity = this;
     ActivityManager am = (ActivityManager)getSystemService(Context.ACTIVITY_SERVICE);
     ConfigurationInfo info = am.getDeviceConfigurationInfo();
     boolean supportES2 = (info.reqGlEsVersion >= 0x20000);
     if(supportES2)
     {
-      Toast.makeText(this, "Your device supports ES2! (" + info.reqGlEsVersion + ")", Toast.LENGTH_LONG).show();
+//      Toast.makeText(this, "Your device supports ES2! (" + info.reqGlEsVersion + ")", Toast.LENGTH_LONG).show();
 //      getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
       mGLView = new MyGLSurfaceView(this);
       setContentView(mGLView);
@@ -47,9 +54,19 @@ public class MainActivity extends Activity
     mGLView.onResume();
   }
 
-  private void ErrorCallback(int depth) //??????????????????????
+  public static void ErrorCallback(final String message)
   {
-    System.exit(0);
+    activity.runOnUiThread(new Runnable() {
+      public void run(){ Toast.makeText(activity, message, Toast.LENGTH_SHORT).show(); } } );
+
+//    finish();
+//    Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+//    Toast.makeText(context, "Error callback: " + message + " :)", Toast.LENGTH_LONG).show();
+//    Toast.makeText(this, "Error callback!", Toast.LENGTH_LONG).show();
+//    ((Activity)context).finish();
+//    finish();
+//    try
+//    { Thread.sleep(Toast.LENGTH_LONG); } catch(InterruptedException ex) {}
   }
 
   private MyGLSurfaceView mGLView;

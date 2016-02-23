@@ -42,7 +42,7 @@ const Vertex data[] = {
   {{ -0.05f, -0.05f,  0.0f }, {0.0f, 0.0f}},
   {{ -0.05f,  0.05f,  0.0f }, {0.0f, 1.0f}},
   {{  0.05f, -0.05f,  0.0f }, {1.0f, 0.0f}},
-  {{  0.05f,  0.05f,  0.0f }, {1.0f, 0.0f}}, //fixme: why texture crds are float? :)
+  {{  0.05f,  0.05f,  0.0f }, {1.0f, 1.0f}}, //fixme: why texture crds are float? :)
 };
 
 const char font[12*14*1] =
@@ -86,14 +86,14 @@ static const char * squareFragmentShader =
   "uniform float vRadius;\n"
   "void main()\n"
   "{\n"
-  "  float distanceFromCenter = distance(vec2(0.5, vp.y/2.0+0.5), tc);\n"
-  "  gl_FragColor = vec4(distanceFromCenter,tc.y,tc.x,1);\n"
+  "//  float distanceFromCenter = distance(vec2(0.5, vp.y/2.0+0.5), tc);\n"
+  "//  gl_FragColor = vec4(distanceFromCenter,tc.y,tc.x,1);\n"
   "//  gl_FragColor = vec4(vp.y,tc.y,tc.x,1);\n"
   "//  if(vColor == vec4(1,1,1,1)\n"
   "//  {\n"
-  "//  float distanceFromCenter = distance(vec2(0.5, vp.y/2+0.5), tc);\n"
-  "//  float checkForPresenceWithinCircle = step(distanceFromCenter, vRadius);\n"
-  "//  gl_FragColor = vColor * checkForPresenceWithinCircle;\n"
+  "  float distanceFromCenter = distance(vec2(0.5, vp.y/2.0+0.5), tc);\n"
+  "  float checkForPresenceWithinCircle = step(distanceFromCenter, vRadius);\n"
+  "  gl_FragColor = vColor * checkForPresenceWithinCircle;\n"
   "//  }\n"
   "}\n"
 ;

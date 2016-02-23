@@ -101,7 +101,11 @@ static const char * squareFragmentShader =
   "  float distanceFromCenter = distance(vec2(0, vp.y/2.0), vec2((tc.x-0.5)*vMul,tc.y-0.5));\n"
   "  float checkForPresenceWithinCircle = 1.0 - smoothstep(vRadius-0.05, vRadius+0.05, distanceFromCenter);\n"
   "  if(checkForPresenceWithinCircle<0.01) discard;\n"
-  "  gl_FragColor = vColor * checkForPresenceWithinCircle;\n"
+  "  float distanceFromEye = distance(vec2(0.1, vp.y/2.0+0.1), vec2((tc.x-0.5)*vMul,tc.y-0.5));\n"
+  "  float checkForPresenceWithinEye = 1.0 - smoothstep(0.04, 0.079, distanceFromEye);\n"
+  "  if(checkForPresenceWithinEye>0.8) gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);\n"
+  "  else if(checkForPresenceWithinEye>0.1) gl_FragColor = vec4(0.2, 0.0, 0.1, 1.0);\n"
+  "  else gl_FragColor = vec4(distanceFromCenter, 1.0-distanceFromCenter, vColor.z, vColor.w) * checkForPresenceWithinCircle;\n"
   "}\n"
 ;
 
@@ -311,7 +315,7 @@ extern "C"
     }
 
     if(yOffs<-0.8998) { Toast("BANG!!! Game over"); Restart(); }
-    if(yOffs>1.1) { yOffs=1.1; speed=0; }
+    if(yOffs>0.95) { yOffs=0.95; speed=0; }
 
     glUniform4f(color, 0, 0.6, 1, 1);
     glUniform4f(yoffset, 0, yOffs, 0, 0);

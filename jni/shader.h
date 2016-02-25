@@ -38,10 +38,11 @@
     "uniform float vMul;\n"
     "uniform float vSpeed;\n"
     "void main()\n"
-    "{\n"
+    "{\n" // based on http://stackoverflow.com/a/11457353/5920627
     "  float distanceFromCenter = distance(vec2(vp.x/2.0, vp.y/2.0), vec2((tc.x-0.5)*vMul,tc.y-0.5));\n"
     "  float checkForPresenceWithinCircle = 1.0 - smoothstep(vRadius-0.05, vRadius+0.05, distanceFromCenter);\n"
     "  if(checkForPresenceWithinCircle<0.01) discard;\n"
+    "\n"
     "  float distanceFromEye = distance(vec2(vp.x/2.0 + 0.12, vp.y/2.0 + 0.1), vec2((tc.x-0.5)*vMul,tc.y-0.5));\n"
     "  float checkForPresenceWithinEye = (1.0 - smoothstep(0.0001, 0.089, distanceFromEye));\n"
   //  "  if(checkForPresenceWithinEye>1.0) gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);\n"

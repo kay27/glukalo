@@ -6,6 +6,7 @@ LOCAL_MODULE := glukalo
 
 LOCAL_SRC_FILES := \
     game.cxx \
+    jni2game.cxx \
 
 #LOCAL_CXXFLAGS := -std=c++11
 

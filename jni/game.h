@@ -13,7 +13,7 @@
       Game();
       ~Game();
       void Init();
-      void Pause();
+      void Pause() = 0;
       void Resume();
       void Tap();
       void Render();
@@ -25,7 +25,16 @@
 
   class Bird
   {
-    
+    public:
+      Bird();
+      ~Bird();
+  }
+
+  class Gap
+  {
+    public:
+      Gap();
+      ~Gap();
   }
 
 #endif // #ifndef H_GAME_GLUKALO

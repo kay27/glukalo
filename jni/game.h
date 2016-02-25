@@ -2,7 +2,7 @@
 # define H_GAME_GLUKALO
 
 # include "config.h"
-# include "shaders.h"
+# include "shader.h"
 
   class Bird;
   class Gap;

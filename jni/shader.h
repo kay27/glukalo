@@ -1,6 +1,16 @@
 #ifndef H_SHADER_GLUKALO
 # define H_SHADER_GLUKALO
 
+  class MyShader
+  {
+    public:
+      GLuint CreateProgram();
+      void LinkProgram(GLuint program);
+      void AttachVertexShader(GLuint program, const char *shaderCode);
+      void AttachFragmentShader(GLuint program, const char *shaderCode);
+      void AttachShader(GLuint program, GLenum shaderType, GLint shader, const char *shaderCode);
+  };
+
   struct BirdVertex
   {
     GLfloat pos[3];

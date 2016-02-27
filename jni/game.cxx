@@ -78,9 +78,15 @@ void Game::Render()
       if(gaps[i])
       {
         gaps[i]->Render(delta);
-        if(Collision(bird
+        if(Collision(*(gaps[i])))
+          gameOver = 1;
       }
   }
+}
+
+bool Game::Collision(Gap &gap)
+{
+  if(bird.y + BIRD_RADIUS > gap.y + GAP_HALF_HEIGHT) return false;
 }
 
 inline void Bird::Tap()

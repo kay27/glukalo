@@ -5,8 +5,9 @@ include $(CLEAR_VARS)
 LOCAL_MODULE := glukalo
 
 LOCAL_SRC_FILES := \
-    game.cxx \
-    jni2game.cxx \
+  game.cxx \
+  jni2game.cxx \
+  shader.cxx \
 
 #LOCAL_CXXFLAGS := -std=c++11
 

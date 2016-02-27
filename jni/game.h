@@ -20,7 +20,14 @@
 
     protected:
       Bird bird;
-      vector<Gap> gaps;
+      vector<Gap*> gaps;
+
+      int firstRun, gameStarted, gameOver;
+
+      struct timeval lastTime;
+
+      GLfloat speed;
+      int impulse;
   }
 
   class Bird

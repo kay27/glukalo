@@ -1,6 +1,7 @@
 #ifndef H_GAME_GLUKALO
 # define H_GAME_GLUKALO
 
+# include <mutex>
 # include "config.h"
 # include "shader.h"
 
@@ -21,6 +22,7 @@
     protected:
       Bird bird;
       vector<Gap*> gaps;
+      mutex gapListMutex;
 
       int firstRun, gameStarted, gameOver;
 
@@ -35,6 +37,7 @@
     public:
       Bird();
       ~Bird();
+      Tap();
   }
 
   class Gap

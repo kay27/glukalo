@@ -23,30 +23,34 @@ void Game::Restart()
   yOffs       =  0;
   xOffs       =  0;
   speed       =  0;
-  impulse     =  0;
   gameStarted =  0;
   vect        = -0.0023;
 
-  for (int i = gaps.size()-1; i>=0; i--)
   {
-    Gap *gap = gaps[i];
-
-    delete gaps[i];
+    lock_guard<mutex> lock(gapListMutex);
+    for (int i = 0; i < gaps.size(); i++)
+      delete gaps[i];
+    gaps.clear();
   }
-  gaps.clear();
 
   gettimeofday(&lastTime, NULL);
+}
+
+void Game::Pause()
+{
+  pause = 1;
 }
 
 void Game::Resume()
 {
-  impulse = 0;
+  bird->Untap();
   gettimeofday(&lastTime, NULL);
+  pause = 0;
 }
 
 void Game::Tap()
 {
-  impulse = 1;
+  bird.Tap();
 
   if(gameOver)
     Restart(); 
@@ -56,34 +60,61 @@ void Game::Tap()
 
 void Game::Render()
 {
+  if(pause) return;
+
   struct timeval now;
   gettimeofday(&now, NULL);
   float delta = (now.tv_sec - lastTime.tv_sec) * 1000000 + ((int)now.tv_usec - (int)lastTime.tv_usec);
   lastTime = now;
 
-  glClearColor(myrand()/50, myrand()/20, myrand()/8, 1.0);
+  glClearColor(0.0, 0.0, (yOffs+1)/3.0, 1.0);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    if(impulse) {impulse=0; speed=-0.06;}
-    if(started)
-    {
-      speed+=delta/5000000;
-      if(xOffs>-0.33)
-      {
-        xOffs=xOffs-delta/2000000;
-        if(xOffs<-0.34) xOffs=-0.34;
-      }
-    }
-    if(!gameOver) yOffs-=delta/27000*speed;
-    if(!(started||gameOver))
-    {
-      yOffs+=vect*delta/253427; // more: slower initial animation
-      if(yOffs>0.008) {yOffs=0.008; vect=-0.0095;}
-      if(yOffs<-0.006) {yOffs=-0.006; vect=0.011;}
-    }
+  bird.Render(delta);
 
-    if(yOffs<-0.8998) if(!gameOver) { yOffs=-0.8998; gameOver=1; Toast("Game over"); }
-    if(yOffs>1.09) { yOffs=1.09; speed=0; }
+  {
+    lock_guard<mutex> lock(gapListMutex);
+    for (int i = 0; i < gaps.size(); i++)
+      if(gaps[i])
+      {
+        gaps[i]->Render(delta);
+        if(Collision(bird
+      }
+  }
+}
+
+inline void Bird::Tap()
+{
+  impulse = 1;
+}
+
+inline void Bird::Untap()
+{
+  impulse = 0;
+}
+
+void Bird::Render()
+{
+  if(impulse) {impulse=0; speed=-0.06;}
+  if(gameSttarted)
+  {
+    speed+=delta/5000000;
+    if(xOffs>-0.33)
+    {
+      xOffs=xOffs-delta/2000000;
+      if(xOffs<-0.34) xOffs=-0.34;
+    }
+  }
+  if(!gameOver) yOffs-=delta/27000*speed;
+  if(!(gameStarted||gameOver))
+  {
+    yOffs+=vect*delta/253427; // more: slower initial animation
+    if(yOffs>0.008) {yOffs=0.008; vect=-0.0095;}
+    if(yOffs<-0.006) {yOffs=-0.006; vect=0.011;}
+  }
+
+  if(yOffs<-0.8998) if(!gameOver) { yOffs=-0.8998; gameOver=1; Toast("Game over"); }
+  if(yOffs>1.09) { yOffs=1.09; speed=0; }
 
     glUniform4f(yoffset, xOffs, yOffs, 0, 0);
     glUniform1f(vSpeed, speed);
@@ -96,6 +127,7 @@ void Game::Render()
 //    glDisableVertexAttribArray(0);
 
 //    glDisableClientState(GL_VERTEX_ARRAY);
+
 
 
 }

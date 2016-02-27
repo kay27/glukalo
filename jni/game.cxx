@@ -85,8 +85,23 @@ void Game::Render()
 }
 
 bool Game::Collision(Gap &gap)
-{
-  if(bird.y + BIRD_RADIUS > gap.y + GAP_HALF_HEIGHT) return false;
+{ // based on http://stackoverflow.com/a/1879223/5920627
+
+  // Find the closest point to the circle within the rectangle
+  float closestX = clamp(bird.xOffs, gap.x - GAP_HALF_WIDTH, gap.x + GAP_HALF_WIDTH);
+  float closestY = clamp(bird.yOffs, gap.y - GAP_HALF_HEIGHT, gap.y + GAP_HALF_HEIGHT);
+
+  // Calculate the distance between the circle's center and this closest point
+  float distanceX = bird.xOffs - closestX;
+  float distanceY = bird.yOffs - closestY;
+
+  // If the distance is less than the circle's radius, an intersection occurs
+  return (distanceX * distanceX) + (distanceY * distanceY)  <  (circle.Radius * circle.Radius);
+}
+
+inline bool Game::Clamp(float x, float a, float b)
+{ // http://www.gamedev.net/topic/473207-clamping-a-value-to-a-range-in-c-quickly/#entry4105200
+  return x < a ? a : (x > b ? b : x);
 }
 
 inline void Bird::Tap()

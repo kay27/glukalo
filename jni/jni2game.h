@@ -1,6 +1,10 @@
 #ifndef H_JNI2GAME_GLUKALO
 # define H_JNI2GAME_GLUKALO
 
+# include <jni.h>
+# include "config.h"
+# include "game.h"
+
   static JavaVM *jvm       = NULL;
   static JNIEnv *jnienv    = NULL;
   static jobject jo        = NULL;
@@ -15,11 +19,11 @@
   class MyCallback
   {
     public:
-      void Toast(const char *message) { Call("ToastCallBack", message); }
-      void Quit(const char *message) { Call("ErrorCallback", message); }
+      static void Toast(const char *message) { Call("ToastCallBack", message); }
+      static void Quit(const char *message) { Call("ErrorCallback", message); }
 
     protected:
       static void Call(const char *javaStaticMethod, const char *message);
-  }
+  };
 
 #endif // #ifndef H_JNI2GAME_GLUKALO

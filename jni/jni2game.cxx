@@ -1,6 +1,4 @@
-#include "config.h"
 #include "jni2game.h"
-#include "game.h"
 
 void MyCallBack::Call(const char *javaStaticMethod, const char *message)
 {
@@ -27,7 +25,7 @@ extern "C"
   }
 
   JNIEXPORT void Java_com_kay27_Glukalo_MyGLSurfaceView_nativeResume(JNIEnv* env)
-2  {
+  {
     sPaused = 0;
     if(game)
       game->Resume();

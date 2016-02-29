@@ -1,6 +1,8 @@
 #ifndef H_SHADER_GLUKALO
 # define H_SHADER_GLUKALO
 
+# include "config.h"
+
   class MyShader
   {
     public:
@@ -19,10 +21,10 @@
 
   static const BirdVertex birdVertices[] =
   {
-    {{ -0.10f, -0.10f,  0.0f }, {0.0f, 0.0f}}, // triangle to quad
-    {{ -0.10f,  0.10f,  0.0f }, {0.0f, 1.0f}},
-    {{  0.10f, -0.10f,  0.0f }, {1.0f, 0.0f}},
-    {{  0.10f,  0.10f,  0.0f }, {1.0f, 1.0f}},
+    {{ -BIRD_RADIUS*1.5, -BIRD_RADIUS*1.5,  0.0f }, {0.0f, 0.0f}}, // triangle to quad
+    {{ -BIRD_RADIUS*1.5,  BIRD_RADIUS*1.5,  0.0f }, {0.0f, 2.0f}},
+    {{  BIRD_RADIUS*1.5, -BIRD_RADIUS*1.5,  0.0f }, {2.0f, 0.0f}},
+    {{  BIRD_RADIUS*1.5,  BIRD_RADIUS*1.5,  0.0f }, {2.0f, 2.0f}},
   };
 
   static const char * birdVertexShader =
@@ -35,6 +37,7 @@
     "{\n"
     "  gl_Position = vPosition + vOffset;\n"
     "  vp = vPosition;\n"
+//    "  vp = gl_Position;\n"
     "  tc = vTextureCoordinate.xy;\n"
     "}\n"
   ;
@@ -49,11 +52,11 @@
     "uniform float vSpeed;\n"
     "void main()\n"
     "{\n" // based on http://stackoverflow.com/a/11457353/5920627
-    "  float distanceFromCenter = distance(vec2(vp.x/2.0, vp.y/2.0), vec2((tc.x-0.5)*vMul,tc.y-0.5));\n"
+    "  float distanceFromCenter = distance(vec2(vp.x*vMul, vp.y), vec2((tc.x-1.0)*vMul,tc.y-1.0));\n"
     "  float checkForPresenceWithinCircle = 1.0 - smoothstep(vRadius-0.05, vRadius+0.05, distanceFromCenter);\n"
     "  if(checkForPresenceWithinCircle<0.01) discard;\n"
     "\n"
-    "  float distanceFromEye = distance(vec2(vp.x/2.0 + 0.12, vp.y/2.0 + 0.1), vec2((tc.x-0.5)*vMul,tc.y-0.5));\n"
+    "  float distanceFromEye = distance(vec2(vp.x*vMul + vRadius/2.0, vp.y + vRadius/2.0), vec2((tc.x-1.0)*vMul,tc.y-1.0));\n"
     "  float checkForPresenceWithinEye = (1.0 - smoothstep(0.0001, 0.089, distanceFromEye));\n"
   //  "  if(checkForPresenceWithinEye>1.0) gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);\n"
   //  "  else if(checkForPresenceWithinEye>0.15) gl_FragColor = vec4(0.8, 0.9, 0.86, 1.0);\n"

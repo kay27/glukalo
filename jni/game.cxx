@@ -3,6 +3,9 @@
 Game::Game()
 {
   firstRun = 1;
+
+  yMulValue = 1;
+
   Init();
 }
 
@@ -26,11 +29,11 @@ void Game::Init()
   vPosition          = glGetAttribLocation(birdProgram, "vPosition");
   vTextureCoordinate = glGetAttribLocation(birdProgram, "vTextureCoordinate");
 
-  vColor             = glGetUniformLocation(birdProgram, "vColor");
-  vOffset            = glGetUniformLocation(birdProgram, "vOffset");
-  vRadius            = glGetUniformLocation(birdProgram, "vRadius");
-  vMul               = glGetUniformLocation(birdProgram, "vMul");
-  vSpeed             = glGetUniformLocation(birdProgram, "vSpeed");
+  vColor  = glGetUniformLocation(birdProgram, "vColor");
+  vOffset = glGetUniformLocation(birdProgram, "vOffset");
+  vRadius = glGetUniformLocation(birdProgram, "vRadius");
+  vMul    = glGetUniformLocation(birdProgram, "vMul");
+  vSpeed  = glGetUniformLocation(birdProgram, "vSpeed");
 
   glUseProgram(birdProgram);
   glEnableVertexAttribArray(vPosition);
@@ -54,6 +57,7 @@ void Game::Restart()
   speedVect   = -0.0023;
   gameOver    =  0;
   gameStarted =  0;
+  impulse     =  0;
 
 /*
   {
@@ -113,10 +117,8 @@ void Game::Render()
   float delta = (now.tv_sec - lastTime.tv_sec) * 1000000 + ((int)now.tv_usec - (int)lastTime.tv_usec);
   lastTime = now;
 
-  glClearColor(0.0, 0.0, (y+1)/3.0, 1.0);
+  glClearColor(0.0, 0.0, (y+1.0)/5.0, 1.0);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-//  bird.Render(delta);
 
   if(impulse) {impulse=0; speed=-0.06;}
   if(gameStarted)
@@ -140,6 +142,8 @@ void Game::Render()
   if(y>1.09) { y=1.09; speed=0; }
 
   glUseProgram(birdProgram);
+  glEnableVertexAttribArray(vPosition);
+  glEnableVertexAttribArray(vTextureCoordinate);
   glUniform4f(vOffset, x, y, 0.0, 0.0);
   glUniform1f(vSpeed, speed);
   glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);

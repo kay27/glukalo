@@ -18,7 +18,7 @@
   class MyCallback
   {
     public:
-      static void Toast(const char *message) { Call("ToastCallBack", message); }
+      static void Toast(const char *message) { Call("ToastCallback", message); }
       static void Quit(const char *message) { Call("ErrorCallback", message); }
 
     protected:

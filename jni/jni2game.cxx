@@ -1,10 +1,11 @@
 #include "jni2game.h"
 
-void MyCallBack::Call(const char *javaStaticMethod, const char *message)
+void MyCallback::Call(const char *javaStaticMethod, const char *message)
 {
-  if(jo && jnienv && jclass c = jnienv->FindClass(ACTIVITY_NAME))
-    if(jmethodID m = jnienv->GetStaticMethodID(c, javaStaticMethod, "(Ljava/lang/String;)V"))
-      jnienv->CallStaticVoidMethod(c, m, jnienv->NewStringUTF(message));
+  if(jo && jnienv)
+    if(jclass c = jnienv->FindClass(ACTIVITY_NAME))
+      if(jmethodID m = jnienv->GetStaticMethodID(c, javaStaticMethod, "(Ljava/lang/String;)V"))
+        jnienv->CallStaticVoidMethod(c, m, jnienv->NewStringUTF(message));
 }
 
 

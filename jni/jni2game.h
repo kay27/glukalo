@@ -2,7 +2,6 @@
 # define H_JNI2GAME_GLUKALO
 
 # include <jni.h>
-# include "config.h"
 # include "game.h"
 
   static JavaVM *jvm       = NULL;

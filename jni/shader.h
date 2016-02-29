@@ -4,11 +4,11 @@
   class MyShader
   {
     public:
-      GLuint CreateProgram();
-      void LinkProgram(GLuint program);
-      void AttachVertexShader(GLuint program, const char *shaderCode);
-      void AttachFragmentShader(GLuint program, const char *shaderCode);
-      void AttachShader(GLuint program, GLenum shaderType, GLint shader, const char *shaderCode);
+      static GLuint CreateProgram();
+      static void LinkProgram(GLuint program);
+      static void AttachVertexShader(GLuint program, const char *shaderCode);
+      static void AttachFragmentShader(GLuint program, const char *shaderCode);
+      static void AttachShader(GLuint program, GLenum shaderType, GLint shader, const char *shaderCode);
   };
 
   struct BirdVertex

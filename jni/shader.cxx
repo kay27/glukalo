@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <GLES2/gl2.h>
+#include "shader.h"
+#include "jni2game.h"
 
 GLuint MyShader::CreateProgram()
 {
@@ -24,8 +26,8 @@ void MyShader::LinkProgram(GLuint program)
     char l[512];
     glGetProgramInfoLog(program, 512, tmp, l);
     glDeleteProgram(program);
-    Toast("GL program link error:");
-    Quit(l);
+    MyCallback::Toast("GL program link error:");
+    MyCallback::Quit(l);
   }
 }
 
@@ -71,9 +73,9 @@ void MyShader::AttachShader(GLuint program, GLenum shaderType, GLint shader, con
 
   switch (shaderType)
   {
-    case GL_VERTEX_SHADER:    Toast("Could not compile vertex shader:"  ); break;
-    case GL_FRAGMENT_SHADER:  Toast("Could not compile fragment shader:"); break;
+    case GL_VERTEX_SHADER:    MyCallback::Toast("Could not compile vertex shader:"  ); break;
+    case GL_FRAGMENT_SHADER:  MyCallback::Toast("Could not compile fragment shader:"); break;
   }
   char l[512]; glGetShaderInfoLog(shader, 512, tmp, l);
-  Quit(l);
+  MyCallback::Quit(l);
 }    

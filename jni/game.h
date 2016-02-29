@@ -21,14 +21,17 @@
   class Game
   {
     public:
+      bool Clamp(float x, float a, float b);
+//      bool Collision(Gap &gap);
       Game();
-      ~Game();
+//      ~Game();
       void Init();
       void Pause();
-      void Resume();
       void Tap();
       void Render();
-//      bool Collision(Gap &gap);
+      void Resize(int w, int h);
+      void Restart();
+      void Resume();
       void Untap();
 
     protected:
@@ -40,11 +43,11 @@
 
       struct timeval lastTime;
 
-      GLfloat speed;
+      GLfloat speed, x, y, speedVect, yMulValue;
       int impulse, pause;
 
       GLuint vb;
-      GLint vPosition, vTextureCoordinate, vColor, vOffset, vSpeed;
+      GLint vPosition, vTextureCoordinate, vColor, vOffset, vSpeed, vRadius, vMul;
       GLuint birdProgram;
   };
 /*

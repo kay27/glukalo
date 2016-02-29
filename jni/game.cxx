@@ -14,6 +14,11 @@ void Game::Init()
     MyCallback::Toast("Tap to play");
   firstRun = 0;
 
+  birdProgram = MyShader::CreateProgram();
+  MyShader::AttachVertexShader(birdProgram, birdVertexShader);
+  MyShader::AttachFragmentShader(birdProgram, birdFragmentShader);
+  MyShader::LinkProgram(birdProgram);
+
   glGenBuffers(1, &vb);
   glBindBuffer(GL_ARRAY_BUFFER, vb);
   glBufferData(GL_ARRAY_BUFFER, sizeof(birdVertices), &birdVertices[0], GL_STATIC_DRAW);
@@ -46,7 +51,7 @@ void Game::Restart()
   y           =  0;
   x           =  0;
   speed       =  0;
-  vect        = -0.0023;
+  speedVect   = -0.0023;
   gameOver    =  0;
   gameStarted =  0;
 
@@ -68,7 +73,7 @@ void Game::Pause()
 
 void Game::Resume()
 {
-  bird->Untap();
+  Untap();
   gettimeofday(&lastTime, NULL);
   pause = 0;
 }
@@ -79,7 +84,7 @@ void Game::Resize(int w, int h)
   {
     yMulValue = float(w)/h;
     glUseProgram(birdProgram);
-    glUniform1f(ymul, yMulValue);
+    glUniform1f(vMul, yMulValue);
     glUseProgram(0);
   }
 }
@@ -91,7 +96,7 @@ void Game::Tap()
   if(gameOver)
     Restart(); 
   else
-    started = 1;
+    gameStarted = 1;
 }
 
 inline void Game::Untap()
@@ -126,12 +131,12 @@ void Game::Render()
   if(!gameOver) y-=delta/27000*speed;
   if(!(gameStarted||gameOver))
   {
-    y+=vect*delta/253427; // more: slower initial animation
-    if(y>0.008) {y=0.008; vect=-0.0095;}
-    if(y<-0.006) {y=-0.006; vect=0.011;}
+    y += speedVect * delta / 253427; // more: slower initial animation
+    if(y>0.008) {y=0.008; speedVect=-0.0095;}
+    if(y<-0.006) {y=-0.006; speedVect=0.011;}
   }
 
-  if(y<-0.8998) if(!gameOver) { y=-0.8998; gameOver=1; Toast("Game over"); }
+  if(y<-0.8998) if(!gameOver) { y=-0.8998; gameOver=1; MyCallback::Toast("Game over"); }
   if(y>1.09) { y=1.09; speed=0; }
 
   glUseProgram(birdProgram);
@@ -168,7 +173,7 @@ bool Game::Collision(Gap &gap)
   if (dx2+distanceY*distanceY  <  BIRD_RADIUS*BIRD_RADIUS)
     return true;
 
-  closestY = clamp(bird.y, gap.y - GAP_HALF_HEIGHT, -2);
+  closestY = Clamp(bird.y, gap.y - GAP_HALF_HEIGHT, -2);
   distanceY = bird.y - closestY;
   return
     dx2+distanceY*distanceY  <  BIRD_RADIUS*BIRD_RADIUS;
@@ -205,9 +210,9 @@ void Bird::Render()
   if(!gameOver) y-=delta/27000*speed;
   if(!(gameStarted||gameOver))
   {
-    y+=vect*delta/253427; // more: slower initial animation
-    if(y>0.008) {y=0.008; vect=-0.0095;}
-    if(y<-0.006) {y=-0.006; vect=0.011;}
+    y+=speedVect*delta/253427; // more: slower initial animation
+    if(y>0.008) {y=0.008; speedVect=-0.0095;}
+    if(y<-0.006) {y=-0.006; speedVect=0.011;}
   }
 
   if(y<-0.8998) if(!gameOver) { y=-0.8998; gameOver=1; Toast("Game over"); }

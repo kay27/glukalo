@@ -48,7 +48,7 @@
 
       GLuint vb;
       GLint vPosition, vTextureCoordinate, vColor, vOffset, vSpeed, vRadius, vMul;
-      GLuint birdProgram;
+      GLuint birdProgram, gapProgram;
   };
 /*
   class Bird

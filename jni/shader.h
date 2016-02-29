@@ -27,6 +27,14 @@
     {{  BIRD_RADIUS*1.5,  BIRD_RADIUS*1.5,  0.0f }, {2.0f, 2.0f}},
   };
 
+  static const BirdVertex gapVertices[] =
+  {
+    {{ -BIRD_RADIUS*2, -1.0,  0.0f }, {0.0f, 0.0f}}, // triangle to quad
+    {{ -BIRD_RADIUS*2,  1.0,  0.0f }, {0.0f, 2.0f}},
+    {{  BIRD_RADIUS*2, -1.0,  0.0f }, {2.0f, 0.0f}},
+    {{  BIRD_RADIUS*2,  1.0,  0.0f }, {2.0f, 2.0f}},
+  };
+
   static const char * birdVertexShader =
     "attribute vec4 vPosition;\n"
     "attribute vec4 vTextureCoordinate;\n"
@@ -61,27 +69,29 @@
   //  "  if(checkForPresenceWithinEye>1.0) gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);\n"
   //  "  else if(checkForPresenceWithinEye>0.15) gl_FragColor = vec4(0.8, 0.9, 0.86, 1.0);\n"
   //  "  else if(checkForPresenceWithinEye>0.001) gl_FragColor = vec4(0.0, 0.0, 0.01, 1.0);\n"
-    "  if(checkForPresenceWithinEye > 0.00001) gl_FragColor = abs(checkForPresenceWithinEye*2.0-1.0) * vec4(0.8, 0.9, 0.86, 1.0);\n"
+    "  if(checkForPresenceWithinEye > 0.00001) gl_FragColor = 1.0 - abs(checkForPresenceWithinEye*2.0-1.0) * vec4(0.8, 0.9, 0.86, 1.0);\n"
     "  else gl_FragColor = vec4(distanceFromCenter, 1.0-distanceFromCenter, vColor.z, vColor.w) * checkForPresenceWithinCircle;\n"
     "}\n"
   ;
 
-  static const char * blockVertexShader =
+  static const char * gapVertexShader =
     "attribute vec4 vPosition;\n"
     "float vOffsetX;\n"
     "varying vec4 vp;\n"
     "void main()\n"
     "{\n"
     "  gl_Position = vec4(vPosition.x+vOffsetX,vPosition.yzw);\n"
-    "  vp = gl_Position;\n"
+    "  vp = vPosition;\n"
     "}\n"
   ;
 
-  static const char * blockFragmentShader =
+  static const char * gapFragmentShader =
     "precision mediump float;\n"
+    "float vGap;\n";
     "varying vec4 vp;\n"
     "void main()\n"
     "{\n"
+    "  if(abs(vp.y-vGap)<0.3) discard;\n"
     "  gl_FragColor = sin(vp)/2+0.5; gl_FragColor.w=1.0;\n"
     "}\n"
   ;

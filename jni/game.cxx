@@ -46,6 +46,21 @@ void Game::Init()
   glDisableVertexAttribArray(vPosition);
   glUseProgram(0);
 
+  gapProgram = MyShader::CreateProgram();
+  MyShader::AttachVertexShader(gapProgram, gapVertexShader);
+  MyShader::AttachFragmentShader(gapProgram, gapFragmentShader);
+  MyShader::LinkProgram(gapProgram);
+  vGapPosition          = glGetAttribLocation(gapProgram, "vPosition");
+  vGapTextureCoordinate = glGetAttribLocation(gapProgram, "vTextureCoordinate");
+  glUseProgram(gapProgram);
+  glEnableVertexAttribArray(vGapPosition);
+  glEnableVertexAttribArray(vGapTextureCoordinate);
+  glVertexAttribPointer(vPosition, 3, GL_FLOAT, false, sizeof(BirdVertex), (void*)offsetof(BirdVertex,pos));
+  glVertexAttribPointer(vTextureCoordinate, 2, GL_FLOAT, false, sizeof(BirdVertex), (void*)offsetof(BirdVertex,txtcrds));
+  glDisableVertexAttribArray(vTextureCoordinate);
+  glDisableVertexAttribArray(vPosition);
+  glUseProgram(0);
+
   Restart();
 }
 
@@ -133,7 +148,7 @@ void Game::Render()
   if(!gameOver) y-=delta/27000*speed;
   if(!(gameStarted||gameOver))
   {
-    y += speedVect * delta / 253427; // more: slower initial animation
+    y += speedVect * delta / 253427; // greater -> slower initial animation
     if(y>0.008) {y=0.008; speedVect=-0.0095;}
     if(y<-0.006) {y=-0.006; speedVect=0.011;}
   }

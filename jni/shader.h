@@ -21,10 +21,10 @@
 
   static const MyVertex vertices[] =
   {
-    {{ -BIRD_RADIUS*1.5, -BIRD_RADIUS*1.5,  0.0f }, {-1.5f,-1.5f}}, // bird
-    {{ -BIRD_RADIUS*1.5,  BIRD_RADIUS*1.5,  0.0f }, {-1.5f, 1.5f}},
-    {{  BIRD_RADIUS*1.5, -BIRD_RADIUS*1.5,  0.0f }, { 1.5f,-1.5f}},
-    {{  BIRD_RADIUS*1.5,  BIRD_RADIUS*1.5,  0.0f }, { 1.5f, 1.5f}},
+    {{ -BIRD_RADIUS*2.0, -BIRD_RADIUS*1.5,  0.0f }, {-2.0f,-1.5f}}, // bird
+    {{ -BIRD_RADIUS*2.0,  BIRD_RADIUS*1.5,  0.0f }, {-2.0f, 1.5f}},
+    {{  BIRD_RADIUS*2.0, -BIRD_RADIUS*1.5,  0.0f }, { 2.0f,-1.5f}},
+    {{  BIRD_RADIUS*2.0,  BIRD_RADIUS*1.5,  0.0f }, { 2.0f, 1.5f}},
     {{ -COLUMN_HALFWIDTH,            -1.0,  0.0f }, { 0.0f, 0.0f}}, // gap
     {{ -COLUMN_HALFWIDTH,             1.0,  0.0f }, { 0.0f, 2.0f}},
     {{  COLUMN_HALFWIDTH,            -1.0,  0.0f }, { 2.0f, 0.0f}},
@@ -60,9 +60,14 @@
     "uniform float vSpeed;\n"
     "void main()\n"
     "{\n" // based on http://stackoverflow.com/a/11457353/5920627
-    "  float distanceFromCenter = distance(vec2(vp.x*vMul, vp.y), vec2(tc.x*vMul,tc.y));\n"
-//    "  float checkForPresenceWithinCircle = 1.0 - smoothstep(vRadius-0.05, vRadius+0.05, distanceFromCenter);\n"
+    "  float distanceFromCenter = distance(vec2(vp.x*vMul/1.5, vp.y/1.5), vec2(tc.x*vMul,tc.y));\n"
     "  if(distanceFromCenter > 1.0) discard;\n"
+    "  float distanceFromEye = distance(vec2((vp.x + 0.5)/1.5*vMul, (vp.y + 0.5)/1.5), vec2(tc.x*vMul,tc.y));\n"
+    "  if(distanceFromEye < 0.1) gl_FragColor=vec4(0.0,0.0,0.0,1.0);\n"
+    "  else if(distanceFromEye < 0.3) gl_FragColor=vec4(1.0,1.0,0.99,1.0);\n"
+    "  else if(distanceFromEye < 0.32) gl_FragColor=vec4(0.0,0.0,0.0,1.0);\n"
+    "  else gl_FragColor = vec4(distanceFromCenter, 1.0, 1.0, vColor.w) * (1.0-distanceFromCenter);\n"
+//    "  float checkForPresenceWithinCircle = 1.0 - smoothstep(vRadius-0.05, vRadius+0.05, distanceFromCenter);\n"
 //    "  float checkForPresenceWithinCircle = 1.0 - distanceFromCenter;\n"
 //    "  if(checkForPresenceWithinCircle<0.00001) discard;\n"
 //    "  if(checkForPresenceWithinCircle<1.0-vRadius) discard;\n"
@@ -74,7 +79,6 @@
   //  "  else if(checkForPresenceWithinEye>0.001) gl_FragColor = vec4(0.0, 0.0, 0.01, 1.0);\n"
  //   "  if(checkForPresenceWithinEye > 0.00001) gl_FragColor = 1.0 - abs(checkForPresenceWithinEye*2.0-1.0) * vec4(0.8, 0.9, 0.86, 1.0);\n"
 //    "  else gl_FragColor = vec4(distanceFromCenter, 1.0-distanceFromCenter, vColor.z, vColor.w) * checkForPresenceWithinCircle;\n"
-    "  gl_FragColor = vec4(distanceFromCenter, 1.0-distanceFromCenter, vColor.z, vColor.w) * (1.0-distanceFromCenter);\n"
     "}\n"
   ;
 
@@ -118,7 +122,7 @@
     "varying vec4 vp;\n"
     "void main()\n"
     "{\n"
-    "  gl_FragColor = vec4((sin(vp.y*129.0)+1.0)/2.0,0.0,0.0,1.0);\n"
+    "  gl_FragColor = vec4((sin(vp.y*191.1+vp.x/0.001)+1.0)/2.0, 0.0, 0.0, 1.0);\n"
     "}\n"
   ;
 

@@ -81,6 +81,8 @@ void Game::Init()
 //  glDisableVertexAttribArray(vFloorPosition);
   glUseProgram(0);
 
+  glClearColor(0.0, 0.0, 0.0, 1.0);
+
   Restart();
 }
 
@@ -147,10 +149,10 @@ void Game::Render()
   float delta = (now.tv_sec - lastTime.tv_sec) * 1000000 + ((int)now.tv_usec - (int)lastTime.tv_usec);
   lastTime = now;
 
-  glClearColor(0.0, 0.0, (y+1.0)/5.0, 1.0);
+//  glClearColor(0.0, 0.0, (y+1.0)/5.0, 1.0);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  if(impulse) {impulse=0; speed=-0.06;}
+  if(impulse) {impulse = 0; speed = -0.06;}
   if(gameStarted)
   {
     speed+=delta/5000000;
@@ -183,18 +185,18 @@ void Game::Render()
   if(y > 1+BIRD_RADIUS*0.9) { y = 1+BIRD_RADIUS*0.9; speed=0; }
 //  if(y > 1) { y = 1; speed=0; }
 
-/*  if(y < BIRD_RADIUS+FLOOR_HEIGHT-1)
+  if(y < BIRD_RADIUS+FLOOR_HEIGHT-1)
   {
     y = BIRD_RADIUS+FLOOR_HEIGHT-1;
     GameOver();
   }
-  */
-  if(y < FLOOR_HEIGHT-1)
+
+/*  if(y < FLOOR_HEIGHT-1)
   {
     y = FLOOR_HEIGHT-1;
     GameOver();
   }
-
+  */
 
   if(!gameOver)
     for(int i=0; i<MAX_COLUMNS-1; i++)
@@ -206,9 +208,6 @@ void Game::Render()
   glUniform1f(vSpeed, speed);
   glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
-  glUseProgram(floorProgram);
-  glDrawArrays(GL_TRIANGLE_STRIP, 8, 4);
-
   glUseProgram(gapProgram);
   for(int i=0; i<MAX_COLUMNS; i++)
   {
@@ -216,6 +215,9 @@ void Game::Render()
     glUniform1f(vGap, gaps[i]);
     glDrawArrays(GL_TRIANGLE_STRIP, 4, 4);
   }
+
+  glUseProgram(floorProgram);
+  glDrawArrays(GL_TRIANGLE_STRIP, 8, 4);
 }
 
 bool Game::Collision(float x0, float x1, float y0)

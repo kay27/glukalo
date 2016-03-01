@@ -25,10 +25,10 @@
     {{ -BIRD_RADIUS*1.5,  BIRD_RADIUS*1.5,  0.0f }, {0.0f, 2.0f}},
     {{  BIRD_RADIUS*1.5, -BIRD_RADIUS*1.5,  0.0f }, {2.0f, 0.0f}},
     {{  BIRD_RADIUS*1.5,  BIRD_RADIUS*1.5,  0.0f }, {2.0f, 2.0f}},
-    {{ -BIRD_RADIUS*1.4,             -1.0,  0.0f }, {0.0f, 0.0f}}, // gap
-    {{ -BIRD_RADIUS*1.4,              1.0,  0.0f }, {0.0f, 2.0f}},
-    {{  BIRD_RADIUS*1.4,             -1.0,  0.0f }, {2.0f, 0.0f}},
-    {{  BIRD_RADIUS*1.4,              1.0,  0.0f }, {2.0f, 2.0f}},
+    {{ -COLUMN_HALFWIDTH,            -1.0,  0.0f }, {0.0f, 0.0f}}, // gap
+    {{ -COLUMN_HALFWIDTH,             1.0,  0.0f }, {0.0f, 2.0f}},
+    {{  COLUMN_HALFWIDTH,            -1.0,  0.0f }, {2.0f, 0.0f}},
+    {{  COLUMN_HALFWIDTH,             1.0,  0.0f }, {2.0f, 2.0f}},
   };
 
   static const char * birdVertexShader =

@@ -22,18 +22,21 @@ public class MainActivity extends Activity
   protected void onCreate(Bundle savedInstanceState)
   {
     super.onCreate(savedInstanceState);
-    activity = this;
-    ActivityManager am = (ActivityManager)getSystemService(Context.ACTIVITY_SERVICE);
-    ConfigurationInfo info = am.getDeviceConfigurationInfo();
-    boolean supportES2 = (info.reqGlEsVersion >= 0x20000);
-    if(supportES2)
+    if(savedInstanceState == null) // app. start
     {
-      getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-      mGLView = new MyGLSurfaceView(this);
-      setContentView(mGLView);
+      activity = this;
+      ActivityManager am = (ActivityManager)getSystemService(Context.ACTIVITY_SERVICE);
+      ConfigurationInfo info = am.getDeviceConfigurationInfo();
+      boolean supportES2 = (info.reqGlEsVersion >= 0x20000);
+      if(supportES2)
+      {
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        mGLView = new MyGLSurfaceView(this);
+        setContentView(mGLView);
+      }
+      else
+        Toast.makeText(this, "Your device doesn't support ES2. (" + info.reqGlEsVersion + ")", Toast.LENGTH_LONG).show();
     }
-    else
-      Toast.makeText(this, "Your device doesn't support ES2. (" + info.reqGlEsVersion + ")", Toast.LENGTH_LONG).show();
   }
 
   @Override

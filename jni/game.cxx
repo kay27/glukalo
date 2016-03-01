@@ -82,6 +82,9 @@ void Game::Restart()
   gameOver    =  0;
   gameStarted =  0;
   impulse     =  0;
+  blockPos    =  1.5;
+  for(int i=0; i<MAX_COLUMNS; i++)
+    gaps[i]=Rand()-0.5; // easy at start
 
 /*
   {
@@ -148,10 +151,22 @@ void Game::Render()
   if(gameStarted)
   {
     speed+=delta/5000000;
+    float deltaX = delta/2000000;
     if(x>-0.33)
     {
-      x=x-delta/2000000;
+      x=x-deltaX;
       if(x<-0.34) x=-0.34;
+    }
+    if(!gameOver)
+    {
+      blockPos -= deltaX;
+      if(blockPos < -1-COLUMN_HALFWIDTH)
+      {
+        blockPos += SEGMENT;
+        for(int i=0;i<MAX_COLUMNS-1;i++)
+          gaps[i]=gaps[i+1];
+        gaps[MAX_COLUMNS-1]=(Rand()-0.5)*2*(1-2*BIRD_RADIUS*1.02);
+      }
     }
   }
   if(!gameOver) y-=delta/27000*speed;
@@ -174,51 +189,47 @@ void Game::Render()
 //  glUseProgram(0);
 
   glUseProgram(gapProgram);
-  glUniform1f(vOffsetX, 0.7);
-  glUniform1f(vGap, 0.44);
-  glDrawArrays(GL_TRIANGLE_STRIP, 4, 4);
-  glUniform1f(vOffsetX, -0.6);
-  glUniform1f(vGap, -0.68);
-  glDrawArrays(GL_TRIANGLE_STRIP, 4, 4);
-
-
-/*
-
+  for(int i=0; i<MAX_COLUMNS; i++)
   {
-    lock_guard<mutex> lock(gapListMutex);
-    for (int i = 0; i < gaps.size(); i++)
-      if(gaps[i])
-      {
-        gaps[i]->Render(delta);
-        if(Collision(*(gaps[i])))
-          gameOver = 1;
-      }
+    glUniform1f(vOffsetX, blockPos + SEGMENT * i);
+    glUniform1f(vGap, gaps[i]);
+    glDrawArrays(GL_TRIANGLE_STRIP, 4, 4);
   }
-*/
 
+  for(int i=0; i<MAX_COLUMNS-1; i++)
+    if(Collision(blockPos + SEGMENT * i, blockPos + SEGMENT * i + 2*COLUMN_HALFWIDTH, gaps[i]))
+    {
+      gameOver=1;
+      break;
+    }
 }
-/*
-bool Game::Collision(Gap &gap)
+
+bool Game::Collision(float x0, float x1, float y0)
 { // based on http://stackoverflow.com/a/1879223/5920627
-  float closestX = Clamp(bird.x, gap.x - GAP_HALF_WIDTH, gap.x + GAP_HALF_WIDTH);
-  float distanceX = bird.x - closestX;
+  float closestX = Clamp(x, x0, x1);
+  float distanceX = x - closestX;
   float dx2 = distanceX*distanceX;
 
-  float closestY = Clamp(bird.y, 2, gap.y + GAP_HALF_HEIGHT);
-  float distanceY = bird.y - closestY;
-  if (dx2+distanceY*distanceY  <  BIRD_RADIUS*BIRD_RADIUS)
+  float closestY = Clamp(y, -2, y0-2*BIRD_RADIUS);
+  float distanceY = y - closestY;
+  if (dx2+distanceY*distanceY < BIRD_RADIUS*BIRD_RADIUS)
     return true;
 
-  closestY = Clamp(bird.y, gap.y - GAP_HALF_HEIGHT, -2);
-  distanceY = bird.y - closestY;
-  return
-    dx2+distanceY*distanceY  <  BIRD_RADIUS*BIRD_RADIUS;
+  closestY = Clamp(y, y0+2*BIRD_RADIUS, 2);
+  distanceY = y - closestY;
+  return dx2+distanceY*distanceY < BIRD_RADIUS*BIRD_RADIUS;
 }
-*/
+
 inline bool Game::Clamp(float x, float a, float b)
 { // http://www.gamedev.net/topic/473207-clamping-a-value-to-a-range-in-c-quickly/#entry4105200
   return x < a ? a : (x > b ? b : x);
 }
+
+inline float Game::Rand()
+{
+  return static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+}
+
 /*
 inline void Bird::Tap()
 {

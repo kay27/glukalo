@@ -22,12 +22,13 @@
   {
     public:
       bool Clamp(float x, float a, float b);
-//      bool Collision(Gap &gap);
+      bool Collision(float x0, float x1, float y0);
       Game();
 //      ~Game();
       void Init();
       void Pause();
       void Tap();
+      float Rand();
       void Render();
       void Resize(int w, int h);
       void Restart();
@@ -43,7 +44,11 @@
 
       struct timeval lastTime;
 
-      GLfloat speed, x, y, speedVect, yMulValue;
+      GLfloat speed, x, y, speedVect, yMulValue,
+        blockPos;
+
+      GLfloat gaps[MAX_COLUMNS];
+
       int impulse, pause;
 
       GLuint vb;

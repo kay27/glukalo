@@ -48,7 +48,7 @@
 
       GLuint vb;
       GLint vPosition, vTextureCoordinate, vColor, vOffset, vSpeed, vRadius, vMul,
-        vGapPosition, vGapTextureCoordinate, vGap, vOffsetX;
+        vGapPosition, vGapTextureCoordinate, vGap, vOffsetX, vHalfSize;
      
       GLuint birdProgram, gapProgram;
   };

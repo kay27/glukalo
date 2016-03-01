@@ -59,15 +59,15 @@ void Game::Init()
 
   vOffsetX              = glGetUniformLocation(gapProgram, "vOffsetX");
   vGap                  = glGetUniformLocation(gapProgram, "vGap");
+  vHalfSize             = glGetUniformLocation(gapProgram, "vHalfSize");
 
-//  glUseProgram(gapProgram);
   glEnableVertexAttribArray(vGapPosition);
   glEnableVertexAttribArray(vGapTextureCoordinate);
   glVertexAttribPointer(vPosition, 3, GL_FLOAT, false, sizeof(MyVertex), (void*)offsetof(MyVertex,pos));
   glVertexAttribPointer(vTextureCoordinate, 2, GL_FLOAT, false, sizeof(MyVertex), (void*)offsetof(MyVertex,txtcrds));
+  glUniform1f(vHalfSize, (float)BIRD_RADIUS*2.0);
 //  glDisableVertexAttribArray(vTextureCoordinate);
 //  glDisableVertexAttribArray(vPosition);
-//  glUseProgram(0);
   glUseProgram(0);
 
   Restart();
@@ -174,8 +174,11 @@ void Game::Render()
 //  glUseProgram(0);
 
   glUseProgram(gapProgram);
-  glUniform1f(vOffsetX, 0.3);
+  glUniform1f(vOffsetX, 0.7);
   glUniform1f(vGap, 0.44);
+  glDrawArrays(GL_TRIANGLE_STRIP, 4, 4);
+  glUniform1f(vOffsetX, -0.6);
+  glUniform1f(vGap, -0.68);
   glDrawArrays(GL_TRIANGLE_STRIP, 4, 4);
 
 

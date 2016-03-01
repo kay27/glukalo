@@ -25,10 +25,10 @@
     {{ -BIRD_RADIUS*1.5,  BIRD_RADIUS*1.5,  0.0f }, {0.0f, 2.0f}},
     {{  BIRD_RADIUS*1.5, -BIRD_RADIUS*1.5,  0.0f }, {2.0f, 0.0f}},
     {{  BIRD_RADIUS*1.5,  BIRD_RADIUS*1.5,  0.0f }, {2.0f, 2.0f}},
-    {{ -BIRD_RADIUS*2  ,             -1.0,  0.0f }, {0.0f, 0.0f}}, // gap
-    {{ -BIRD_RADIUS*2  ,              1.0,  0.0f }, {0.0f, 2.0f}},
-    {{  BIRD_RADIUS*2  ,             -1.0,  0.0f }, {2.0f, 0.0f}},
-    {{  BIRD_RADIUS*2  ,              1.0,  0.0f }, {2.0f, 2.0f}},
+    {{ -BIRD_RADIUS*1.4,             -1.0,  0.0f }, {0.0f, 0.0f}}, // gap
+    {{ -BIRD_RADIUS*1.4,              1.0,  0.0f }, {0.0f, 2.0f}},
+    {{  BIRD_RADIUS*1.4,             -1.0,  0.0f }, {2.0f, 0.0f}},
+    {{  BIRD_RADIUS*1.4,              1.0,  0.0f }, {2.0f, 2.0f}},
   };
 
   static const char * birdVertexShader =
@@ -72,7 +72,7 @@
 
   static const char * gapVertexShader =
     "attribute vec4 vPosition;\n"
-    "float vOffsetX;\n"
+    "uniform float vOffsetX;\n"
     "varying vec4 vp;\n"
     "void main()\n"
     "{\n"
@@ -83,12 +83,14 @@
 
   static const char * gapFragmentShader =
     "precision mediump float;\n"
-    "float vGap;\n"
+    "uniform float vGap;\n"
+    "uniform float vHalfSize;\n"
     "varying vec4 vp;\n"
     "void main()\n"
     "{\n"
-    "  if(abs(vp.y-vGap)<0.3) discard;\n"
-    "  gl_FragColor = sin(vp)/2.0+0.5; gl_FragColor.w=1.0;\n"
+    "  if(abs(vp.y-vGap)+sin(vp.x*99.0)/70.0 < vHalfSize) discard;\n"
+//    "  if(abs(vp.y-vGap) < vHalfSize) discard;\n"
+    "  gl_FragColor = sin(vp*88.0)/2.0+0.5; gl_FragColor.zw=vec2(0.0,1.0);\n"
     "}\n"
   ;
 

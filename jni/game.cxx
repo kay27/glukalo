@@ -27,6 +27,8 @@ void Game::Init()
   MyShader::AttachFragmentShader(birdProgram, birdFragmentShader);
   MyShader::LinkProgram(birdProgram);
 
+  glUseProgram(birdProgram);
+
   vPosition          = glGetAttribLocation(birdProgram, "vPosition");
   vTextureCoordinate = glGetAttribLocation(birdProgram, "vTextureCoordinate");
 
@@ -44,6 +46,7 @@ void Game::Init()
   glUniform1f(vRadius, (float)BIRD_RADIUS);
 //  glDisableVertexAttribArray(vTextureCoordinate);
 //  glDisableVertexAttribArray(vPosition);
+  glUseProgram(0);
 
   glBindBuffer(GL_ARRAY_BUFFER, vb[1]);
   glBufferData(GL_ARRAY_BUFFER, sizeof(gapVertices), &gapVertices[0], GL_STATIC_DRAW);
@@ -53,11 +56,13 @@ void Game::Init()
   MyShader::AttachFragmentShader(gapProgram, gapFragmentShader);
   MyShader::LinkProgram(gapProgram);
 
+  glUseProgram(gapProgram);
+
   vGapPosition          = glGetAttribLocation(gapProgram, "vPosition");
   vGapTextureCoordinate = glGetAttribLocation(gapProgram, "vTextureCoordinate");
 
-  vOffsetX              = glGetUniformLocation(birdProgram, "vOffsetX");
-  vGap                  = glGetUniformLocation(birdProgram, "vGap");
+  vOffsetX              = glGetUniformLocation(gapProgram, "vOffsetX");
+  vGap                  = glGetUniformLocation(gapProgram, "vGap");
 
 //  glUseProgram(gapProgram);
   glEnableVertexAttribArray(vGapPosition);
@@ -67,6 +72,7 @@ void Game::Init()
 //  glDisableVertexAttribArray(vTextureCoordinate);
 //  glDisableVertexAttribArray(vPosition);
 //  glUseProgram(0);
+  glUseProgram(0);
 
   Restart();
 }

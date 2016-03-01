@@ -183,11 +183,18 @@ void Game::Render()
   if(y > 1+BIRD_RADIUS*0.9) { y = 1+BIRD_RADIUS*0.9; speed=0; }
 //  if(y > 1) { y = 1; speed=0; }
 
-  if(y < BIRD_RADIUS+FLOOR_HEIGHT-1)
+/*  if(y < BIRD_RADIUS+FLOOR_HEIGHT-1)
   {
     y = BIRD_RADIUS+FLOOR_HEIGHT-1;
     GameOver();
   }
+  */
+  if(y < FLOOR_HEIGHT-1)
+  {
+    y = FLOOR_HEIGHT-1;
+    GameOver();
+  }
+
 
   if(!gameOver)
     for(int i=0; i<MAX_COLUMNS-1; i++)

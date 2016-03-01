@@ -21,18 +21,18 @@
 
   static const MyVertex vertices[] =
   {
-    {{ -BIRD_RADIUS*1.5, -BIRD_RADIUS*1.5,  0.0f }, {0.0f, 0.0f}}, // bird
-    {{ -BIRD_RADIUS*1.5,  BIRD_RADIUS*1.5,  0.0f }, {0.0f, 2.0f}},
-    {{  BIRD_RADIUS*1.5, -BIRD_RADIUS*1.5,  0.0f }, {2.0f, 0.0f}},
-    {{  BIRD_RADIUS*1.5,  BIRD_RADIUS*1.5,  0.0f }, {2.0f, 2.0f}},
-    {{ -COLUMN_HALFWIDTH,            -1.0,  0.0f }, {0.0f, 0.0f}}, // gap
-    {{ -COLUMN_HALFWIDTH,             1.0,  0.0f }, {0.0f, 2.0f}},
-    {{  COLUMN_HALFWIDTH,            -1.0,  0.0f }, {2.0f, 0.0f}},
-    {{  COLUMN_HALFWIDTH,             1.0,  0.0f }, {2.0f, 2.0f}},
-    {{ -1               ,            -1.0,  0.0f }, {0.0f, 0.0f}}, // floor
-    {{ -1               ,  FLOOR_HEIGHT-1,  0.0f }, {0.0f, 2.0f}},
-    {{  1               ,            -1.0,  0.0f }, {2.0f, 0.0f}},
-    {{  1               ,  FLOOR_HEIGHT-1,  0.0f }, {2.0f, 2.0f}},
+    {{ -BIRD_RADIUS*1.5, -BIRD_RADIUS*1.5,  0.0f }, {-1.5f,-1.5f}}, // bird
+    {{ -BIRD_RADIUS*1.5,  BIRD_RADIUS*1.5,  0.0f }, {-1.5f, 1.5f}},
+    {{  BIRD_RADIUS*1.5, -BIRD_RADIUS*1.5,  0.0f }, { 1.5f,-1.5f}},
+    {{  BIRD_RADIUS*1.5,  BIRD_RADIUS*1.5,  0.0f }, { 1.5f, 1.5f}},
+    {{ -COLUMN_HALFWIDTH,            -1.0,  0.0f }, { 0.0f, 0.0f}}, // gap
+    {{ -COLUMN_HALFWIDTH,             1.0,  0.0f }, { 0.0f, 2.0f}},
+    {{  COLUMN_HALFWIDTH,            -1.0,  0.0f }, { 2.0f, 0.0f}},
+    {{  COLUMN_HALFWIDTH,             1.0,  0.0f }, { 2.0f, 2.0f}},
+    {{ -1               ,            -1.0,  0.0f }, { 0.0f, 0.0f}}, // floor
+    {{ -1               ,  FLOOR_HEIGHT-1,  0.0f }, { 0.0f, 2.0f}},
+    {{  1               ,            -1.0,  0.0f }, { 2.0f, 0.0f}},
+    {{  1               ,  FLOOR_HEIGHT-1,  0.0f }, { 2.0f, 2.0f}},
   };
 
   static const char * birdVertexShader =
@@ -60,17 +60,21 @@
     "uniform float vSpeed;\n"
     "void main()\n"
     "{\n" // based on http://stackoverflow.com/a/11457353/5920627
-    "  float distanceFromCenter = distance(vec2(vp.x*vMul, vp.y), vec2((tc.x-1.0)*vMul,tc.y-1.0));\n"
-    "  float checkForPresenceWithinCircle = 1.0 - smoothstep(vRadius-0.05, vRadius+0.05, distanceFromCenter);\n"
-    "  if(checkForPresenceWithinCircle<0.01) discard;\n"
+    "  float distanceFromCenter = distance(vec2(vp.x*vMul, vp.y), vec2(tc.x*vMul,tc.y));\n"
+//    "  float checkForPresenceWithinCircle = 1.0 - smoothstep(vRadius-0.05, vRadius+0.05, distanceFromCenter);\n"
+    "  if(distanceFromCenter > 1.0) discard;\n"
+//    "  float checkForPresenceWithinCircle = 1.0 - distanceFromCenter;\n"
+//    "  if(checkForPresenceWithinCircle<0.00001) discard;\n"
+//    "  if(checkForPresenceWithinCircle<1.0-vRadius) discard;\n"
     "\n"
-    "  float distanceFromEye = distance(vec2(vp.x*vMul + vRadius/2.0, vp.y + vRadius/2.0), vec2((tc.x-1.0)*vMul,tc.y-1.0));\n"
-    "  float checkForPresenceWithinEye = (1.0 - smoothstep(0.0001, 0.089, distanceFromEye));\n"
+//    "  float distanceFromEye = distance(vec2(vp.x*vMul + vRadius/2.0, vp.y + vRadius/2.0), vec2(tc.x*vMul,tc.y));\n"
+//    "  float checkForPresenceWithinEye = (1.0 - smoothstep(0.0001, 0.089, distanceFromEye));\n"
   //  "  if(checkForPresenceWithinEye>1.0) gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);\n"
   //  "  else if(checkForPresenceWithinEye>0.15) gl_FragColor = vec4(0.8, 0.9, 0.86, 1.0);\n"
   //  "  else if(checkForPresenceWithinEye>0.001) gl_FragColor = vec4(0.0, 0.0, 0.01, 1.0);\n"
-    "  if(checkForPresenceWithinEye > 0.00001) gl_FragColor = 1.0 - abs(checkForPresenceWithinEye*2.0-1.0) * vec4(0.8, 0.9, 0.86, 1.0);\n"
-    "  else gl_FragColor = vec4(distanceFromCenter, 1.0-distanceFromCenter, vColor.z, vColor.w) * checkForPresenceWithinCircle;\n"
+ //   "  if(checkForPresenceWithinEye > 0.00001) gl_FragColor = 1.0 - abs(checkForPresenceWithinEye*2.0-1.0) * vec4(0.8, 0.9, 0.86, 1.0);\n"
+//    "  else gl_FragColor = vec4(distanceFromCenter, 1.0-distanceFromCenter, vColor.z, vColor.w) * checkForPresenceWithinCircle;\n"
+    "  gl_FragColor = vec4(distanceFromCenter, 1.0-distanceFromCenter, vColor.z, vColor.w) * (1.0-distanceFromCenter);\n"
     "}\n"
   ;
 
@@ -101,17 +105,20 @@
 
   static const char * floorVertexShader =
     "attribute vec4 vPosition;\n"
+    "varying vec4 vp;\n"
     "void main()\n"
     "{\n"
     "  gl_Position = vPosition;\n"
+    "  vp = vPosition;\n"
     "}\n"
   ;
 
   static const char * floorFragmentShader =
     "precision mediump float;\n"
+    "varying vec4 vp;\n"
     "void main()\n"
     "{\n"
-    "  gl_FragColor = vec4(0.6,0.0,0.0,1.0);\n"
+    "  gl_FragColor = vec4((sin(vp.y*129.0)+1.0)/2.0,0.0,0.0,1.0);\n"
     "}\n"
   ;
 

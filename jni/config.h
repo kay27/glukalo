@@ -7,6 +7,8 @@
 
   const float COLUMN_HALFWIDTH = 0.19;
 
+  const float FLOOR_HEIGHT = 0.07;
+
   const float SEGMENT = 2.0f / (float)(MAX_COLUMNS-1);
 
 //  const char *ACTIVITY_NAME = "com.kay27.Glukalo.MainActivity";

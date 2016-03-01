@@ -29,6 +29,10 @@
     {{ -COLUMN_HALFWIDTH,             1.0,  0.0f }, {0.0f, 2.0f}},
     {{  COLUMN_HALFWIDTH,            -1.0,  0.0f }, {2.0f, 0.0f}},
     {{  COLUMN_HALFWIDTH,             1.0,  0.0f }, {2.0f, 2.0f}},
+    {{ -1               ,            -1.0,  0.0f }, {0.0f, 0.0f}}, // floor
+    {{ -1               ,  FLOOR_HEIGHT-1,  0.0f }, {0.0f, 2.0f}},
+    {{  1               ,            -1.0,  0.0f }, {2.0f, 0.0f}},
+    {{  1               ,  FLOOR_HEIGHT-1,  0.0f }, {2.0f, 2.0f}},
   };
 
   static const char * birdVertexShader =
@@ -90,7 +94,24 @@
     "{\n"
     "  if(abs(vp.y-vGap)+sin(vp.x*99.0)/70.0 < vHalfSize) discard;\n"
 //    "  if(abs(vp.y-vGap) < vHalfSize) discard;\n"
-    "  gl_FragColor = sin(vp*88.0)/2.0+0.5; gl_FragColor.zw=vec2(0.0,1.0);\n"
+//    "  gl_FragColor = sin(vp*88.0)/2.0+0.5; gl_FragColor.zw=vec2(0.0,1.0);\n"
+    "  gl_FragColor = vec4(sin(vp.x*88.0)/2.0+0.5, 0.0, sin(vp.y*41.0)/20.0+0.05, 1.0);\n"
+    "}\n"
+  ;
+
+  static const char * floorVertexShader =
+    "attribute vec4 vPosition;\n"
+    "void main()\n"
+    "{\n"
+    "  gl_Position = vPosition;\n"
+    "}\n"
+  ;
+
+  static const char * floorFragmentShader =
+    "precision mediump float;\n"
+    "void main()\n"
+    "{\n"
+    "  gl_FragColor = vec4(0.6,0.0,0.0,1.0);\n"
     "}\n"
   ;
 

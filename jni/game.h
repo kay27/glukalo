@@ -25,6 +25,7 @@
       bool Collision(float x0, float x1, float y0);
       Game();
 //      ~Game();
+      void GameOver();
       void Init();
       void Pause();
       void Tap();
@@ -53,9 +54,10 @@
 
       GLuint vb;
       GLint vPosition, vTextureCoordinate, vColor, vOffset, vSpeed, vRadius, vMul,
-        vGapPosition, vGapTextureCoordinate, vGap, vOffsetX, vHalfSize;
+        vGapPosition, vGapTextureCoordinate, vGap, vOffsetX, vHalfSize,
+        vFloorPosition;
      
-      GLuint birdProgram, gapProgram;
+      GLuint birdProgram, floorProgram, gapProgram;
   };
 /*
   class Bird

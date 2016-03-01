@@ -70,6 +70,17 @@ void Game::Init()
 //  glDisableVertexAttribArray(vPosition);
   glUseProgram(0);
 
+  floorProgram = MyShader::CreateProgram();
+  MyShader::AttachVertexShader(floorProgram, floorVertexShader);
+  MyShader::AttachFragmentShader(floorProgram, floorFragmentShader);
+  MyShader::LinkProgram(floorProgram);
+  glUseProgram(floorProgram);
+  vFloorPosition = glGetAttribLocation(floorProgram, "vPosition");
+  glEnableVertexAttribArray(vFloorPosition);
+  glVertexAttribPointer(vFloorPosition, 3, GL_FLOAT, false, sizeof(MyVertex), (void*)offsetof(MyVertex,pos));
+//  glDisableVertexAttribArray(vFloorPosition);
+  glUseProgram(0);
+
   Restart();
 }
 
@@ -86,14 +97,6 @@ void Game::Restart()
   for(int i=0; i<MAX_COLUMNS; i++)
     gaps[i]=Rand()-0.5; // easy at start
 
-/*
-  {
-    lock_guard<mutex> lock(gapListMutex);
-    for (int i = 0; i < gaps.size(); i++)
-      delete gaps[i];
-    gaps.clear();
-  }
-*/
   gettimeofday(&lastTime, NULL);
 }
 
@@ -177,16 +180,27 @@ void Game::Render()
     if(y<-0.006) {y=-0.006; speedVect=0.011;}
   }
 
-  if(y<-0.8998) if(!gameOver) { y=-0.8998; gameOver=1; MyCallback::Toast("Game over"); }
-  if(y>1.09) { y=1.09; speed=0; }
+  if(y > 1+BIRD_RADIUS*0.9) { y = 1+BIRD_RADIUS*0.9; speed=0; }
+//  if(y > 1) { y = 1; speed=0; }
+
+  if(y < BIRD_RADIUS+FLOOR_HEIGHT-1)
+  {
+    y = BIRD_RADIUS+FLOOR_HEIGHT-1;
+    GameOver();
+  }
+
+  if(!gameOver)
+    for(int i=0; i<MAX_COLUMNS-1; i++)
+      if(Collision(blockPos + SEGMENT * i, blockPos + SEGMENT * i + 2*COLUMN_HALFWIDTH, gaps[i]))
+        GameOver();
 
   glUseProgram(birdProgram);
-//  glEnableVertexAttribArray(vPosition);
-//  glEnableVertexAttribArray(vTextureCoordinate);
   glUniform4f(vOffset, x, y, 0.0, 0.0);
   glUniform1f(vSpeed, speed);
   glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-//  glUseProgram(0);
+
+  glUseProgram(floorProgram);
+  glDrawArrays(GL_TRIANGLE_STRIP, 8, 4);
 
   glUseProgram(gapProgram);
   for(int i=0; i<MAX_COLUMNS; i++)
@@ -195,13 +209,6 @@ void Game::Render()
     glUniform1f(vGap, gaps[i]);
     glDrawArrays(GL_TRIANGLE_STRIP, 4, 4);
   }
-
-  for(int i=0; i<MAX_COLUMNS-1; i++)
-    if(Collision(blockPos + SEGMENT * i, blockPos + SEGMENT * i + 2*COLUMN_HALFWIDTH, gaps[i]))
-    {
-      gameOver=1;
-      break;
-    }
 }
 
 bool Game::Collision(float x0, float x1, float y0)
@@ -228,6 +235,12 @@ inline bool Game::Clamp(float x, float a, float b)
 inline float Game::Rand()
 {
   return static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+}
+
+void Game::GameOver()
+{
+  gameOver=1;
+  MyCallback::Toast("Game over");
 }
 
 /*

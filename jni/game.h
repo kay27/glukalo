@@ -21,7 +21,7 @@
   class Game
   {
     public:
-      bool Clamp(float x, float a, float b);
+      float Clamp(float x, float a, float b);
       bool Collision(float x0, float x1, float y0);
       Game();
 //      ~Game();

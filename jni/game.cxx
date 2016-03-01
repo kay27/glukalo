@@ -1,4 +1,5 @@
 #include "game.h"
+//#include <stdio.h> //TEMP!!! FIX
 
 Game::Game()
 {
@@ -65,7 +66,7 @@ void Game::Init()
   glEnableVertexAttribArray(vGapTextureCoordinate);
   glVertexAttribPointer(vPosition, 3, GL_FLOAT, false, sizeof(MyVertex), (void*)offsetof(MyVertex,pos));
   glVertexAttribPointer(vTextureCoordinate, 2, GL_FLOAT, false, sizeof(MyVertex), (void*)offsetof(MyVertex,txtcrds));
-  glUniform1f(vHalfSize, (float)BIRD_RADIUS*2.0);
+  glUniform1f(vHalfSize, GAP_HALFSIZE);
 //  glDisableVertexAttribArray(vTextureCoordinate);
 //  glDisableVertexAttribArray(vPosition);
   glUseProgram(0);
@@ -152,11 +153,11 @@ void Game::Render()
 //  glClearColor(0.0, 0.0, (y+1.0)/5.0, 1.0);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  if(impulse) {impulse = 0; speed = -0.06;}
+  if(impulse) {impulse = 0; speed = -TAP_IMPULSE;}
   if(gameStarted)
   {
-    speed+=delta/5000000;
-    float deltaX = delta/2000000;
+    speed+=delta*ACCELERATION;
+    float deltaX = delta*H_SPEED;
     if(x>-0.33)
     {
       x=x-deltaX;
@@ -200,7 +201,7 @@ void Game::Render()
 
   if(!gameOver)
     for(int i=0; i<MAX_COLUMNS-1; i++)
-      if(Collision(blockPos + SEGMENT * i, blockPos + SEGMENT * i + 2*COLUMN_HALFWIDTH, gaps[i]))
+      if(Collision(blockPos+SEGMENT*i-COLUMN_HALFWIDTH, blockPos+SEGMENT*i+COLUMN_HALFWIDTH, gaps[i]))
         GameOver();
 
   glUseProgram(birdProgram);
@@ -224,19 +225,26 @@ bool Game::Collision(float x0, float x1, float y0)
 { // based on http://stackoverflow.com/a/1879223/5920627
   float closestX = Clamp(x, x0, x1);
   float distanceX = x - closestX;
+
+/*
+char var[1000];
+sprintf(var,"x0=%f x1=%f y0=%f cx=%f dx=%f",x0,x1,y0,closestX,distanceX);
+MyCallback::Quit(var);
+//if(distanceX<1) return true;
+*/
   float dx2 = distanceX*distanceX;
 
-  float closestY = Clamp(y, -2, y0-2*BIRD_RADIUS);
+  float closestY = Clamp(y, -2, y0-GAP_HALFSIZE);
   float distanceY = y - closestY;
   if (dx2+distanceY*distanceY < BIRD_RADIUS*BIRD_RADIUS)
     return true;
 
-  closestY = Clamp(y, y0+2*BIRD_RADIUS, 2);
+  closestY = Clamp(y, y0+GAP_HALFSIZE, 2);
   distanceY = y - closestY;
   return dx2+distanceY*distanceY < BIRD_RADIUS*BIRD_RADIUS;
 }
 
-inline bool Game::Clamp(float x, float a, float b)
+inline float Game::Clamp(float x, float a, float b)
 { // http://www.gamedev.net/topic/473207-clamping-a-value-to-a-range-in-c-quickly/#entry4105200
   return x < a ? a : (x > b ? b : x);
 }

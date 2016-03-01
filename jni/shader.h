@@ -60,9 +60,9 @@
     "uniform float vSpeed;\n"
     "void main()\n"
     "{\n" // based on http://stackoverflow.com/a/11457353/5920627
-    "  float distanceFromCenter = distance(vec2(vp.x*vMul/1.5, vp.y/1.5), vec2(tc.x*vMul,tc.y));\n"
+    "  float distanceFromCenter = distance(vec2(vp.x*vMul, vp.y), vec2(tc.x*vMul,tc.y));\n"
     "  if(distanceFromCenter > 1.0) discard;\n"
-    "  float distanceFromEye = distance(vec2((vp.x + 0.5)/1.5*vMul, (vp.y + 0.5)/1.5), vec2(tc.x*vMul,tc.y));\n"
+    "  float distanceFromEye = distance(vec2(vp.x*vMul + 0.5, vp.y + 0.5), vec2(tc.x*vMul,tc.y));\n"
     "  if(distanceFromEye < 0.1) gl_FragColor=vec4(0.0,0.0,0.0,1.0);\n"
     "  else if(distanceFromEye < 0.3) gl_FragColor=vec4(1.0,1.0,0.99,1.0);\n"
     "  else if(distanceFromEye < 0.32) gl_FragColor=vec4(0.0,0.0,0.0,1.0);\n"

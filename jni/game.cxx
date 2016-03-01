@@ -17,10 +17,9 @@ void Game::Init()
     MyCallback::Toast("Tap to play");
   firstRun = 0;
 
-  glGenBuffers(2, vb);
-
-  glBindBuffer(GL_ARRAY_BUFFER, vb[0]);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(birdVertices), &birdVertices[0], GL_STATIC_DRAW);
+  glGenBuffers(1, &vb);
+  glBindBuffer(GL_ARRAY_BUFFER, vb);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), &vertices[0], GL_STATIC_DRAW);
 
   birdProgram = MyShader::CreateProgram();
   MyShader::AttachVertexShader(birdProgram, birdVertexShader);
@@ -40,16 +39,13 @@ void Game::Init()
 
   glEnableVertexAttribArray(vPosition);
   glEnableVertexAttribArray(vTextureCoordinate);
-  glVertexAttribPointer(vPosition, 3, GL_FLOAT, false, sizeof(BirdVertex), (void*)offsetof(BirdVertex,pos));
-  glVertexAttribPointer(vTextureCoordinate, 2, GL_FLOAT, false, sizeof(BirdVertex), (void*)offsetof(BirdVertex,txtcrds));
+  glVertexAttribPointer(vPosition, 3, GL_FLOAT, false, sizeof(MyVertex), (void*)offsetof(MyVertex,pos));
+  glVertexAttribPointer(vTextureCoordinate, 2, GL_FLOAT, false, sizeof(MyVertex), (void*)offsetof(MyVertex,txtcrds));
   glUniform4f(vColor, 0, 0.6, 1, 1);
   glUniform1f(vRadius, (float)BIRD_RADIUS);
 //  glDisableVertexAttribArray(vTextureCoordinate);
 //  glDisableVertexAttribArray(vPosition);
   glUseProgram(0);
-
-  glBindBuffer(GL_ARRAY_BUFFER, vb[1]);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(gapVertices), &gapVertices[0], GL_STATIC_DRAW);
 
   gapProgram = MyShader::CreateProgram();
   MyShader::AttachVertexShader(gapProgram, gapVertexShader);
@@ -67,8 +63,8 @@ void Game::Init()
 //  glUseProgram(gapProgram);
   glEnableVertexAttribArray(vGapPosition);
   glEnableVertexAttribArray(vGapTextureCoordinate);
-  glVertexAttribPointer(vPosition, 3, GL_FLOAT, false, sizeof(BirdVertex), (void*)offsetof(BirdVertex,pos));
-  glVertexAttribPointer(vTextureCoordinate, 2, GL_FLOAT, false, sizeof(BirdVertex), (void*)offsetof(BirdVertex,txtcrds));
+  glVertexAttribPointer(vPosition, 3, GL_FLOAT, false, sizeof(MyVertex), (void*)offsetof(MyVertex,pos));
+  glVertexAttribPointer(vTextureCoordinate, 2, GL_FLOAT, false, sizeof(MyVertex), (void*)offsetof(MyVertex,txtcrds));
 //  glDisableVertexAttribArray(vTextureCoordinate);
 //  glDisableVertexAttribArray(vPosition);
 //  glUseProgram(0);
@@ -180,7 +176,7 @@ void Game::Render()
   glUseProgram(gapProgram);
   glUniform1f(vOffsetX, 0.3);
   glUniform1f(vGap, 0.44);
-  glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+  glDrawArrays(GL_TRIANGLE_STRIP, 4, 4);
 
 
 /*

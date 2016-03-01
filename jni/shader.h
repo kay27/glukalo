@@ -87,12 +87,12 @@
 
   static const char * gapFragmentShader =
     "precision mediump float;\n"
-    "float vGap;\n";
+    "float vGap;\n"
     "varying vec4 vp;\n"
     "void main()\n"
     "{\n"
     "  if(abs(vp.y-vGap)<0.3) discard;\n"
-    "  gl_FragColor = sin(vp)/2+0.5; gl_FragColor.w=1.0;\n"
+    "  gl_FragColor = sin(vp)/2.0+0.5; gl_FragColor.w=1.0;\n"
     "}\n"
   ;
 

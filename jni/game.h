@@ -46,8 +46,10 @@
       GLfloat speed, x, y, speedVect, yMulValue;
       int impulse, pause;
 
-      GLuint vb;
-      GLint vPosition, vTextureCoordinate, vColor, vOffset, vSpeed, vRadius, vMul;
+      GLuint vb[2];
+      GLint vPosition, vTextureCoordinate, vColor, vOffset, vSpeed, vRadius, vMul,
+        vGapPosition, vGapTextureCoordinate, vGap, vOffsetX;
+     
       GLuint birdProgram, gapProgram;
   };
 /*

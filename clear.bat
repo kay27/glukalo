@@ -2,7 +2,6 @@ del build.xml
 del local.properties
 del proguard-project.txt
 del project.properties
-del *.keystore
 del ant.log
 del ndkbuild.log
 del update.log

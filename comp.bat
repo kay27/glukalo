@@ -37,7 +37,7 @@ if %step% leq 3 (
   if "%only%" equ "only" exit /b 0
 )
 if %step% leq 4 (
-  set ccmd=%adb% install bin\glukalo-%target%.apk
+  set ccmd=%adb% install bin\%name%-%target%.apk
   call:callandlog "Step 4: ADB" adb.log
   if errorlevel 1 exit /b %errorlevel%
   if "%only%" equ "only" exit /b 0

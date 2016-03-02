@@ -7,7 +7,7 @@
 
   const float GAP_HALFSIZE = 0.27;
 
-  const float COLUMN_HALFWIDTH = 0.19;
+  const float COLUMN_HALFWIDTH = 0.16;
 
   const float FLOOR_HEIGHT = 0.07;
 

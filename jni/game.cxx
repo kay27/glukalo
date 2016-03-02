@@ -43,7 +43,8 @@ void Game::Init()
   glVertexAttribPointer(vPosition, 3, GL_FLOAT, false, sizeof(MyVertex), (void*)offsetof(MyVertex,pos));
   glVertexAttribPointer(vTextureCoordinate, 2, GL_FLOAT, false, sizeof(MyVertex), (void*)offsetof(MyVertex,txtcrds));
   glUniform4f(vColor, 0, 0.6, 1, 1);
-  glUniform1f(vRadius, (float)BIRD_RADIUS);
+//  glUniform1f(vRadius, (float)BIRD_RADIUS);
+  glUniform1f(vRadius, (float)1.0);
 //  glDisableVertexAttribArray(vTextureCoordinate);
 //  glDisableVertexAttribArray(vPosition);
   glUseProgram(0);
@@ -100,6 +101,10 @@ void Game::Restart()
   for(int i=0; i<MAX_COLUMNS; i++)
     gaps[i]=Rand()-0.5; // easy at start
 
+  glUseProgram(birdProgram);
+  glUniform1f(vRadius, (float)1.0);
+  glUseProgram(0);
+
   gettimeofday(&lastTime, NULL);
 }
 
@@ -117,6 +122,7 @@ void Game::Resume()
 
 void Game::Resize(int w, int h)
 {
+  glViewport(0, 0, w, h);
   if(h>0)
   {
     yMulValue = float(w)/h;
@@ -130,10 +136,8 @@ void Game::Tap()
 {
   impulse = 1;
 
-  if(gameOver)
-    Restart(); 
-  else
-    gameStarted = 1;
+  if(!gameOver)
+    gameStarted=1;
 }
 
 inline void Game::Untap()
@@ -150,7 +154,6 @@ void Game::Render()
   float delta = (now.tv_sec - lastTime.tv_sec) * 1000000 + ((int)now.tv_usec - (int)lastTime.tv_usec);
   lastTime = now;
 
-//  glClearColor(0.0, 0.0, (y+1.0)/5.0, 1.0);
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   if(impulse) {impulse = 0; speed = -TAP_IMPULSE;}
@@ -171,7 +174,7 @@ void Game::Render()
         blockPos += SEGMENT;
         for(int i=0;i<MAX_COLUMNS-1;i++)
           gaps[i]=gaps[i+1];
-        gaps[MAX_COLUMNS-1]=(Rand()-0.5)*2*(1-2*BIRD_RADIUS*1.02);
+        gaps[MAX_COLUMNS-1]=(Rand()*1.8-0.9)*(1-2*BIRD_RADIUS);
       }
     }
   }
@@ -184,7 +187,6 @@ void Game::Render()
   }
 
   if(y > 1+BIRD_RADIUS*0.9) { y = 1+BIRD_RADIUS*0.9; speed=0; }
-//  if(y > 1) { y = 1; speed=0; }
 
   if(y < BIRD_RADIUS+FLOOR_HEIGHT-1)
   {
@@ -192,19 +194,26 @@ void Game::Render()
     GameOver();
   }
 
-/*  if(y < FLOOR_HEIGHT-1)
-  {
-    y = FLOOR_HEIGHT-1;
-    GameOver();
-  }
-  */
-
   if(!gameOver)
     for(int i=0; i<MAX_COLUMNS-1; i++)
       if(Collision(blockPos+SEGMENT*i-COLUMN_HALFWIDTH, blockPos+SEGMENT*i+COLUMN_HALFWIDTH, gaps[i]))
         GameOver();
 
   glUseProgram(birdProgram);
+  float deltaGameOver = 1.0;
+  if(gameOver)
+  {
+    gameOverTime += delta;
+    deltaGameOver = (1000000.0 - gameOverTime)/1000000.0;
+    if(deltaGameOver<=0)
+    {
+      glClearColor(0.0, 0.0, 0.0, 1.0);
+      deltaGameOver = 1.0;
+      Restart();
+    }
+    else glClearColor((1.0-deltaGameOver)/1.2, 0.0, 0.0, 1.0);
+    glUniform1f(vRadius,deltaGameOver);
+  }
   glUniform4f(vOffset, x, y, 0.0, 0.0);
   glUniform1f(vSpeed, speed);
   glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
@@ -225,13 +234,9 @@ bool Game::Collision(float x0, float x1, float y0)
 { // based on http://stackoverflow.com/a/1879223/5920627
   float closestX = Clamp(x, x0, x1);
   float distanceX = x - closestX;
+//  if(distanceX < BIRD_RADIUS*yMulValue) distanceX/=yMulValue;
+  if(distanceX < BIRD_RADIUS/yMulValue) distanceX*=yMulValue;
 
-/*
-char var[1000];
-sprintf(var,"x0=%f x1=%f y0=%f cx=%f dx=%f",x0,x1,y0,closestX,distanceX);
-MyCallback::Quit(var);
-//if(distanceX<1) return true;
-*/
   float dx2 = distanceX*distanceX;
 
   float closestY = Clamp(y, -2, y0-GAP_HALFSIZE);
@@ -256,60 +261,7 @@ inline float Game::Rand()
 
 void Game::GameOver()
 {
+  gameOverTime = 0;
   gameOver=1;
   MyCallback::Toast("Game over");
 }
-
-/*
-inline void Bird::Tap()
-{
-  impulse = 1;
-}
-
-inline void Bird::Untap()
-{
-  impulse = 0;
-}
-*/
-/*
-void Bird::Render()
-{
-  if(impulse) {impulse=0; speed=-0.06;}
-  if(gameStarted)
-  {
-    speed+=delta/5000000;
-    if(x>-0.33)
-    {
-      x=x-delta/2000000;
-      if(x<-0.34) x=-0.34;
-    }
-  }
-  if(!gameOver) y-=delta/27000*speed;
-  if(!(gameStarted||gameOver))
-  {
-    y+=speedVect*delta/253427; // more: slower initial animation
-    if(y>0.008) {y=0.008; speedVect=-0.0095;}
-    if(y<-0.006) {y=-0.006; speedVect=0.011;}
-  }
-
-  if(y<-0.8998) if(!gameOver) { y=-0.8998; gameOver=1; Toast("Game over"); }
-  if(y>1.09) { y=1.09; speed=0; }
-
-  glUniform4f(vOffset, x, y, 0.0, 0.0);
-  glUniform1f(vSpeed, speed);
-
-  glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-
-
-}
-*/
-/*
-void Bird::Init()
-{
-}
-
-Bird::Bird()
-{
-  Init();
-}
-*/

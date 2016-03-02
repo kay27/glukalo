@@ -45,6 +45,8 @@
 
       struct timeval lastTime;
 
+      float gameOverTime;
+
       GLfloat speed, x, y, speedVect, yMulValue,
         blockPos;
 

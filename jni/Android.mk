@@ -11,6 +11,6 @@ LOCAL_SRC_FILES := \
 
 #LOCAL_CXXFLAGS := -std=c++11
 
-LOCAL_LDLIBS := -lGLESv2 -ldl -llog
+LOCAL_LDLIBS := -lGLESv2 -lOpenSLES -ldl -llog
 
 include $(BUILD_SHARED_LIBRARY)

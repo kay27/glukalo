@@ -3,8 +3,6 @@
 
 # include <unistd.h>
 # include <cstdlib>
-//# include <mutex>
-//# include <vector>
 # include <GLES2/gl2.h>
 
   class Game;
@@ -13,18 +11,12 @@
 # include "shader.h"
 # include "jni2game.h"
 
-//  using namespace std;
-
-//  class Bird;
-//  class Gap;
-
   class Game
   {
     public:
       float Clamp(float x, float a, float b);
       bool Collision(float x0, float x1, float y0);
       Game();
-//      ~Game();
       void GameOver();
       void Init();
       void Pause();
@@ -37,9 +29,6 @@
       void Untap();
 
     protected:
-//      Bird & bird;
-//      vector<Gap*> gaps;
-//      mutex gapListMutex;
 
       int firstRun, gameStarted, gameOver;
 
@@ -61,23 +50,5 @@
      
       GLuint birdProgram, floorProgram, gapProgram;
   };
-/*
-  class Bird
-  {
-    public:
-      Bird();
-      ~Bird();
-      void Tap();
-      void Init();
-      void Render();
-  };
-
-  class Gap
-  {
-    public:
-      Gap();
-      ~Gap();
-  };
-*/
 
 #endif // #ifndef H_GAME_GLUKALO

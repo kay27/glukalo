@@ -45,7 +45,6 @@
     "{\n"
     "  gl_Position = vPosition + vOffset;\n"
     "  vp = vPosition;\n"
-//    "  vp = gl_Position;\n"
     "  tc = vTextureCoordinate.xy;\n"
     "}\n"
   ;
@@ -66,7 +65,6 @@
     "  if(distanceFromEye < 0.1*vRadius) gl_FragColor=vec4(0.0,0.0,0.0,1.0);\n"
     "  else if(distanceFromEye < 0.3*vRadius) gl_FragColor=vec4(1.0,1.0,0.99,1.0);\n"
     "  else if(distanceFromEye < 0.32*vRadius) gl_FragColor=vec4(0.0,0.0,0.0,1.0);\n"
-//    "  else gl_FragColor = vec4(distanceFromCenter, 1.0, 1.0, vColor.w) * (1.0-distanceFromCenter);\n"
     "  else gl_FragColor = vColor * (1.0-distanceFromCenter/3.0);\n"
     "}\n"
   ;

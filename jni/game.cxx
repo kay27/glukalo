@@ -1,5 +1,4 @@
 #include "game.h"
-//#include <stdio.h> //TEMP!!! FIX
 
 Game::Game()
 {
@@ -43,10 +42,7 @@ void Game::Init()
   glVertexAttribPointer(vPosition, 3, GL_FLOAT, false, sizeof(MyVertex), (void*)offsetof(MyVertex,pos));
   glVertexAttribPointer(vTextureCoordinate, 2, GL_FLOAT, false, sizeof(MyVertex), (void*)offsetof(MyVertex,txtcrds));
   glUniform4f(vColor, 0, 0.6, 1, 1);
-//  glUniform1f(vRadius, (float)BIRD_RADIUS);
   glUniform1f(vRadius, (float)1.0);
-//  glDisableVertexAttribArray(vTextureCoordinate);
-//  glDisableVertexAttribArray(vPosition);
   glUseProgram(0);
 
   gapProgram = MyShader::CreateProgram();
@@ -68,8 +64,6 @@ void Game::Init()
   glVertexAttribPointer(vPosition, 3, GL_FLOAT, false, sizeof(MyVertex), (void*)offsetof(MyVertex,pos));
   glVertexAttribPointer(vTextureCoordinate, 2, GL_FLOAT, false, sizeof(MyVertex), (void*)offsetof(MyVertex,txtcrds));
   glUniform1f(vHalfSize, GAP_HALFSIZE);
-//  glDisableVertexAttribArray(vTextureCoordinate);
-//  glDisableVertexAttribArray(vPosition);
   glUseProgram(0);
 
   floorProgram = MyShader::CreateProgram();
@@ -80,7 +74,6 @@ void Game::Init()
   vFloorPosition = glGetAttribLocation(floorProgram, "vPosition");
   glEnableVertexAttribArray(vFloorPosition);
   glVertexAttribPointer(vFloorPosition, 3, GL_FLOAT, false, sizeof(MyVertex), (void*)offsetof(MyVertex,pos));
-//  glDisableVertexAttribArray(vFloorPosition);
   glUseProgram(0);
 
   glClearColor(0.0, 0.0, 0.0, 1.0);
@@ -231,10 +224,12 @@ void Game::Render()
 }
 
 bool Game::Collision(float x0, float x1, float y0)
-{ // based on http://stackoverflow.com/a/1879223/5920627
+{
+  // based on http://stackoverflow.com/a/1879223/5920627
+
   float closestX = Clamp(x, x0, x1);
   float distanceX = x - closestX;
-//  if(distanceX < BIRD_RADIUS*yMulValue) distanceX/=yMulValue;
+
   if(distanceX < BIRD_RADIUS/yMulValue) distanceX*=yMulValue;
 
   float dx2 = distanceX*distanceX;
@@ -250,7 +245,9 @@ bool Game::Collision(float x0, float x1, float y0)
 }
 
 inline float Game::Clamp(float x, float a, float b)
-{ // http://www.gamedev.net/topic/473207-clamping-a-value-to-a-range-in-c-quickly/#entry4105200
+{
+  // http://www.gamedev.net/topic/473207-clamping-a-value-to-a-range-in-c-quickly/#entry4105200
+
   return x < a ? a : (x > b ? b : x);
 }
 

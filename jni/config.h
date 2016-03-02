@@ -19,7 +19,6 @@
 
   const float H_SPEED = 0.0000005;
 
-//  const char *ACTIVITY_NAME = "com.kay27.Glukalo.MainActivity";
 # define ACTIVITY_NAME "com.kay27.Glukalo.MainActivity"
 
 #endif // #ifndef H_CONFIG_GLUKALO

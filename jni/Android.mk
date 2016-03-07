@@ -10,6 +10,7 @@ LOCAL_SRC_FILES := \
   shader.cxx \
 
 #LOCAL_CXXFLAGS := -std=c++11
+LOCAL_CPPFLAGS := -std=c++11
 
 LOCAL_LDLIBS := -lGLESv2 -ldl
 

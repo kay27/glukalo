@@ -4,8 +4,7 @@
 # include <SLES/OpenSLES.h>
 # include <SLES/OpenSLES_Android.h>
 
-# define MY_AUDIO_BUFFER_FRAMES 441
-# define MY_AUDIO_NOISE_VOLUME 3000
+# include "config.h"
 
   class SLAudio
   {
@@ -17,13 +16,14 @@
   {
     public:
 
-      NextNoiseValue()
+      void NextNoiseValue()
       {
         noiseValue = (rand() % (MY_AUDIO_NOISE_VOLUME<<1)) - MY_AUDIO_NOISE_VOLUME;
       }
 
       MyAudio()
       {
+        sampleRate = MY_AUDIO_SAMPLE_RATE;
         noiseReminder = 0;
         NextNoiseValue();
         a = new SLAudio();
@@ -55,8 +55,9 @@
 
     protected:
       SLAudio *a;
-      short soundbuffer[BUFFER_FRAMES];
-
+      short soundbuffer[MY_AUDIO_BUFFER_FRAMES];
+      short noiseValue;
+      int sampleRate, noiseReminder;
   };
 
 #endif // #ifndef H_SOUND_GLUKALO

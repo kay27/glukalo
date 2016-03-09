@@ -21,10 +21,10 @@
 
   static const MyVertex vertices[] =
   {
-    {{ -BIRD_RADIUS*2.0, -BIRD_RADIUS*1.5,  0.0f }, {-2.0f,-1.5f}}, // bird
-    {{ -BIRD_RADIUS*2.0,  BIRD_RADIUS*1.5,  0.0f }, {-2.0f, 1.5f}},
-    {{  BIRD_RADIUS*2.0, -BIRD_RADIUS*1.5,  0.0f }, { 2.0f,-1.5f}},
-    {{  BIRD_RADIUS*2.0,  BIRD_RADIUS*1.5,  0.0f }, { 2.0f, 1.5f}},
+    {{ -BIRD_RADIUS*2.0f,-BIRD_RADIUS*1.5f, 0.0f }, {-2.0f,-1.5f}}, // bird
+    {{ -BIRD_RADIUS*2.0f, BIRD_RADIUS*1.5f, 0.0f }, {-2.0f, 1.5f}},
+    {{  BIRD_RADIUS*2.0f,-BIRD_RADIUS*1.5f, 0.0f }, { 2.0f,-1.5f}},
+    {{  BIRD_RADIUS*2.0f, BIRD_RADIUS*1.5f, 0.0f }, { 2.0f, 1.5f}},
     {{ -COLUMN_HALFWIDTH,            -1.0,  0.0f }, { 0.0f, 0.0f}}, // gap
     {{ -COLUMN_HALFWIDTH,             1.0,  0.0f }, { 0.0f, 2.0f}},
     {{  COLUMN_HALFWIDTH,            -1.0,  0.0f }, { 2.0f, 0.0f}},

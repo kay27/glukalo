@@ -10,6 +10,7 @@
 # include "config.h"
 # include "shader.h"
 # include "jni2game.h"
+# include "sound.h"
 
   class Game
   {
@@ -17,6 +18,7 @@
       float Clamp(float x, float a, float b);
       bool Collision(float x0, float x1, float y0);
       Game();
+      ~Game();
       void GameOver();
       void Init();
       void Pause();
@@ -49,6 +51,8 @@
         vFloorPosition;
      
       GLuint birdProgram, floorProgram, gapProgram;
+
+      MyAudio *audio;
   };
 
 #endif // #ifndef H_GAME_GLUKALO

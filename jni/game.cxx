@@ -3,11 +3,21 @@
 
 Game::Game()
 {
+  audio = new MyAudio();
+
   firstRun = 1;
 
   yMulValue = 1;
 
   Init();
+}
+
+Game::~Game()
+{
+  if(audio)
+    delete audio;
+  audio = NULL;
+
 }
 
 void Game::Init()

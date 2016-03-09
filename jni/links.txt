@@ -1,0 +1,2 @@
+https://audioprograming.wordpress.com/2012/10/29/lock-free-audio-io-with-opensl-es-on-android/
+https://gist.github.com/hrydgard/3072540

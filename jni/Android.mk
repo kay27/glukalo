@@ -9,9 +9,8 @@ LOCAL_SRC_FILES := \
   jni2game.cxx \
   shader.cxx \
 
-#LOCAL_CXXFLAGS := -std=c++11
 LOCAL_CPPFLAGS := -std=c++11
 
-LOCAL_LDLIBS := -lGLESv2 -ldl
+LOCAL_LDLIBS := -lGLESv2 -lOpenSLES -ldl
 
 include $(BUILD_SHARED_LIBRARY)

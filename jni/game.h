@@ -43,7 +43,7 @@
 
       GLfloat gaps[MAX_COLUMNS];
 
-      int impulse, pause;
+      int impulse, pause, score;
 
       GLuint vb;
       GLint vPosition, vTextureCoordinate, vColor, vOffset, vSpeed, vRadius, vMul,

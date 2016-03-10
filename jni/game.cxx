@@ -1,5 +1,6 @@
 #include "game.h"
 #include <mutex>
+//#include <string>
 
 Game::Game()
 {
@@ -102,6 +103,8 @@ void Game::Restart()
   gameStarted =  0;
   impulse     =  0;
   blockPos    =  1.5;
+  score       =  0;
+
   for(int i=0; i<MAX_COLUMNS; i++)
     gaps[i]=Rand()-0.5; // easy at start
 
@@ -110,6 +113,7 @@ void Game::Restart()
   glUseProgram(0);
 
   gettimeofday(&lastTime, NULL);
+
 }
 
 void Game::Pause()
@@ -173,12 +177,14 @@ void Game::Render()
     if(!gameOver)
     {
       blockPos -= deltaX;
+      if(score==0 && blockPos <= -0.34) score = 1;
       if(blockPos < -1-COLUMN_HALFWIDTH)
       {
         blockPos += SEGMENT;
         for(int i=0;i<MAX_COLUMNS-1;i++)
           gaps[i]=gaps[i+1];
         gaps[MAX_COLUMNS-1]=(Rand()*1.8-0.9)*(1-2*BIRD_RADIUS);
+        score++;
       }
     }
   }
@@ -271,5 +277,7 @@ void Game::GameOver()
 {
   gameOverTime = 0;
   gameOver=1;
-  MyCallback::Toast("Game over");
+  char msg[40];
+  sprintf(msg, "Game over: %d", score);
+  MyCallback::Toast(msg);
 }

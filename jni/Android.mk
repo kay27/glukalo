@@ -8,6 +8,7 @@ LOCAL_SRC_FILES := \
   game.cxx \
   jni2game.cxx \
   shader.cxx \
+  sound.cxx \
 
 LOCAL_CPPFLAGS := -std=c++11
 

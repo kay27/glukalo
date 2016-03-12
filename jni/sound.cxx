@@ -3,6 +3,7 @@
 bool SLAudio::CreatePlayer()
 { // https://habrahabr.ru/post/235795/#anc5
     // configure audio source
+/*
     SLDataLocator_AndroidSimpleBufferQueue loc_bufq = {SL_DATALOCATOR_ANDROIDSIMPLEBUFFERQUEUE, 2};
     SLDataFormat_PCM format_pcm = {SL_DATAFORMAT_PCM, 1, SL_SAMPLINGRATE_8,
         SL_PCMSAMPLEFORMAT_FIXED_16, SL_PCMSAMPLEFORMAT_FIXED_16,
@@ -15,9 +16,11 @@ bool SLAudio::CreatePlayer()
 
     // create audio player
     const SLInterfaceID ids[3] = {SL_IID_BUFFERQUEUE, SL_IID_EFFECTSEND,
-            /*SL_IID_MUTESOLO,*/ SL_IID_VOLUME};
+     //SL_IID_MUTESOLO,
+ SL_IID_VOLUME};
     const SLboolean req[3] = {SL_BOOLEAN_TRUE, SL_BOOLEAN_TRUE,
-            /*SL_BOOLEAN_TRUE,*/ SL_BOOLEAN_TRUE};
+            //SL_BOOLEAN_TRUE,
+ SL_BOOLEAN_TRUE};
     result = (*engineEngine)->CreateAudioPlayer(engineEngine, &bqPlayerObject, &audioSrc, &audioSnk,
             3, ids, req);
     assert(SL_RESULT_SUCCESS == result);
@@ -66,7 +69,7 @@ bool SLAudio::CreatePlayer()
     result = (*bqPlayerPlay)->SetPlayState(bqPlayerPlay, SL_PLAYSTATE_PLAYING);
     assert(SL_RESULT_SUCCESS == result);
     (void)result;
-
+  */
 }
 
 bool SLAudio::CreateEngine()

@@ -12,6 +12,7 @@
   {
     public:
       bool CreateEngine();
+      bool CreatePlayer();
     protected:
       void bqPlayerCallback(SLAndroidSimpleBufferQueueItf bq, void *context);
 

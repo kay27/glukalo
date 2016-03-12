@@ -1,75 +1,48 @@
 #include "sound.h"
 
 bool SLAudio::CreatePlayer()
-{ // https://habrahabr.ru/post/235795/#anc5
-    // configure audio source
-/*
-    SLDataLocator_AndroidSimpleBufferQueue loc_bufq = {SL_DATALOCATOR_ANDROIDSIMPLEBUFFERQUEUE, 2};
-    SLDataFormat_PCM format_pcm = {SL_DATAFORMAT_PCM, 1, SL_SAMPLINGRATE_8,
-        SL_PCMSAMPLEFORMAT_FIXED_16, SL_PCMSAMPLEFORMAT_FIXED_16,
-        SL_SPEAKER_FRONT_CENTER, SL_BYTEORDER_LITTLEENDIAN};
-    SLDataSource audioSrc = {&loc_bufq, &format_pcm};
+{
+  SLDataLocator_AndroidSimpleBufferQueue locBq = {SL_DATALOCATOR_ANDROIDSIMPLEBUFFERQUEUE, 2};
 
-    // configure audio sink
-    SLDataLocator_OutputMix loc_outmix = {SL_DATALOCATOR_OUTPUTMIX, outputMixObject};
-    SLDataSink audioSnk = {&loc_outmix, NULL};
+  SLDataFormat_PCM pcm =
+  {
+    SL_DATAFORMAT_PCM,               // format type
+    1,                               // numChannels
+    MY_AUDIO_SAMPLE_RATE * 1000,     // samplesPerSec ??? sampling rate in milliHertz
+    SL_PCMSAMPLEFORMAT_FIXED_16,     // bitsPerSample
+    SL_PCMSAMPLEFORMAT_FIXED_16,     // containerSize
+    SL_SPEAKER_FRONT_CENTER,         // channelMask
+    SL_BYTEORDER_LITTLEENDIAN        // endianness
+  };
 
-    // create audio player
-    const SLInterfaceID ids[3] = {SL_IID_BUFFERQUEUE, SL_IID_EFFECTSEND,
-     //SL_IID_MUTESOLO,
- SL_IID_VOLUME};
-    const SLboolean req[3] = {SL_BOOLEAN_TRUE, SL_BOOLEAN_TRUE,
-            //SL_BOOLEAN_TRUE,
- SL_BOOLEAN_TRUE};
-    result = (*engineEngine)->CreateAudioPlayer(engineEngine, &bqPlayerObject, &audioSrc, &audioSnk,
-            3, ids, req);
-    assert(SL_RESULT_SUCCESS == result);
-    (void)result;
+  SLDataSource src = {&locBq, &pcm};
 
-    // realize the player
-    result = (*bqPlayerObject)->Realize(bqPlayerObject, SL_BOOLEAN_FALSE);
-    assert(SL_RESULT_SUCCESS == result);
-    (void)result;
+  SLDataLocator_OutputMix locMix = {SL_DATALOCATOR_OUTPUTMIX, mix};
+  SLDataSink sink = {&locMix, NULL};
 
-    // get the play interface
-    result = (*bqPlayerObject)->GetInterface(bqPlayerObject, SL_IID_PLAY, &bqPlayerPlay);
-    assert(SL_RESULT_SUCCESS == result);
-    (void)result;
+  const SLInterfaceID ids[3] = {SL_IID_BUFFERQUEUE, SL_IID_EFFECTSEND, SL_IID_VOLUME  };
+  const SLboolean     req[3] = {SL_BOOLEAN_TRUE,    SL_BOOLEAN_TRUE,   SL_BOOLEAN_TRUE};
 
-    // get the buffer queue interface
-    result = (*bqPlayerObject)->GetInterface(bqPlayerObject, SL_IID_BUFFERQUEUE,
-            &bqPlayerBufferQueue);
-    assert(SL_RESULT_SUCCESS == result);
-    (void)result;
+  result = (*itf)->CreateAudioPlayer(itf, &player, &src, &sink, 1, ids, req);
+  if(result != SL_RESULT_SUCCESS) return false;
 
-    // register callback on the buffer queue
-    result = (*bqPlayerBufferQueue)->RegisterCallback(bqPlayerBufferQueue, bqPlayerCallback, NULL);
-    assert(SL_RESULT_SUCCESS == result);
-    (void)result;
+  result = (*player)->Realize(player, SL_BOOLEAN_FALSE);
+  if(result != SL_RESULT_SUCCESS) return false;
 
-    // get the effect send interface
-    result = (*bqPlayerObject)->GetInterface(bqPlayerObject, SL_IID_EFFECTSEND,
-            &bqPlayerEffectSend);
-    assert(SL_RESULT_SUCCESS == result);
-    (void)result;
+  result = (*player)->GetInterface(player, SL_IID_PLAY, &play);
+  if(result != SL_RESULT_SUCCESS) return false;
 
-#if 0   // mute/solo is not supported for sources that are known to be mono, as this is
-    // get the mute/solo interface
-    result = (*bqPlayerObject)->GetInterface(bqPlayerObject, SL_IID_MUTESOLO, &bqPlayerMuteSolo);
-    assert(SL_RESULT_SUCCESS == result);
-    (void)result;
-#endif
+  result = (*player)->GetInterface(player, SL_IID_BUFFERQUEUE, &bq);
+  if(result != SL_RESULT_SUCCESS) return false;
 
-    // get the volume interface
-    result = (*bqPlayerObject)->GetInterface(bqPlayerObject, SL_IID_VOLUME, &bqPlayerVolume);
-    assert(SL_RESULT_SUCCESS == result);
-    (void)result;
+  (*player)->GetInterface(player, SL_IID_EFFECTSEND, &effect);
 
-    // set the player's state to playing
-    result = (*bqPlayerPlay)->SetPlayState(bqPlayerPlay, SL_PLAYSTATE_PLAYING);
-    assert(SL_RESULT_SUCCESS == result);
-    (void)result;
-  */
+  (*player)->GetInterface(player, SL_IID_VOLUME, &volume);
+
+  result = (*play)->SetPlayState(play, SL_PLAYSTATE_PLAYING);
+  if(result != SL_RESULT_SUCCESS) return false;
+
+  return true;
 }
 
 bool SLAudio::CreateEngine()
@@ -100,7 +73,7 @@ bool SLAudio::CreateEngine()
 
 void SLAudio::bqPlayerCallback(SLAndroidSimpleBufferQueueItf bq, void *context)
 {
-  result = (*bqPlayerBufferQueue)->Enqueue(bqPlayerBufferQueue, soundbuffer, sizeof(soundbuffer));
+  result = (*bq)->Enqueue(bq, soundbuffer, sizeof(soundbuffer));
 }
 
 MyAudio::MyAudio()

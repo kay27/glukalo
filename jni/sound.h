@@ -13,14 +13,19 @@
     public:
       bool CreateEngine();
       bool CreatePlayer();
+
     protected:
       void bqPlayerCallback(SLAndroidSimpleBufferQueueItf bq, void *context);
 
       short soundbuffer[MY_AUDIO_BUFFER_FRAMES];
-      SLAndroidSimpleBufferQueueItf bqPlayerBufferQueue;
-      SLObjectItf engine, mix;
+
+      SLAndroidSimpleBufferQueueItf bq;
+      SLObjectItf engine, mix, player;
       SLEngineItf itf;
+      SLPlayItf play;
       SLEnvironmentalReverbItf reverb;
+      SLEffectSendItf effect;
+      SLVolumeItf volume;
       SLresult result;
   };
 

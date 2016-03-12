@@ -67,11 +67,13 @@ bool SLAudio::CreatePlayer()
   result = (*player)->GetInterface(player, SL_IID_BUFFERQUEUE, &bq);
   if(result != SL_RESULT_SUCCESS) return false;
 
-  auto callback = [&](SLAndroidSimpleBufferQueueItf bq_, void *context)
-  {
-    (*bq)->Enqueue(this->bq, this->soundbuffer, sizeof(this->soundbuffer));
-  };
-  result = (*bq)->RegisterCallback(bq, callback, NULL);
+//  auto callback = [&](SLAndroidSimpleBufferQueueItf bq_, void *context)
+//  {
+//    (*bq)->Enqueue(this->bq, this->soundbuffer, sizeof(this->soundbuffer));
+//  };
+//  result = (*bq)->RegisterCallback(bq, callback, NULL);
+  result = (*bq)->RegisterCallback(bq, ([this](SLAndroidSimpleBufferQueueItf bq_, void *context){
+    (*(this->bq))->Enqueue(this->bq, this->soundbuffer, sizeof(this->soundbuffer));}), NULL);
   if(result != SL_RESULT_SUCCESS) return false;
 //  result = (*bq)->RegisterCallback(bq, &SLAudio::bqPlayerCallback, NULL);
 //  result = (*bq)->RegisterCallback(bq, this->bqPlayerCallback, NULL);

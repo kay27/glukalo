@@ -4,14 +4,14 @@
 # include <cstdlib>
 
 # include <SLES/OpenSLES.h>
-//# include <SLES/OpenSLES_Android.h>
+# include <SLES/OpenSLES_Android.h>
 
 # include "config.h"
 
   class SLAudio
   {
     public:
-      void CreateEngine();
+      bool CreateEngine();
     protected:
       void bqPlayerCallback(SLAndroidSimpleBufferQueueItf bq, void *context);
 

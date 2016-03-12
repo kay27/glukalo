@@ -8,19 +8,19 @@ bool SLAudio::CreateEngine()
   result = slCreateEngine(&engine, 0, NULL, 0, NULL, NULL);
   if(result != SL_RESULT_SUCCESS) return false;
 
-  result = (*engineObject)->Realize(engine, SL_BOOLEAN_FALSE);
+  result = (*engine)->Realize(engine, SL_BOOLEAN_FALSE);
   if(result != SL_RESULT_SUCCESS) return false;
 
-  result = (*engineObject)->GetInterface(engine, SL_IID_ENGINE, (void*)&itf);
+  result = (*engine)->GetInterface(engine, SL_IID_ENGINE, (void*)&itf);
   if(result != SL_RESULT_SUCCESS) return false;
 
-  result = (*engineEngine)->CreateOutputMix(engine, &mix, 1, ids, req);
+  result = (*itf)->CreateOutputMix(itf, &mix, 1, ids, req);
   if(result != SL_RESULT_SUCCESS) return false;
 
   result = (*mix)->Realize(mix, SL_BOOLEAN_FALSE);
   if(result != SL_RESULT_SUCCESS) return false;
 
-  result = (*outputMixObject)->GetInterface(mix, SL_IID_ENVIRONMENTALREVERB, &reverb);
+  result = (*mix)->GetInterface(mix, SL_IID_ENVIRONMENTALREVERB, &reverb);
   if(result == SL_RESULT_SUCCESS) result = (*reverb)->SetEnvironmentalReverbProperties(reverb, &REVERB_SETTINGS);
 
   return true;

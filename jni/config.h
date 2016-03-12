@@ -1,6 +1,8 @@
 #ifndef H_CONFIG_GLUKALO
 # define H_CONFIG_GLUKALO
 
+# include <SLES/OpenSLES.h>
+
   const int MAX_COLUMNS = 3;
 
   const float BIRD_RADIUS = 0.1f;

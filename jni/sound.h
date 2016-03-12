@@ -15,7 +15,7 @@
       bool CreatePlayer();
 
     protected:
-      void bqPlayerCallback(SLAndroidSimpleBufferQueueItf bq, void *context);
+//      void bqPlayerCallback(SLAndroidSimpleBufferQueueItf bq_, void *context);
 
       short soundbuffer[MY_AUDIO_BUFFER_FRAMES];
 

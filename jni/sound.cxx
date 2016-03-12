@@ -1,5 +1,37 @@
 #include "sound.h"
 
+void bqPlayerCallback(SLAndroidSimpleBufferQueueItf bq_, void *context)
+{
+//  result = (*bq)->Enqueue(bq, soundbuffer, sizeof(soundbuffer));
+}
+
+
+bool SLAudio::CreateEngine()
+{
+  const SLInterfaceID ids[1] = {SL_IID_ENVIRONMENTALREVERB};
+  const SLboolean     req[1] = {SL_BOOLEAN_FALSE};
+
+  result = slCreateEngine(&engine, 0, NULL, 0, NULL, NULL);
+  if(result != SL_RESULT_SUCCESS) return false;
+
+  result = (*engine)->Realize(engine, SL_BOOLEAN_FALSE);
+  if(result != SL_RESULT_SUCCESS) return false;
+
+  result = (*engine)->GetInterface(engine, SL_IID_ENGINE, (void*)&itf);
+  if(result != SL_RESULT_SUCCESS) return false;
+
+  result = (*itf)->CreateOutputMix(itf, &mix, 1, ids, req);
+  if(result != SL_RESULT_SUCCESS) return false;
+
+  result = (*mix)->Realize(mix, SL_BOOLEAN_FALSE);
+  if(result != SL_RESULT_SUCCESS) return false;
+
+  result = (*mix)->GetInterface(mix, SL_IID_ENVIRONMENTALREVERB, &reverb);
+  if(result == SL_RESULT_SUCCESS) result = (*reverb)->SetEnvironmentalReverbProperties(reverb, &REVERB_SETTINGS);
+
+  return true;
+}
+
 bool SLAudio::CreatePlayer()
 {
   SLDataLocator_AndroidSimpleBufferQueue locBq = {SL_DATALOCATOR_ANDROIDSIMPLEBUFFERQUEUE, 2};
@@ -35,6 +67,20 @@ bool SLAudio::CreatePlayer()
   result = (*player)->GetInterface(player, SL_IID_BUFFERQUEUE, &bq);
   if(result != SL_RESULT_SUCCESS) return false;
 
+  auto callback = [&](SLAndroidSimpleBufferQueueItf bq_, void *context)
+  {
+    (*bq)->Enqueue(this->bq, this->soundbuffer, sizeof(this->soundbuffer));
+  };
+  result = (*bq)->RegisterCallback(bq, callback, NULL);
+  if(result != SL_RESULT_SUCCESS) return false;
+//  result = (*bq)->RegisterCallback(bq, &SLAudio::bqPlayerCallback, NULL);
+//  result = (*bq)->RegisterCallback(bq, this->bqPlayerCallback, NULL);
+//  result = (*bq)->RegisterCallback(bq, [this](SLAndroidSimpleBufferQueueItf bq_, void *context)
+//    {
+//      (*bq)->Enqueue(this->bq, this->soundbuffer, sizeof(this->soundbuffer));
+//    } , NULL);
+//  result = (*bq)->RegisterCallback(bq, bqPlayerCallback, NULL);
+
   (*player)->GetInterface(player, SL_IID_EFFECTSEND, &effect);
 
   (*player)->GetInterface(player, SL_IID_VOLUME, &volume);
@@ -44,38 +90,12 @@ bool SLAudio::CreatePlayer()
 
   return true;
 }
-
-bool SLAudio::CreateEngine()
-{
-  const SLInterfaceID ids[1] = {SL_IID_ENVIRONMENTALREVERB};
-  const SLboolean     req[1] = {SL_BOOLEAN_FALSE};
-
-  result = slCreateEngine(&engine, 0, NULL, 0, NULL, NULL);
-  if(result != SL_RESULT_SUCCESS) return false;
-
-  result = (*engine)->Realize(engine, SL_BOOLEAN_FALSE);
-  if(result != SL_RESULT_SUCCESS) return false;
-
-  result = (*engine)->GetInterface(engine, SL_IID_ENGINE, (void*)&itf);
-  if(result != SL_RESULT_SUCCESS) return false;
-
-  result = (*itf)->CreateOutputMix(itf, &mix, 1, ids, req);
-  if(result != SL_RESULT_SUCCESS) return false;
-
-  result = (*mix)->Realize(mix, SL_BOOLEAN_FALSE);
-  if(result != SL_RESULT_SUCCESS) return false;
-
-  result = (*mix)->GetInterface(mix, SL_IID_ENVIRONMENTALREVERB, &reverb);
-  if(result == SL_RESULT_SUCCESS) result = (*reverb)->SetEnvironmentalReverbProperties(reverb, &REVERB_SETTINGS);
-
-  return true;
-}
-
-void SLAudio::bqPlayerCallback(SLAndroidSimpleBufferQueueItf bq, void *context)
+/*
+void SLAudio::bqPlayerCallback(SLAndroidSimpleBufferQueueItf bq_, void *context)
 {
   result = (*bq)->Enqueue(bq, soundbuffer, sizeof(soundbuffer));
 }
-
+*/
 MyAudio::MyAudio()
 {
   sampleRate = MY_AUDIO_SAMPLE_RATE;

@@ -29,4 +29,7 @@
 
   const int MY_AUDIO_BUFFER_FRAMES = 441;
 
+  const SLEnvironmentalReverbSettings REVERB_SETTINGS = SL_I3DL2_ENVIRONMENT_PRESET_STONECORRIDOR;
+
+
 #endif // #ifndef H_CONFIG_GLUKALO

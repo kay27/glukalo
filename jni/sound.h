@@ -4,14 +4,23 @@
 # include <cstdlib>
 
 # include <SLES/OpenSLES.h>
-# include <SLES/OpenSLES_Android.h>
+//# include <SLES/OpenSLES_Android.h>
 
 # include "config.h"
 
   class SLAudio
   {
+    public:
+      void CreateEngine();
     protected:
+      void bqPlayerCallback(SLAndroidSimpleBufferQueueItf bq, void *context);
+
+      short soundbuffer[MY_AUDIO_BUFFER_FRAMES];
       SLAndroidSimpleBufferQueueItf bqPlayerBufferQueue;
+      SLObjectItf engine, mix;
+      SLEngineItf itf;
+      SLEnvironmentalReverbItf reverb;
+      SLresult result;
   };
 
   class MyAudio
@@ -24,7 +33,6 @@
 
     protected:
       SLAudio *a;
-      short soundbuffer[MY_AUDIO_BUFFER_FRAMES];
       short noiseValue;
       int sampleRate, noiseReminder;
   };

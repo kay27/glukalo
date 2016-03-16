@@ -2,15 +2,20 @@
 # define H_SOUND_GLUKALO
 
 # include <cstdlib>
+//# include <functional>
 
 # include <SLES/OpenSLES.h>
 # include <SLES/OpenSLES_Android.h>
 
 # include "config.h"
 
+  void* globalsoundbuffer;
+
   class SLAudio
   {
     public:
+      SLAudio();
+      ~SLAudio();
       bool CreateEngine();
       bool CreatePlayer();
 
@@ -41,6 +46,7 @@
       SLAudio *a;
       short noiseValue;
       int sampleRate, noiseReminder;
+//      std::function<void(SLAndroidSimpleBufferQueueItf bq, void *context)> callback;
   };
 
 #endif // #ifndef H_SOUND_GLUKALO

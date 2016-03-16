@@ -1,8 +1,8 @@
 #include "sound.h"
 
-void bqPlayerCallback(SLAndroidSimpleBufferQueueItf bq_, void *context)
+void bqPlayerCallback(SLAndroidSimpleBufferQueueItf bq, void *context)
 {
-//  result = (*bq)->Enqueue(bq, soundbuffer, sizeof(soundbuffer));
+  (*bq)->Enqueue(bq, globalsoundbuffer, MY_AUDIO_BUFFER_FRAMES*sizeof(short));
 }
 
 
@@ -67,21 +67,21 @@ bool SLAudio::CreatePlayer()
   result = (*player)->GetInterface(player, SL_IID_BUFFERQUEUE, &bq);
   if(result != SL_RESULT_SUCCESS) return false;
 
-//  auto callback = [&](SLAndroidSimpleBufferQueueItf bq_, void *context)
-//  {
-//    (*bq)->Enqueue(this->bq, this->soundbuffer, sizeof(this->soundbuffer));
-//  };
-//  result = (*bq)->RegisterCallback(bq, callback, NULL);
-  result = (*bq)->RegisterCallback(bq, ([this](SLAndroidSimpleBufferQueueItf bq_, void *context){
-    (*(this->bq))->Enqueue(this->bq, this->soundbuffer, sizeof(this->soundbuffer));}), NULL);
+//  result = (*bq)->RegisterCallback(bq, &SLAudio::bqPlayerCallback);
+  result = (*bq)->RegisterCallback(bq, bqPlayerCallback, NULL);
   if(result != SL_RESULT_SUCCESS) return false;
-//  result = (*bq)->RegisterCallback(bq, &SLAudio::bqPlayerCallback, NULL);
-//  result = (*bq)->RegisterCallback(bq, this->bqPlayerCallback, NULL);
-//  result = (*bq)->RegisterCallback(bq, [this](SLAndroidSimpleBufferQueueItf bq_, void *context)
-//    {
-//      (*bq)->Enqueue(this->bq, this->soundbuffer, sizeof(this->soundbuffer));
-//    } , NULL);
-//  result = (*bq)->RegisterCallback(bq, bqPlayerCallback, NULL);
+
+/*
+  auto callback = new std::function<void(SLAndroidSimpleBufferQueueItf bq, void *context)> [=](SLAndroidSimpleBufferQueueItf bq, void *context)
+  {
+    (*bq)->Enqueue(bq, soundbuffer, sizeof(soundbuffer));
+  };
+
+  result = (*bq)->RegisterCallback(bq, &callback);
+  if(result != SL_RESULT_SUCCESS) return false;
+*/
+
+
 
   (*player)->GetInterface(player, SL_IID_EFFECTSEND, &effect);
 
@@ -92,12 +92,22 @@ bool SLAudio::CreatePlayer()
 
   return true;
 }
-/*
-void SLAudio::bqPlayerCallback(SLAndroidSimpleBufferQueueItf bq_, void *context)
+
+SLAudio::SLAudio()
 {
-  result = (*bq)->Enqueue(bq, soundbuffer, sizeof(soundbuffer));
+  globalsoundbuffer = &soundbuffer;
 }
-*/
+
+SLAudio::~SLAudio()
+{
+}
+
+//void SLAudio::bqPlayerCallback(SLAndroidSimpleBufferQueueItf bq_, void *context)
+//{
+//  if(bq != bq_) return;
+//  /* result =*/ (*bq)->Enqueue(bq, soundbuffer, sizeof(soundbuffer));
+//}
+
 MyAudio::MyAudio()
 {
   sampleRate = MY_AUDIO_SAMPLE_RATE;

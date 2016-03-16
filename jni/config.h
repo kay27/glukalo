@@ -25,7 +25,9 @@
 
 
 
-  const short MY_AUDIO_NOISE_VOLUME = 3000;
+//  const short MY_AUDIO_NOISE_VOLUME = 3000;
+  const short MY_AUDIO_NOISE_VOLUME = 14000;
+
 
   const int MY_AUDIO_SAMPLE_RATE = 44100;
 

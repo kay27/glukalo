@@ -9,7 +9,7 @@
 
 # include "config.h"
 
-  void* globalsoundbuffer;
+  static void* globalsoundbuffer;
 
   class SLAudio
   {
@@ -18,6 +18,7 @@
       ~SLAudio();
       bool CreateEngine();
       bool CreatePlayer();
+      inline SLAndroidSimpleBufferQueueItf & GetBQ() { return bq; }
 
     protected:
 //      void bqPlayerCallback(SLAndroidSimpleBufferQueueItf bq_, void *context);
@@ -39,8 +40,10 @@
     public:
       MyAudio();
       ~MyAudio();
+      bool Play();
       void NextNoiseValue();
       void Noise(short *buffer, unsigned length, unsigned freq);
+      void MakeNoise(unsigned freq);
 
     protected:
       SLAudio *a;

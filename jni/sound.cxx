@@ -116,6 +116,11 @@ MyAudio::MyAudio()
   a = new SLAudio();
 }
 
+void MyAudio::MakeNoise(unsigned freq)
+{
+  Noise((short*)globalsoundbuffer, MY_AUDIO_BUFFER_FRAMES, freq);
+}
+
 MyAudio::~MyAudio()
 {
   if(a) delete a;
@@ -143,4 +148,14 @@ void MyAudio::Noise(short *buffer, unsigned length, unsigned freq)
     noiseReminder %= sampleRate;
     NextNoiseValue();
   }
+}
+
+bool MyAudio::Play()
+{
+  if(!a) return false;
+  if(!a->CreateEngine()) return false;
+  if(!a->CreatePlayer()) return false;
+  SLAndroidSimpleBufferQueueItf & bq = a->GetBQ();
+  (*bq)->Enqueue(bq, globalsoundbuffer, MY_AUDIO_BUFFER_FRAMES*sizeof(short));
+  return true;
 }

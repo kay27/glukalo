@@ -5,6 +5,8 @@
 Game::Game()
 {
   audio = new MyAudio();
+  if(audio!=nullptr) if(!audio->Play()) audio = nullptr;
+  if(audio==nullptr) MyCallback::Toast("Failed to start audio");
 
   firstRun = 1;
 
@@ -238,6 +240,8 @@ void Game::Render()
 
   glUseProgram(floorProgram);
   glDrawArrays(GL_TRIANGLE_STRIP, 8, 4);
+
+  if(audio!=nullptr) audio->MakeNoise((unsigned)((y+1.0)/2*59));
 }
 
 bool Game::Collision(float x0, float x1, float y0)

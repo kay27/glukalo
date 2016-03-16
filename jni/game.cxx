@@ -4,23 +4,25 @@
 
 Game::Game()
 {
-  audio = new MyAudio();
-  if(audio!=nullptr) if(!audio->Play()) audio = nullptr;
-  if(audio==nullptr) MyCallback::Toast("Failed to start audio");
-
   firstRun = 1;
 
   yMulValue = 1;
 
   Init();
+
+  audio = new MyAudio();
+  if(audio!=nullptr) if(!audio->Play()) audio = nullptr;
+  if(audio==nullptr) MyCallback::Toast("Failed to start audio");
 }
 
 Game::~Game()
 {
-  if(audio)
+  if(audio != nullptr)
+  {
+    audio->Stop();
     delete audio;
-  audio = NULL;
-
+    audio = nullptr;
+  }
 }
 
 void Game::Init()
@@ -241,7 +243,7 @@ void Game::Render()
   glUseProgram(floorProgram);
   glDrawArrays(GL_TRIANGLE_STRIP, 8, 4);
 
-  if(audio!=nullptr) audio->MakeNoise((unsigned)((y+1.0)/2*10));
+  if(audio!=nullptr) audio->MakeNoise((unsigned)((y+1.0)/2*33333+77));
 }
 
 bool Game::Collision(float x0, float x1, float y0)

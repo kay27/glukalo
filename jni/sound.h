@@ -18,13 +18,12 @@
       ~SLAudio();
       bool CreateEngine();
       bool CreatePlayer();
+      void DestroyEngine();
+      void DestroyPlayer();
       inline SLAndroidSimpleBufferQueueItf & GetBQ() { return bq; }
 
     protected:
-//      void bqPlayerCallback(SLAndroidSimpleBufferQueueItf bq_, void *context);
-
       short soundbuffer[MY_AUDIO_BUFFER_FRAMES];
-
       SLAndroidSimpleBufferQueueItf bq;
       SLObjectItf engine, mix, player;
       SLEngineItf itf;
@@ -41,6 +40,7 @@
       MyAudio();
       ~MyAudio();
       bool Play();
+      void Stop();
       void NextNoiseValue();
       void Noise(short *buffer, unsigned length, unsigned freq);
       void MakeNoise(unsigned freq);
@@ -49,7 +49,6 @@
       SLAudio *a;
       short noiseValue;
       int sampleRate, noiseReminder;
-//      std::function<void(SLAndroidSimpleBufferQueueItf bq, void *context)> callback;
   };
 
 #endif // #ifndef H_SOUND_GLUKALO

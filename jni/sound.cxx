@@ -32,6 +32,16 @@ bool SLAudio::CreateEngine()
   return true;
 }
 
+void SLAudio::DestroyEngine()
+{
+  if (mix != nullptr) (*mix)->Destroy(mix);
+  mix = nullptr;
+  reverb = nullptr;
+  if (engine != nullptr) (*engine)->Destroy(engine);
+  engine = nullptr;
+  itf = nullptr;
+}
+
 bool SLAudio::CreatePlayer()
 {
   SLDataLocator_AndroidSimpleBufferQueue locBq = {SL_DATALOCATOR_ANDROIDSIMPLEBUFFERQUEUE, 2};
@@ -67,21 +77,8 @@ bool SLAudio::CreatePlayer()
   result = (*player)->GetInterface(player, SL_IID_BUFFERQUEUE, &bq);
   if(result != SL_RESULT_SUCCESS) return false;
 
-//  result = (*bq)->RegisterCallback(bq, &SLAudio::bqPlayerCallback);
   result = (*bq)->RegisterCallback(bq, bqPlayerCallback, NULL);
   if(result != SL_RESULT_SUCCESS) return false;
-
-/*
-  auto callback = new std::function<void(SLAndroidSimpleBufferQueueItf bq, void *context)> [=](SLAndroidSimpleBufferQueueItf bq, void *context)
-  {
-    (*bq)->Enqueue(bq, soundbuffer, sizeof(soundbuffer));
-  };
-
-  result = (*bq)->RegisterCallback(bq, &callback);
-  if(result != SL_RESULT_SUCCESS) return false;
-*/
-
-
 
   (*player)->GetInterface(player, SL_IID_EFFECTSEND, &effect);
 
@@ -93,6 +90,17 @@ bool SLAudio::CreatePlayer()
   return true;
 }
 
+void SLAudio::DestroyPlayer()
+{
+  if(player == nullptr) return;
+  (*player)->Destroy(player);
+  player = nullptr;
+  play = nullptr;
+  bq = nullptr;
+  effect = nullptr;
+  volume = nullptr;
+}
+
 SLAudio::SLAudio()
 {
   globalsoundbuffer = &soundbuffer;
@@ -102,18 +110,13 @@ SLAudio::~SLAudio()
 {
 }
 
-//void SLAudio::bqPlayerCallback(SLAndroidSimpleBufferQueueItf bq_, void *context)
-//{
-//  if(bq != bq_) return;
-//  /* result =*/ (*bq)->Enqueue(bq, soundbuffer, sizeof(soundbuffer));
-//}
-
 MyAudio::MyAudio()
 {
   sampleRate = MY_AUDIO_SAMPLE_RATE;
   noiseReminder = 0;
   NextNoiseValue();
   a = new SLAudio();
+  for(auto i=0; i<MY_AUDIO_BUFFER_FRAMES; i++) ((short*)globalsoundbuffer)[i]=0;
 }
 
 void MyAudio::MakeNoise(unsigned freq)
@@ -129,7 +132,7 @@ MyAudio::~MyAudio()
 
 void MyAudio::NextNoiseValue()
 {
-  noiseValue = (rand() % 2) * (MY_AUDIO_NOISE_VOLUME<<1) - MY_AUDIO_NOISE_VOLUME;
+  noiseValue = (rand() % (MY_AUDIO_NOISE_VOLUME<<1)) - MY_AUDIO_NOISE_VOLUME;
 }
 
 void MyAudio::Noise(short *buffer, unsigned length, unsigned freq)
@@ -158,4 +161,11 @@ bool MyAudio::Play()
   SLAndroidSimpleBufferQueueItf & bq = a->GetBQ();
   (*bq)->Enqueue(bq, globalsoundbuffer, MY_AUDIO_BUFFER_FRAMES*sizeof(short));
   return true;
+}
+
+void MyAudio::Stop()
+{
+  if(!a) return;
+  a->DestroyPlayer();
+  a->DestroyEngine();
 }

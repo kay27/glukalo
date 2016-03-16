@@ -122,11 +122,13 @@ void Game::Restart()
 
 void Game::Pause()
 {
+  if(audio != nullptr) audio->Pause();
   pause = 1;
 }
 
 void Game::Resume()
 {
+  if(audio != nullptr) audio->Continue();
   Untap();
   gettimeofday(&lastTime, NULL);
   pause = 0;
@@ -243,7 +245,11 @@ void Game::Render()
   glUseProgram(floorProgram);
   glDrawArrays(GL_TRIANGLE_STRIP, 8, 4);
 
-  if(audio!=nullptr) audio->MakeNoise((unsigned)((y+1.0)/2*33333+77));
+  if(audio!=nullptr)
+  {
+    if(!gameOver) audio->MakeNoise((unsigned)((y+1.0)/2*14000));
+    else audio->Clear(); //fixme (iteration)
+  }
 }
 
 bool Game::Collision(float x0, float x1, float y0)

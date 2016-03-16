@@ -104,10 +104,28 @@ void SLAudio::DestroyPlayer()
 SLAudio::SLAudio()
 {
   globalsoundbuffer = &soundbuffer;
+  paused = false;
+}
+
+void SLAudio::Clear()
+{
+  for(auto i=0; i<MY_AUDIO_BUFFER_FRAMES; i++) soundbuffer[i]=0;
 }
 
 SLAudio::~SLAudio()
 {
+}
+
+void SLAudio::Pause(bool pause)
+{
+  paused = pause;
+//  if(paused) Clear();
+  result = (*play)->SetPlayState(play, paused ? SL_PLAYSTATE_PAUSED : SL_PLAYSTATE_PLAYING);
+}
+
+void SLAudio::Start()
+{
+  (*bq)->Enqueue(bq, soundbuffer, sizeof(soundbuffer));
 }
 
 MyAudio::MyAudio()
@@ -116,7 +134,7 @@ MyAudio::MyAudio()
   noiseReminder = 0;
   NextNoiseValue();
   a = new SLAudio();
-  for(auto i=0; i<MY_AUDIO_BUFFER_FRAMES; i++) ((short*)globalsoundbuffer)[i]=0;
+  if(a != nullptr) a->Clear();
 }
 
 void MyAudio::MakeNoise(unsigned freq)
@@ -159,7 +177,7 @@ bool MyAudio::Play()
   if(!a->CreateEngine()) return false;
   if(!a->CreatePlayer()) return false;
   SLAndroidSimpleBufferQueueItf & bq = a->GetBQ();
-  (*bq)->Enqueue(bq, globalsoundbuffer, MY_AUDIO_BUFFER_FRAMES*sizeof(short));
+  a->Start();
   return true;
 }
 
@@ -168,4 +186,21 @@ void MyAudio::Stop()
   if(!a) return;
   a->DestroyPlayer();
   a->DestroyEngine();
+}
+
+void MyAudio::Pause()
+{
+  if(!a) return;
+  a->Pause(true);
+}
+
+void MyAudio::Continue()
+{
+  if(!a) return;
+  a->Pause(false);
+}
+
+void MyAudio::Clear()
+{
+  if(a!=nullptr) a->Clear();
 }

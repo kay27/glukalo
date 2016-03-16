@@ -16,6 +16,9 @@
     public:
       SLAudio();
       ~SLAudio();
+      void Clear();
+      void Pause(bool pause);
+      void Start();
       bool CreateEngine();
       bool CreatePlayer();
       void DestroyEngine();
@@ -32,6 +35,7 @@
       SLEffectSendItf effect;
       SLVolumeItf volume;
       SLresult result;
+      bool paused;
   };
 
   class MyAudio
@@ -41,6 +45,9 @@
       ~MyAudio();
       bool Play();
       void Stop();
+      void Pause();
+      void Clear();
+      void Continue();
       void NextNoiseValue();
       void Noise(short *buffer, unsigned length, unsigned freq);
       void MakeNoise(unsigned freq);

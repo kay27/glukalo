@@ -129,7 +129,7 @@ MyAudio::~MyAudio()
 
 void MyAudio::NextNoiseValue()
 {
-  noiseValue = (rand() % (MY_AUDIO_NOISE_VOLUME<<1)) - MY_AUDIO_NOISE_VOLUME;
+  noiseValue = (rand() % 2) * (MY_AUDIO_NOISE_VOLUME<<1) - MY_AUDIO_NOISE_VOLUME;
 }
 
 void MyAudio::Noise(short *buffer, unsigned length, unsigned freq)

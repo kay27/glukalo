@@ -112,7 +112,7 @@ void Game::Restart()
   impulse     =  0;
   blockPos    =  1.5;
   score       =  0;
-  level       =  0;
+  level       =  START_LEVEL;
 
   for(int i=0; i<MAX_COLUMNS; i++)
     gaps[i]=Rand()-0.5; // easy at start
@@ -328,7 +328,7 @@ void Game::ChangeLevel()
 
 inline int Game::GetLevel(int newScore)
 {
-  int newLevel = newScore / 20;
+  int newLevel = newScore / NEXT_LEVEL_SCORE;
   if(newLevel>=20) newLevel = 0;
   return newLevel;
 }

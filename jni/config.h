@@ -3,6 +3,10 @@
 
 # include <SLES/OpenSLES.h>
 
+  const int START_LEVEL = 5;
+
+  const int NEXT_LEVEL_SCORE = 5;
+
   const int MAX_COLUMNS = 3;
 
   const float BIRD_RADIUS = 0.1f;

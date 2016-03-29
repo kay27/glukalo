@@ -1,10 +1,11 @@
 @set name=glukalo
-@set ndkbuild=d:\Android\android-ndk-r10e\ndk-build.cmd
-@set android=d:\Android\sdk\tools\android.bat
-@set ant=d:\Android\apache-ant-1.9.6\bin\ant.bat
-@set adb=d:\Android\sdk\platform-tools\adb.exe
+@set myandroiddir=g:\Android
 @set target=debug
 @set platform=android-15
+@set ndkbuild=%myandroiddir%\android-ndk-r10e\ndk-build.cmd
+@set android=%myandroiddir%\sdk\tools\android.bat
+@set ant=%myandroiddir%\apache-ant-1.9.6\bin\ant.bat
+@set adb=%myandroiddir%\sdk\platform-tools\adb.exe
 @echo off
 
 set step=%1

@@ -328,7 +328,7 @@ void Game::ChangeLevel()
 
 inline int Game::GetLevel(int newScore)
 {
-  int newLevel = newScore / 2;
+  int newLevel = newScore / 20;
   if(newLevel>=20) newLevel = 0;
   return newLevel;
 }

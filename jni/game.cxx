@@ -8,9 +8,12 @@ Game::Game()
 
   yMulValue = 1;
 
+  maxLevel = 0;
+
   Init();
 
-  audio = new MyAudio();
+//  audio = new MyAudio();
+  audio = nullptr;
   if(audio!=nullptr) if(!audio->Play()) audio = nullptr;
   if(audio==nullptr) MyCallback::Toast("Failed to start audio");
 }
@@ -74,6 +77,7 @@ void Game::Init()
   vOffsetX              = glGetUniformLocation(gapProgram, "vOffsetX");
   vGap                  = glGetUniformLocation(gapProgram, "vGap");
   vHalfSize             = glGetUniformLocation(gapProgram, "vHalfSize");
+  vLevel                = glGetUniformLocation(gapProgram, "vLevel");
 
   glEnableVertexAttribArray(vGapPosition);
   glEnableVertexAttribArray(vGapTextureCoordinate);
@@ -108,6 +112,7 @@ void Game::Restart()
   impulse     =  0;
   blockPos    =  1.5;
   score       =  0;
+  level       =  0;
 
   for(int i=0; i<MAX_COLUMNS; i++)
     gaps[i]=Rand()-0.5; // easy at start
@@ -115,6 +120,10 @@ void Game::Restart()
   glUseProgram(birdProgram);
   glUniform1f(vRadius, (float)1.0);
   glUseProgram(0);
+
+//  glUseProgram(gapProgram);
+//  glUniform1f(vLevel, (float)level);
+//  glUseProgram(0);
 
   gettimeofday(&lastTime, NULL);
 
@@ -189,8 +198,13 @@ void Game::Render()
         blockPos += SEGMENT;
         for(int i=0;i<MAX_COLUMNS-1;i++)
           gaps[i]=gaps[i+1];
-        gaps[MAX_COLUMNS-1]=(Rand()*1.8-0.9)*(1-2*BIRD_RADIUS);
+//        gaps[MAX_COLUMNS-1]=(Rand()*1.8-0.9)*(1-2*BIRD_RADIUS);
+//        gaps[MAX_COLUMNS-1]=Rand()-0.5;
+        gaps[MAX_COLUMNS-1]=(Rand()*1.4-0.7)*(1-2*BIRD_RADIUS);
         score++;
+        if(GetLevel(score) != level)
+          ChangeLevel();
+//        if (score % 2 == 0) ChangeLevel();
       }
     }
   }
@@ -237,6 +251,7 @@ void Game::Render()
   glUseProgram(gapProgram);
   for(int i=0; i<MAX_COLUMNS; i++)
   {
+    glUniform1f(vLevel, (float)GetLevel(score+i-1));
     glUniform1f(vOffsetX, blockPos + SEGMENT * i);
     glUniform1f(vGap, gaps[i]);
     glDrawArrays(GL_TRIANGLE_STRIP, 4, 4);
@@ -292,4 +307,28 @@ void Game::GameOver()
   char msg[40];
   sprintf(msg, "Game over: %d", score);
   MyCallback::Toast(msg);
+}
+
+void Game::ChangeLevel()
+{
+  level=GetLevel(score);
+  if(level>maxLevel) maxLevel = level;
+  if(level==0)
+    MyCallback::Toast("You win!");
+  else
+  {
+    char msg[32];
+    sprintf(msg, "Level %d", level + 1);
+    MyCallback::Toast(msg);
+  }
+  glUseProgram(gapProgram);
+  glUniform1f(vLevel, (float)level);
+  glUseProgram(0);
+}
+
+inline int Game::GetLevel(int newScore)
+{
+  int newLevel = newScore / 2;
+  if(newLevel>=20) newLevel = 0;
+  return newLevel;
 }

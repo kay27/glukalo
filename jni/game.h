@@ -15,11 +15,13 @@
   class Game
   {
     public:
+      void ChangeLevel();
       float Clamp(float x, float a, float b);
       bool Collision(float x0, float x1, float y0);
       Game();
       ~Game();
       void GameOver();
+      int GetLevel(int newScore);
       void Init();
       void Pause();
       void Tap();
@@ -43,11 +45,11 @@
 
       GLfloat gaps[MAX_COLUMNS];
 
-      int impulse, pause, score;
+      int impulse, pause, score, level, maxLevel;
 
       GLuint vb;
       GLint vPosition, vTextureCoordinate, vColor, vOffset, vSpeed, vRadius, vMul,
-        vGapPosition, vGapTextureCoordinate, vGap, vOffsetX, vHalfSize,
+        vGapPosition, vGapTextureCoordinate, vGap, vLevel, vOffsetX, vHalfSize,
         vFloorPosition;
      
       GLuint birdProgram, floorProgram, gapProgram;

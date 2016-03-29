@@ -86,13 +86,14 @@
     "uniform float vHalfSize;\n"
     "uniform float vLevel;\n"
     "varying vec4 vp;\n"
+    "float q;\n"
     "void main()\n"
     "{\n"
     "  if(abs(vp.y-vGap)+sin(vp.x*(99.0+sin(vLevel*333.0)*33.0))/(70.0-vLevel) < vHalfSize) discard;\n"
     "  if(vLevel<0.1)\n"
     "    gl_FragColor = vec4(sin(vp.x*88.0)/2.0+0.5, 0.0, sin(vp.y*41.0)/20.0+0.05, 1.0);\n"
     "  else if(vLevel<1.1)\n"
-    "    gl_FragColor = vec4(0.2, sin(vp.y*31.0)/2.0+0.5, 0.2, 1.0);\n"
+    "    gl_FragColor = vec4(0.2, sin(vp.y*31.0)/2.0+0.5, 0.4, 1.0);\n"
     "  else if(vLevel<2.1)\n"
     "    gl_FragColor = vec4(0.0, 0.0, cos(vp.y*vp.x*99.0)/2.0+0.5, 1.0);\n"
     "  else if(vLevel<3.1)\n"
@@ -100,7 +101,9 @@
     "  else if(vLevel<4.1)\n"
     "    gl_FragColor = vec4(1.0-vp.x*vp.y, 0.5, 0.5, 1.0);\n"
     "  else if(vLevel<5.1)\n"
-    "    gl_FragColor = vec4(1.0-vp.x*vp.y, 0.5, 0.5, 1.0);\n"
+    "    gl_FragColor = vec4(abs(vp.x*vp.y), abs(vp.x+vp.y)/2.0, abs(cos(vp.x*vp.y*239.0)), 1.0);\n"
+    "  else if(vLevel<6.1)\n"
+    "    { gl_FragColor = vec4(abs(sin(q*3333.0)), abs(sin(q*234.0)), abs(sin(q*195.0)), 1.0); q+=0.2938; }\n"
     "}\n"
   ;
 
@@ -119,7 +122,7 @@
     "varying vec4 vp;\n"
     "void main()\n"
     "{\n"
-    "  gl_FragColor = vec4((sin(vp.y*191.1+vp.x/0.001)+1.0)/2.0, 0.0, 0.0, 1.0);\n"
+    "  gl_FragColor = vec4((sin(vp.y*191.1+vp.x/0.001)+1.0)/2.0, abs(vp.x*vp.y), abs(vp.x*vp.y), 1.0);\n"
     "}\n"
   ;
 

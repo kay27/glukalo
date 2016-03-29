@@ -202,7 +202,7 @@ void Game::Render()
 //        gaps[MAX_COLUMNS-1]=Rand()-0.5;
         gaps[MAX_COLUMNS-1]=(Rand()*1.4-0.7)*(1-2*BIRD_RADIUS);
         score++;
-        if(GetLevel(score) != level)
+        if(GetLevel(score) > level)
           ChangeLevel();
 //        if (score % 2 == 0) ChangeLevel();
       }
@@ -328,6 +328,8 @@ void Game::ChangeLevel()
 
 inline int Game::GetLevel(int newScore)
 {
+  newScore += START_LEVEL * NEXT_LEVEL_SCORE;
+  newScore %= 20 * NEXT_LEVEL_SCORE;
   int newLevel = newScore / NEXT_LEVEL_SCORE;
   if(newLevel>=20) newLevel = 0;
   return newLevel;

@@ -102,7 +102,7 @@
     "  else if(vLevel<5.1)\n"
     "    gl_FragColor = vec4(abs(vp.x*vp.y), abs(vp.x+vp.y)/2.0, abs(cos(vp.x*vp.y*239.0)), 1.0);\n"
     "  else if(vLevel<6.1)\n"
-    "    { float q=fract((vp.x*4444.11+3.99)*(vp.y*7481.143+11.997)*3.99712*sin(vp.x*1299.7132)); gl_FragColor = vec4(q,q,q,1.0); }\n"
+    "    { float q=fract(sin(vp.x**vp.y*1299.7132)*11.54); gl_FragColor = vec4(q,q,q,1.0); }\n"
     "  else if(vLevel<7.1)\n"
     "    { float q=fract((vp.x+3.99)*(vp.y+11.997)*123.99712*sin(vp.x*999.7132)); gl_FragColor = vec4(q,0.0,0.4,1.0); }\n"
     "  else if(vLevel<8.1)\n"

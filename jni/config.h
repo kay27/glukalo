@@ -5,6 +5,8 @@
 
   const int NUMBER_OF_LEVELS = 20;
 
+  const float GAP_MAX_OFFSET = 0.7f; // from mid point
+
   const int START_LEVEL = 0;
 
   const int NEXT_LEVEL_SCORE = 3;

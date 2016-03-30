@@ -112,11 +112,16 @@ void Game::Restart()
   gameStarted =  0;
   impulse     =  0;
   blockPos    =  1.5;
+  floorOffset = 0;
   score       =  0;
   level       =  START_LEVEL;
+  swingSpeed  = 0;
 
   for(int i=0; i<MAX_COLUMNS; i++)
+  {
     gaps[i]=Rand()-0.5; // easy at start
+    swingVectors[i]=((i&1)<<1) - 1; //-1 or 1
+  }
 
   glUseProgram(birdProgram);
   glUniform1f(vRadius, (float)1.0);
@@ -193,19 +198,21 @@ void Game::Render()
     if(!gameOver)
     {
       blockPos -= deltaX;
+      floorOffset += deltaX;
       if(score==0 && blockPos <= -0.34) score = 1;
       if(blockPos < -1-COLUMN_HALFWIDTH)
       {
         blockPos += SEGMENT;
         for(int i=0;i<MAX_COLUMNS-1;i++)
+        {
           gaps[i]=gaps[i+1];
-//        gaps[MAX_COLUMNS-1]=(Rand()*1.8-0.9)*(1-2*BIRD_RADIUS);
-//        gaps[MAX_COLUMNS-1]=Rand()-0.5;
-        gaps[MAX_COLUMNS-1]=(Rand()*1.4-0.7)*(1-2*BIRD_RADIUS);
+          swingVectors[i]=swingVectors[i+1];
+        }
+        gaps[MAX_COLUMNS-1]=(Rand()*GAP_MAX_OFFSET*2-GAP_MAX_OFFSET)*(1-2*BIRD_RADIUS);
+        swingVectors[MAX_COLUMNS-1]=-swingVectors[MAX_COLUMNS-2];
         score++;
         if(GetLevel(score) > level)
           ChangeLevel();
-//        if (score % 2 == 0) ChangeLevel();
       }
     }
   }
@@ -227,8 +234,14 @@ void Game::Render()
 
   if(!gameOver)
     for(int i=0; i<MAX_COLUMNS-1; i++)
+    {
+      gaps[i]+=swingVectors[i]*swingSpeed*delta/500000;
+      if(gaps[i] > GAP_MAX_OFFSET*(1-2*BIRD_RADIUS)) swingVectors[i]=-1;
+      else if(gaps[i] < -GAP_MAX_OFFSET*(1-2*BIRD_RADIUS)) swingVectors[i]=1;
+
       if(Collision(blockPos+SEGMENT*i-COLUMN_HALFWIDTH, blockPos+SEGMENT*i+COLUMN_HALFWIDTH, gaps[i]))
         GameOver();
+    }
 
   glUseProgram(birdProgram);
   float deltaGameOver = 1.0;
@@ -259,7 +272,7 @@ void Game::Render()
   }
 
   glUseProgram(floorProgram);
-  glUniform1f(vFloorOffset, blockPos);
+  glUniform1f(vFloorOffset, floorOffset);
   glDrawArrays(GL_TRIANGLE_STRIP, 8, 4);
 
   if(audio!=nullptr)
@@ -315,6 +328,7 @@ void Game::ChangeLevel()
 {
   level=GetLevel(score);
   if(level>maxLevel) maxLevel = level;
+
   if(level==0)
     MyCallback::Toast("You win!");
   else
@@ -323,6 +337,9 @@ void Game::ChangeLevel()
     sprintf(msg, "Level %d", level + 1);
     MyCallback::Toast(msg);
   }
+
+  if(level==3) if(swingSpeed<0.1) swingSpeed+=0.01;
+
   glUseProgram(gapProgram);
   glUniform1f(vLevel, (float)level);
   glUseProgram(0);

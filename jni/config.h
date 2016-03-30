@@ -3,7 +3,7 @@
 
 # include <SLES/OpenSLES.h>
 
-  const int START_LEVEL = 6;
+  const int START_LEVEL = 14;
 
   const int NEXT_LEVEL_SCORE = 5;
 

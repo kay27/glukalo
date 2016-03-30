@@ -108,11 +108,19 @@
     "  else if(vLevel<8.1)\n"
 //    "    gl_FragColor = vec4(fract(vp.x*999.1), fract(vp.y*949.3), fract(vp.x*vp.y*198.19), 1.0);\n"
     "    gl_FragColor = vec4(0.0,fract(vp.x*999.1)*fract(vp.y*949.3), 0.0, 1.0);\n"
-    "  else if(vLevel<9.1)\n"
-//    "    gl_FragColor = vec4(fract(vp.x*999.1)*abs(sin(vp.x*999.1)),0.0,0.0,1.0);\n"
-    "    gl_FragColor = vec4(fract(vp.x*99.1)*abs(sin(vp.x*999.1)),0.0,0.0,1.0);\n"
-    "  else if(vLevel<10.1)\n"
+    "  else if(vLevel<9.1)\n" //bricks:
+    "    { float q=vp.x; if(fract(vp.y*6.0)>=0.5)q+=0.35; if((fract(vp.y*12.0)>0.2)&&(fract(q*7.0)>0.1)) gl_FragColor=vec4(1.0,0.0,0.0,1.0); else gl_FragColor=vec4(0.0,0.41,0.2,1.0); }\n"
+    "  else if(vLevel<10.1)\n" //nice blue:
     "    gl_FragColor = vec4(0.0,0.0,1.0-abs(sin(vp.x+vp.y+vp.x*vp.y)),1.0);\n"
+    "  else if(vLevel<11.1)\n" // red with 2 blue stripes:
+//    "    gl_FragColor = vec4(1.0-abs(sin(vp.x+vp.y+vp.x*vp.y)),0.0,fract(vp.x*99.1)*abs(sin(vp.x*999.1)),1.0);\n"
+    "    gl_FragColor = vec4(1.0-abs(sin(vp.x+vp.y+vp.x*vp.y)),0.0,fract(vp.x*9.1)*abs(sin(vp.x*3.1)),1.0);\n"
+    "  else if(vLevel<12.1)\n" // pink:
+    "    gl_FragColor = vec4(dot(vp,sin(vp)),0.7,0.8,1.0);\n"
+    "  else if(vLevel<13.1)\n" // jeans:
+    "    gl_FragColor = vec4(dot(vp,sin(vp*333.0)),0.5,dot(vp,cos(vp*333.0)),1.0);\n"
+    "  else if(vLevel<14.1)\n" // :
+    "    { float q=fract((vp.x+vp.y)*3.0)*2.0*3.1415926536; gl_FragColor = vec4(abs(sin(q)),abs(sin(q+3.1415926536/3.0)),abs(sin(q+3.1415926536/1.5)),1.0); }\n"
     "}\n"
   ;
 

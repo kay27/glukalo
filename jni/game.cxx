@@ -92,6 +92,7 @@ void Game::Init()
   MyShader::LinkProgram(floorProgram);
   glUseProgram(floorProgram);
   vFloorPosition = glGetAttribLocation(floorProgram, "vPosition");
+  vFloorOffset = glGetUniformLocation(floorProgram, "vOffset");
   glEnableVertexAttribArray(vFloorPosition);
   glVertexAttribPointer(vFloorPosition, 3, GL_FLOAT, false, sizeof(MyVertex), (void*)offsetof(MyVertex,pos));
   glUseProgram(0);
@@ -258,6 +259,7 @@ void Game::Render()
   }
 
   glUseProgram(floorProgram);
+  glUniform1f(vFloorOffset, blockPos);
   glDrawArrays(GL_TRIANGLE_STRIP, 8, 4);
 
   if(audio!=nullptr)
@@ -329,8 +331,8 @@ void Game::ChangeLevel()
 inline int Game::GetLevel(int newScore)
 {
   newScore += START_LEVEL * NEXT_LEVEL_SCORE;
-  newScore %= 20 * NEXT_LEVEL_SCORE;
+  newScore %= NUMBER_OF_LEVELS * NEXT_LEVEL_SCORE;
   int newLevel = newScore / NEXT_LEVEL_SCORE;
-  if(newLevel>=20) newLevel = 0;
+  if(newLevel >= NUMBER_OF_LEVELS) newLevel = 0;
   return newLevel;
 }

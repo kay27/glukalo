@@ -50,7 +50,7 @@
       GLuint vb;
       GLint vPosition, vTextureCoordinate, vColor, vOffset, vSpeed, vRadius, vMul,
         vGapPosition, vGapTextureCoordinate, vGap, vLevel, vOffsetX, vHalfSize,
-        vFloorPosition;
+        vFloorPosition, vFloorOffset;
      
       GLuint birdProgram, floorProgram, gapProgram;
 

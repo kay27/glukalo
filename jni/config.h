@@ -3,9 +3,11 @@
 
 # include <SLES/OpenSLES.h>
 
-  const int START_LEVEL = 14;
+  const int NUMBER_OF_LEVELS = 20;
 
-  const int NEXT_LEVEL_SCORE = 5;
+  const int START_LEVEL = 0;
+
+  const int NEXT_LEVEL_SCORE = 3;
 
   const int MAX_COLUMNS = 3;
 

@@ -119,8 +119,18 @@
     "    gl_FragColor = vec4(dot(vp,sin(vp)),0.7,0.8,1.0);\n"
     "  else if(vLevel<13.1)\n" // jeans:
     "    gl_FragColor = vec4(dot(vp,sin(vp*333.0)),0.5,dot(vp,cos(vp*333.0)),1.0);\n"
-    "  else if(vLevel<14.1)\n" // :
+    "  else if(vLevel<14.1)\n" // rainbow:
     "    { float q=fract((vp.x+vp.y)*3.0)*2.0*3.1415926536; gl_FragColor = vec4(abs(sin(q)),abs(sin(q+3.1415926536/3.0)),abs(sin(q+3.1415926536/1.5)),1.0); }\n"
+    "  else if(vLevel<15.1)\n" // :
+    "    { float q=fract((vp.x+vp.y)*5.0)*2.0*3.1415926536; gl_FragColor = vec4(abs(cos(q)),0.2,abs(sin(q)),1.0); }\n"
+    "  else if(vLevel<16.1)\n" // :
+    "    { float q=fract(vp.x*vp.y*5.0)*3.1415926536; gl_FragColor = vec4(0.0,sin(q),0.0,1.0); }\n"
+    "  else if(vLevel<17.1)\n" // :
+    "    { float q=fract(vp.x*19.0); if(q>=0.5) q=fract(vp.y*19.0); if(q>0.5) gl_FragColor = vec4(0.0,0.0,q,1.0); else gl_FragColor = vec4(0.0,fract(vp.y*111.0*cos(vp.x)),0.0,1.0); }\n"
+    "  else if(vLevel<18.1)\n" // gray:
+    "    gl_FragColor = vec4(0.7,0.7,0.7,1.0);\n"
+    "  else if(vLevel<19.1)\n" // :
+    "    gl_FragColor = vec4(fract(vp.x*11.39),fract(vp.x*12.37),fract(vp.x*13.44),1.0);\n"
     "}\n"
   ;
 
@@ -137,9 +147,10 @@
   static const char * floorFragmentShader =
     "precision mediump float;\n"
     "varying vec4 vp;\n"
+    "uniform float vOffset;\n"
     "void main()\n"
     "{\n"
-    "  gl_FragColor = vec4((sin(vp.y*191.1+vp.x/0.001)+1.0)/2.0, abs(vp.x*vp.y), abs(vp.x*vp.y), 1.0);\n"
+    "  gl_FragColor = vec4((sin(vp.y*191.1+(vp.x-vOffset)/0.001)+1.0)/2.0, abs((vp.x-vOffset)*vp.y), abs((vp.x-vOffset)*vp.y), 1.0);\n"
     "}\n"
   ;
 

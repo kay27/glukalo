@@ -41,9 +41,9 @@
       float gameOverTime;
 
       GLfloat speed, x, y, speedVect, yMulValue,
-        blockPos, floorOffset, swingSpeed;
+        blockPos, floorOffset, swingSpeed, jawsSpeed;
 
-      GLfloat gaps[MAX_COLUMNS], swingVectors[MAX_COLUMNS];
+      GLfloat gaps[MAX_COLUMNS], swingVectors[MAX_COLUMNS], jawsVectors[MAX_COLUMNS];
 
       int impulse, pause, score, level, maxLevel;
 

@@ -116,11 +116,13 @@ void Game::Restart()
   score       =  0;
   level       =  START_LEVEL;
   swingSpeed  = 0;
+  jawsSpeed   = 0;
 
   for(int i=0; i<MAX_COLUMNS; i++)
   {
     gaps[i]=Rand()-0.5; // easy at start
     swingVectors[i]=((i&1)<<1) - 1; //-1 or 1
+    jawsVectors[i]=1;
   }
 
   glUseProgram(birdProgram);
@@ -207,9 +209,11 @@ void Game::Render()
         {
           gaps[i]=gaps[i+1];
           swingVectors[i]=swingVectors[i+1];
+          jawsVectors[i]=jawsVectors[i+1];
         }
         gaps[MAX_COLUMNS-1]=(Rand()*GAP_MAX_OFFSET*2-GAP_MAX_OFFSET)*(1-2*BIRD_RADIUS);
         swingVectors[MAX_COLUMNS-1]=-swingVectors[MAX_COLUMNS-2];
+        jawsVectors[MAX_COLUMNS-1]=jawsVectors[MAX_COLUMNS-2];
         score++;
         if(GetLevel(score) > level)
           ChangeLevel();
@@ -339,6 +343,7 @@ void Game::ChangeLevel()
   }
 
   if(level==3) if(swingSpeed<0.1) swingSpeed+=0.01;
+  if(level==6) if(jawsSpeed<0.1) jawsSpeed+=0.01;
 
   glUseProgram(gapProgram);
   glUniform1f(vLevel, (float)level);

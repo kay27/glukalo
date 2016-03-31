@@ -15,6 +15,7 @@
   class Game
   {
     public:
+      void AddScore();
       void ChangeLevel();
       float Clamp(float x, float a, float b);
       bool Collision(float x0, float x1, float y0, float gapHalfSize);
@@ -31,6 +32,7 @@
       void Restart();
       void Resume();
       void Untap();
+      void UpdateHighScore();
 
     protected:
 
@@ -45,7 +47,7 @@
 
       GLfloat gaps[MAX_COLUMNS], swingVectors[MAX_COLUMNS], gapHalfSizes[MAX_COLUMNS], jawsVectors[MAX_COLUMNS];
 
-      int impulse, pause, score, level, maxLevel;
+      int impulse, pause, score, highScore, level, maxLevel;
 
       GLuint vb;
       GLint vPosition, vTextureCoordinate, vColor, vOffset, vSpeed, vRadius, vMul,

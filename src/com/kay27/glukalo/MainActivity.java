@@ -72,16 +72,16 @@ public class MainActivity extends Activity
       public void run(){ Toast.makeText(activity, message, Toast.LENGTH_SHORT).show(); } } );
   }
 
-  public static final String MY_PREFS_NAME = "com_kay27_Glukalo_store"; 
-  public static void SetHighScore(int hs)
+  public static final String PREFS_ID = "com_kay27_Glukalo_store"; 
+  public static void CBSetHighScore(final int hs)
   {
-    SharedPreferences.Editor editor = activity.getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
+    SharedPreferences.Editor editor = activity.getSharedPreferences(PREFS_ID, MODE_PRIVATE).edit();
     editor.putInt("hs", hs);
     editor.commit();
   }
-  public static int GetHighScore()
+  public static int CBGetHighScore()
   {
-    return activity.getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).getInt("hs", 0);
+    return activity.getSharedPreferences(PREFS_ID, MODE_PRIVATE).getInt("hs", 0);
   }
 
   private MyGLSurfaceView mGLView;

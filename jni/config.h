@@ -9,7 +9,7 @@
 
   const int START_LEVEL = 0;
 
-  const int NEXT_LEVEL_SCORE = 1;
+  const int NEXT_LEVEL_SCORE = 20;
 
   const int MAX_COLUMNS = 3;
 

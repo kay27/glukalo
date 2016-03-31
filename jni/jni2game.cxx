@@ -12,7 +12,7 @@ void MyCallback::Call(const char *javaStaticMethod, const int n)
 {
   if(jo && jnienv)
     if(jclass c = jnienv->FindClass(ACTIVITY_NAME))
-      if(jmethodID m = jnienv->GetStaticMethodID(c, javaStaticMethod, "(Ljava/lang/String;)V"))
+      if(jmethodID m = jnienv->GetStaticMethodID(c, javaStaticMethod, "(I)V"))
         jnienv->CallStaticVoidMethod(c, m, n);
 }
 
@@ -20,7 +20,7 @@ int MyCallback::Call(const char *javaStaticMethod)
 {
   if(jo && jnienv)
     if(jclass c = jnienv->FindClass(ACTIVITY_NAME))
-      if(jmethodID m = jnienv->GetStaticMethodID(c, javaStaticMethod, "(Ljava/lang/String;)V"))
+      if(jmethodID m = jnienv->GetStaticMethodID(c, javaStaticMethod, "()I"))
         return jnienv->CallStaticIntMethod(c, m);
   return -1;
 }

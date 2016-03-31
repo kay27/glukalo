@@ -20,8 +20,8 @@
     public:
       static void Toast(const char *message) { Call("ToastCallback", message); }
       static void Quit(const char *message) { Call("ErrorCallback", message); }
-      static void SetHighScore(const int hs) { Call("SetHighScore", hs); }
-      static int GetHighScore() { return Call("GetHighScore"); }
+      static void SetHighScore(const int hs) { Call("CBSetHighScore", hs); }
+      static int GetHighScore() { return Call("CBGetHighScore"); }
 
     protected:
       static void Call(const char *javaStaticMethod, const char *message);

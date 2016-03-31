@@ -10,6 +10,9 @@ Game::Game()
 
   maxLevel = 0;
 
+  highScore = MyCallback::GetHighScore();
+//  highScore = 12;
+
   Init();
 
 //  audio = new MyAudio();
@@ -203,7 +206,7 @@ void Game::Render()
     {
       blockPos -= deltaX;
       floorOffset += deltaX;
-      if(score==0 && blockPos <= -0.34) score = 1;
+      if(score==0 && blockPos <= -0.34) AddScore();
       if(blockPos < -1-COLUMN_HALFWIDTH)
       {
         blockPos += SEGMENT;
@@ -218,9 +221,7 @@ void Game::Render()
         swingVectors[MAX_COLUMNS-1]=-swingVectors[MAX_COLUMNS-2];
         jawsVectors[MAX_COLUMNS-1]=jawsVectors[MAX_COLUMNS-2];
         gapHalfSizes[MAX_COLUMNS-1]=GAP_HALFSIZE;
-        score++;
-        if(GetLevel(score) > level)
-          ChangeLevel();
+        AddScore();
       }
     }
   }
@@ -332,8 +333,9 @@ void Game::GameOver()
 {
   gameOverTime = 0;
   gameOver=1;
+  UpdateHighScore();
   char msg[40];
-  sprintf(msg, "Game over: %d", score);
+  sprintf(msg, "Game over: %d / %d", score, highScore);
   MyCallback::Toast(msg);
 }
 
@@ -354,16 +356,11 @@ void Game::ChangeLevel()
     MyCallback::Toast(msg);
   }
 
-  int realLevelNumber = gameLooped * NEXT_LEVEL_SCORE + level;
-
-  swingSpeed=((float)(realLevelNumber/3))*0.01; if(swingSpeed>0.1) swingSpeed=0.1;
-//  if(level==3) if(swingSpeed<0.1) swingSpeed+=0.01;
-  jawsSpeed=((float)(realLevelNumber/6))*0.01; if(jawsSpeed>0.1) jawsSpeed=0.1;
-//  if(level==6) if(jawsSpeed<0.1) jawsSpeed+=0.01;
-
   glUseProgram(gapProgram);
   glUniform1f(vLevel, (float)level);
   glUseProgram(0);
+
+  UpdateHighScore();
 }
 
 inline int Game::GetLevel(int newScore)
@@ -373,4 +370,30 @@ inline int Game::GetLevel(int newScore)
   int newLevel = newScore / NEXT_LEVEL_SCORE;
   if(newLevel >= NUMBER_OF_LEVELS) newLevel = 0;
   return newLevel;
+}
+
+void Game::UpdateHighScore()
+{
+  if(score<=highScore)
+    return;
+
+  highScore=score;
+
+  MyCallback::SetHighScore(highScore);
+}
+
+void Game::AddScore()
+{
+  score++;
+
+  swingSpeed=((float)(score/3))*0.01;
+  if(swingSpeed>0.1)
+    swingSpeed=0.1;
+
+  jawsSpeed=((float)(score/6))*0.01;
+  if(jawsSpeed>0.1)
+    jawsSpeed=0.1;
+
+  if(GetLevel(score) > level)
+    ChangeLevel();
 }

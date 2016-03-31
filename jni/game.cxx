@@ -120,10 +120,12 @@ void Game::Restart()
   impulse     =  0;
   blockPos    =  1.5;
   floorOffset = 0;
-  score       =  0;
-  level       =  START_LEVEL;
-  swingSpeed  = 0;
-  jawsSpeed   = 0;
+//  score       =  0;
+//  swingSpeed  = 0;
+//  jawsSpeed   = 0;
+  level       =  -1;
+  score       =  highScore - (highScore % NEXT_LEVEL_SCORE) - 1;
+  AddScore();
 
   for(int i=0; i<MAX_COLUMNS; i++)
   {
@@ -347,16 +349,19 @@ void Game::ChangeLevel()
   level=GetLevel(score);
   if(level>maxLevel) maxLevel = level;
 
-  if(level==0)
+  if(blockPos<1.4)
   {
-    gameLooped++;
-    MyCallback::Toast("You win!");
-  }
-  else
-  {
-    char msg[32];
-    sprintf(msg, "Level %d", level + 1);
-    MyCallback::Toast(msg);
+    if(level==0)
+    {
+      gameLooped++;
+      MyCallback::Toast("You win!");
+    }
+    else
+    {
+      char msg[32];
+      sprintf(msg, "Level %d", level + 1);
+      MyCallback::Toast(msg);
+    }
   }
 
   glUseProgram(gapProgram);

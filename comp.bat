@@ -1,6 +1,6 @@
 @set name=glukalo
 @set myandroiddir=g:\Android
-@set target=release
+@set target=debug
 @set platform=android-15
 @set ndkbuild=%myandroiddir%\android-ndk-r10e\ndk-build.cmd
 @set android=%myandroiddir%\sdk\tools\android.bat

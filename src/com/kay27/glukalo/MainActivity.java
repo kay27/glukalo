@@ -5,6 +5,7 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.content.pm.ConfigurationInfo;
 import android.content.res.Configuration;
+import android.content.SharedPreferences;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.util.Log;
@@ -69,6 +70,18 @@ public class MainActivity extends Activity
   {
     activity.runOnUiThread(new Runnable() {
       public void run(){ Toast.makeText(activity, message, Toast.LENGTH_SHORT).show(); } } );
+  }
+
+  public static final String MY_PREFS_NAME = "com_kay27_Glukalo_store"; 
+  public static void SetHighScore(int hs)
+  {
+    SharedPreferences.Editor editor = activity.getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
+    editor.putInt("hs", hs);
+    editor.commit();
+  }
+  public static int GetHighScore()
+  {
+    return activity.getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).getInt("hs", 0);
   }
 
   private MyGLSurfaceView mGLView;

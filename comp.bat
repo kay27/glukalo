@@ -1,6 +1,6 @@
 @set name=glukalo
 @set myandroiddir=g:\Android
-@set target=debug
+@set target=release
 @set platform=android-15
 @set ndkbuild=%myandroiddir%\android-ndk-r10e\ndk-build.cmd
 @set android=%myandroiddir%\sdk\tools\android.bat
@@ -36,9 +36,16 @@ if %step% leq 3 (
   call:callandlog "Step 3: Ant %target%" ant.log
   if errorlevel 1 exit /b %errorlevel%
   if "%only%" equ "only" exit /b 0
+  if "%target%"=="release" (
+    jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore release.keystore bin\%name%-%target%-unsigned.apk -storepass secret -keypass secret mykey -signedjar %name%.apk
+  )
 )
 if %step% leq 4 (
-  set ccmd=%adb% install bin\%name%-%target%.apk
+  if "%target%"=="release" (
+    set ccmd=%adb% install %name%.apk
+  ) else (
+    set ccmd=%adb% install bin\%name%-%target%.apk
+  )
   call:callandlog "Step 4: ADB" adb.log
   if errorlevel 1 exit /b %errorlevel%
   if "%only%" equ "only" exit /b 0

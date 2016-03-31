@@ -17,7 +17,7 @@
     public:
       void ChangeLevel();
       float Clamp(float x, float a, float b);
-      bool Collision(float x0, float x1, float y0);
+      bool Collision(float x0, float x1, float y0, float gapHalfSize);
       Game();
       ~Game();
       void GameOver();
@@ -34,7 +34,7 @@
 
     protected:
 
-      int firstRun, gameStarted, gameOver;
+      int firstRun, gameStarted, gameOver, gameLooped;
 
       struct timeval lastTime;
 
@@ -43,7 +43,7 @@
       GLfloat speed, x, y, speedVect, yMulValue,
         blockPos, floorOffset, swingSpeed, jawsSpeed;
 
-      GLfloat gaps[MAX_COLUMNS], swingVectors[MAX_COLUMNS], jawsVectors[MAX_COLUMNS];
+      GLfloat gaps[MAX_COLUMNS], swingVectors[MAX_COLUMNS], gapHalfSizes[MAX_COLUMNS], jawsVectors[MAX_COLUMNS];
 
       int impulse, pause, score, level, maxLevel;
 

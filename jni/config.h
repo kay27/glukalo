@@ -9,13 +9,15 @@
 
   const int START_LEVEL = 0;
 
-  const int NEXT_LEVEL_SCORE = 3;
+  const int NEXT_LEVEL_SCORE = 1;
 
   const int MAX_COLUMNS = 3;
 
   const float BIRD_RADIUS = 0.1f;
 
   const float GAP_HALFSIZE = 0.27;
+  const float GAP_HALFSIZE_MIN = 0.2;
+  const float GAP_HALFSIZE_MAX = 0.381;
 
   const float COLUMN_HALFWIDTH = 0.16;
 

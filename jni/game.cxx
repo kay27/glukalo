@@ -15,10 +15,13 @@ Game::Game()
 
   Init();
 
-//  audio = new MyAudio();
-  audio = nullptr;
+/*
+  audio = new MyAudio();
   if(audio!=nullptr) if(!audio->Play()) audio = nullptr;
   if(audio==nullptr) MyCallback::Toast("Failed to start audio");
+*/
+
+  audio = nullptr;
 }
 
 Game::~Game()

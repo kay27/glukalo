@@ -16,7 +16,7 @@
   const float BIRD_RADIUS = 0.1f;
 
   const float GAP_HALFSIZE = 0.27;
-  const float GAP_HALFSIZE_MIN = 0.2;
+  const float GAP_HALFSIZE_MIN = 0.24;
   const float GAP_HALFSIZE_MAX = 0.381;
 
   const float COLUMN_HALFWIDTH = 0.16;

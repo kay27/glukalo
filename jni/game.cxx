@@ -210,7 +210,7 @@ void Game::Render()
     if(!gameOver)
     {
       blockPos -= deltaX;
-      floorOffset += deltaX;
+      floorOffset += deltaX; if(floorOffset > 553.305561) floorOffset -= 553.305561;
       if(score==0 && blockPos <= -0.34) AddScore();
       if(blockPos < -1-COLUMN_HALFWIDTH)
       {

@@ -157,4 +157,51 @@
     "}\n"
   ;
 
+  static const char * fontVertexShader =
+    "attribute vec4 vCharPos;\n"
+    "attribute vec4 vCharTC;\n"
+    "attribute int vCharCode;\n"
+    "varying vec4 vp;\n"
+    "varying vec4 tc;\n"
+    "void main()\n"
+    "{\n"
+    "  gl_Position = vCharPos;\n"
+    "  vp = vPosition;\n"
+    "  tc = vCharTC;\n"
+    "}\n"
+  ;
+
+  static const char * fontFragmentShader =
+    "precision mediump float;\n"
+    "uniform float vCharHeight;\n"
+    "uniform float vCharMul;\n"
+    "varying vec4 vp;\n"
+    "varying vec4 tc;\n"
+    "void main()\n"
+    "#define OVAL 1.0\n"
+    "#define CIRC 2.0\n"
+    "#define LINE 3.0\n"
+    "#define OTOP 4.0\n"
+    "#define STOP 0.0\n"
+    "{\n"
+    "  float chars[10*3*5]=float[]\n"
+    "  (\n"
+    "    OVAL, 0.0, 0.0, 0.8, 1.0, STOP, 0.0, 0.0, 0.0, 0.0, STOP, 0.0, 0.0, 0.0, 0.0,\n" //0
+    "    LINE,-0.5, 0.0, 0.5,-1.0, LINE, 0.5, 1.0, 0.5,-1.0, STOP, 0.0, 0.0, 0.0, 0.0,\n" //1
+    "    OTOP, 0.0, 0.0, 0.8, 1.0, LINE, 0.8, 0.0,-0.8,-1.0, LINE,-0.8,-1.0, 0.8,-0.0,\n" //2
+    "  );\n"
+    "  int offset=(vCharCode-48)*3*5;\n"
+    "  float distanceFromCenter = distance(vec2(vp.x*vCharMul, vp.y), vec2(tc.x*vCharMul,tc.y));\n"
+    "  if(distanceFromCenter > vCharHeight/2.0) discard;\n"
+    "  float distanceFromEye = distance(vec2(vp.x*vMul + 0.5*vRadius, vp.y + 0.5*vRadius), vec2(tc.x*vMul,tc.y));\n"
+    "  if(distanceFromEye < 0.1*vRadius) gl_FragColor=vec4(0.0,0.0,0.0,1.0);\n"
+    "  else if(distanceFromEye < 0.3*vRadius) gl_FragColor=vec4(1.0,1.0,0.99,1.0);\n"
+    "  else if(distanceFromEye < 0.32*vRadius) gl_FragColor=vec4(0.0,0.0,0.0,1.0);\n"
+    "  else gl_FragColor = vColor * (1.0-distanceFromCenter/3.0);\n"
+
+    "  float x=vp.x+vOffset;\n"
+    "  gl_FragColor = vec4(fract(x*8.11+vp.y*11.3), fract(x*8.21+vp.y*11.9), fract(x*8.31+vp.y*12.19), 1.0);\n"
+    "}\n"
+  ;
+
 #endif // #ifndef H_SHADER_GLUKALO

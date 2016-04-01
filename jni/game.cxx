@@ -398,11 +398,11 @@ void Game::AddScore()
 
   score++;
 
-  swingSpeed=((float)(score/3))*0.01;
+  swingSpeed=((float)(score/3))*0.005;
   if(swingSpeed>0.1)
     swingSpeed=0.1;
 
-  jawsSpeed=((float)(score/6))*0.01;
+  jawsSpeed=((float)(score/7))*0.01;
   if(jawsSpeed>0.1)
     jawsSpeed=0.1;
 

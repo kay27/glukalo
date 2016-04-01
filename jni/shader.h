@@ -179,9 +179,11 @@
     "varying vec4 tc;\n"
     "void main()\n"
     "#define OVAL 1.0\n"
-    "#define CIRC 2.0\n"
+//    "#define CIRC 2.0\n"
     "#define LINE 3.0\n"
     "#define OTOP 4.0\n"
+    "#define ORIG 5.0\n"
+    "#define OLEF 6.0\n"
     "#define STOP 0.0\n"
     "{\n"
     "  float chars[10*3*5]=float[]\n"
@@ -189,6 +191,13 @@
     "    OVAL, 0.0, 0.0, 0.8, 1.0, STOP, 0.0, 0.0, 0.0, 0.0, STOP, 0.0, 0.0, 0.0, 0.0,\n" //0
     "    LINE,-0.5, 0.0, 0.5,-1.0, LINE, 0.5, 1.0, 0.5,-1.0, STOP, 0.0, 0.0, 0.0, 0.0,\n" //1
     "    OTOP, 0.0, 0.0, 0.8, 1.0, LINE, 0.8, 0.0,-0.8,-1.0, LINE,-0.8,-1.0, 0.8,-0.0,\n" //2
+    "    ORIG,-0.8, 0.5, 1.6, 1.0, ORIG,-0.8,-0.5, 1.6, 1.0, STOP, 0.0, 0.0, 0.0, 0.0,\n" //3
+    "    LINE,-0.8, 1.0,-0.8, 0.0, LINE,-0.8, 0.0, 0.8, 0.0, LINE, 0.8, 1.0, 0.8,-1.0,\n" //4
+    "    ORIG,-0.8,-0.5, 1.6, 1.0, LINE,-0.8, 0.0,-0.8, 1.0, LINE,-0.8, 1.0, 0.8, 1.0,\n" //5
+    "    OVAL, 0.0,-0.5, 0.8, 1.0, OLEF, 0.8, 0.0, 1.6, 2.0, STOP, 0.0, 0.0, 0.0, 0.0,\n" //6
+    "    LINE,-0.8, 1.0, 0.8, 1.0, LINE, 0.8, 1.0,-0.8,-1.0, STOP, 0.0, 0.0, 0.0, 0.0,\n" //7
+    "    OVAL, 0.0, 0.5, 0.8, 1.0, OVAL, 0.0,-0.5, 0.8, 1.0, STOP, 0.0, 0.0, 0.0, 0.0,\n" //8
+    "    OVAL, 0.0, 0.5, 0.8, 1.0, ORIG,-0.8, 0.0, 1.6, 2.0, STOP, 0.0, 0.0, 0.0, 0.0,\n" //9
     "  );\n"
     "  int offset=(vCharCode-48)*3*5;\n"
     "  float distanceFromCenter = distance(vec2(vp.x*vCharMul, vp.y), vec2(tc.x*vCharMul,tc.y));\n"

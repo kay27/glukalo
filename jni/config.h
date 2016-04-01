@@ -7,19 +7,22 @@
 
   const float GAP_MAX_OFFSET = 0.7f; // from mid point
 
+  const float FLY_BACK = 0.34;
+
   const int START_LEVEL = 0;
 
   const int NEXT_LEVEL_SCORE = 20;
+//  const int NEXT_LEVEL_SCORE = 4;
 
   const int MAX_COLUMNS = 3;
 
   const float BIRD_RADIUS = 0.1f;
 
-  const float GAP_HALFSIZE = 0.27;
-  const float GAP_HALFSIZE_MIN = 0.24;
+  const float GAP_HALFSIZE = 0.28;
+  const float GAP_HALFSIZE_MIN = 0.26;
   const float GAP_HALFSIZE_MAX = 0.381;
 
-  const float COLUMN_HALFWIDTH = 0.16;
+  const float COLUMN_HALFWIDTH = 0.14;
 
   const float FLOOR_HEIGHT = 0.07;
 

@@ -11,7 +11,6 @@ Game::Game()
   maxLevel = 0;
 
   highScore = MyCallback::GetHighScore();
-//  highScore = 12;
 
   Init();
 
@@ -110,22 +109,20 @@ void Game::Init()
 
 void Game::Restart()
 {
-  y           =  0;
-  x           =  0;
-  speed       =  0;
-  speedVect   = -0.0023;
-  gameOver    =  0;
-  gameStarted =  0;
-  gameLooped  =  0;
-  impulse     =  0;
-  blockPos    =  1.5;
-  floorOffset = 0;
-//  score       =  0;
-//  swingSpeed  = 0;
-//  jawsSpeed   = 0;
-  level       =  -1;
-  score       =  highScore - (highScore % NEXT_LEVEL_SCORE) - 1;
+  y              =  0;
+  x              =  0;
+  speed          =  0;
+  speedVect      = -0.0023;
+  gameOver       =  0;
+  gameStarted    =  0;
+  gameLooped     =  0;
+  impulse        =  0;
+  blockPos       =  1.5;
+  floorOffset    =  0;
+  level          = -1;
+  score          =  highScore - (highScore % NEXT_LEVEL_SCORE) - 1;
   AddScore();
+  scoreRestarted =  (MAX_COLUMNS+1) >> 1;
 
   for(int i=0; i<MAX_COLUMNS; i++)
   {
@@ -202,16 +199,16 @@ void Game::Render()
   {
     speed+=delta*ACCELERATION;
     float deltaX = delta*H_SPEED;
-    if(x>-0.33)
+    if(x>-FLY_BACK)
     {
       x=x-deltaX;
-      if(x<-0.34) x=-0.34;
+      if(x<-FLY_BACK) x=-FLY_BACK;
     }
     if(!gameOver)
     {
       blockPos -= deltaX;
       floorOffset += deltaX; if(floorOffset > 553.305561) floorOffset -= 553.305561;
-      if(score==0 && blockPos <= -0.34) AddScore();
+      if((scoreRestarted == 2) && (blockPos <= -FLY_BACK)) AddScore();
       if(blockPos < -1-COLUMN_HALFWIDTH)
       {
         blockPos += SEGMENT;
@@ -281,9 +278,13 @@ void Game::Render()
   glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
   glUseProgram(gapProgram);
+//  if(blockPos <= -1 - COLUMN_HALFWIDTH + SEGMENT) blockScore--;
   for(int i=0; i<MAX_COLUMNS; i++)
   {
-    glUniform1f(vLevel, (float)GetLevel(score+i-1));
+    int blockScore = score+i-1;
+    if(i==0 && scoreRestarted) blockScore++;
+//    glUniform1f(vLevel, (float)GetLevel(score+i-1));
+    glUniform1f(vLevel, (float)GetLevel(blockScore));
     glUniform1f(vOffsetX, blockPos + SEGMENT * i);
     glUniform1f(vGap, gaps[i]);
     glUniform1f(vHalfSize, gapHalfSizes[i]);
@@ -373,6 +374,7 @@ void Game::ChangeLevel()
 
 inline int Game::GetLevel(int newScore)
 {
+  if(newScore<0) newScore=0;
   newScore += START_LEVEL * NEXT_LEVEL_SCORE;
   newScore %= NUMBER_OF_LEVELS * NEXT_LEVEL_SCORE;
   int newLevel = newScore / NEXT_LEVEL_SCORE;
@@ -392,6 +394,8 @@ void Game::UpdateHighScore()
 
 void Game::AddScore()
 {
+  if(scoreRestarted>0) scoreRestarted--;
+
   score++;
 
   swingSpeed=((float)(score/3))*0.01;

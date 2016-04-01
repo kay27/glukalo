@@ -36,7 +36,7 @@
 
     protected:
 
-      int firstRun, gameStarted, gameOver, gameLooped;
+      int firstRun, gameStarted, gameOver, gameLooped, scoreRestarted;
 
       struct timeval lastTime;
 

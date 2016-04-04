@@ -52,9 +52,10 @@
       GLuint vb;
       GLint vPosition, vTextureCoordinate, vColor, vOffset, vSpeed, vRadius, vMul,
         vGapPosition, vGapTextureCoordinate, vGap, vLevel, vOffsetX, vHalfSize,
-        vFloorPosition, vFloorOffset;
+        vFloorPosition, vFloorOffset, vFontPosition, vFontOffset, vFontCharCode,
+        vFontColor;
      
-      GLuint birdProgram, floorProgram, gapProgram;
+      GLuint birdProgram, floorProgram, gapProgram, fontProgram;
 
       MyAudio *audio;
   };

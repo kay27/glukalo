@@ -102,6 +102,20 @@ void Game::Init()
   glVertexAttribPointer(vFloorPosition, 3, GL_FLOAT, false, sizeof(MyVertex), (void*)offsetof(MyVertex,pos));
   glUseProgram(0);
 
+  fontProgram = MyShader::CreateProgram();
+  MyShader::AttachVertexShader(fontProgram, fontVertexShader);
+  MyShader::AttachFragmentShader(fontProgram, fontFragmentShader);
+  MyShader::LinkProgram(fontProgram);
+  glUseProgram(fontProgram);
+  vFontPosition = glGetAttribLocation(fontProgram, "vCharPos");
+  vFontOffset = glGetAttribLocation(fontProgram, "vCharTC");
+  vFontCharCode = glGetUniformLocation(fontProgram, "vCharCode");
+  vFontColor = glGetUniformLocation(fontProgram, "vCharColor");
+  glEnableVertexAttribArray(vFontPosition);
+  glVertexAttribPointer(vFloorPosition, 3, GL_FLOAT, false, sizeof(MyVertex), (void*)offsetof(MyVertex,pos));
+  glVertexAttribPointer(vFontOffset, 2, GL_FLOAT, false, sizeof(MyVertex), (void*)offsetof(MyVertex,txtcrds));
+  glUseProgram(0);
+
   glClearColor(0.0, 0.0, 0.0, 1.0);
 
   Restart();
@@ -166,6 +180,8 @@ void Game::Resize(int w, int h)
     yMulValue = float(w)/h;
     glUseProgram(birdProgram);
     glUniform1f(vMul, yMulValue);
+    glUseProgram(fontProgram);
+    glUniform1f(vCharMul, yMulValue);
     glUseProgram(0);
   }
 }
@@ -294,6 +310,12 @@ void Game::Render()
   glUseProgram(floorProgram);
   glUniform1f(vFloorOffset, floorOffset);
   glDrawArrays(GL_TRIANGLE_STRIP, 8, 4);
+
+  glUseProgram(fontProgram);
+  glUniform1i(vFontCharCode, '0');
+  glUniform4f(vFontColor, 1.0f, 0.7f, 0.7f, 1.0f);
+  glDrawArrays(GL_TRIANGLE_STRIP, 12, 4);
+
 
   if(audio!=nullptr)
   {

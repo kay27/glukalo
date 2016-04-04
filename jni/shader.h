@@ -198,21 +198,38 @@
     "    LINE,-0.8, 1.0, 0.8, 1.0, LINE, 0.8, 1.0,-0.8,-1.0, STOP, 0.0, 0.0, 0.0, 0.0,\n" //7
     "    OVAL, 0.0, 0.5, 0.8, 1.0, OVAL, 0.0,-0.5, 0.8, 1.0, STOP, 0.0, 0.0, 0.0, 0.0,\n" //8
     "    OVAL, 0.0, 0.5, 0.8, 1.0, ORIG,-0.8, 0.0, 1.6, 2.0, STOP, 0.0, 0.0, 0.0, 0.0,\n" //9
+    "    OVAL, 0.0, 0.5, 0.2, 0.2, OVAL, 0.0,-0.5, 0.2, 0.2, STOP, 0.0, 0.0, 0.0, 0.0,\n" //:
+    "    OVAL, 0.0, 0.5, 0.2, 0.2, OVAL, 0.0,-0.5, 0.2, 0.2, LINE,-0.2,-0.9, 0.2,-0.5,\n" //;
+    "    LINE,-0.5, 0.0, 0.5, 0.5, LINE,-0.5, 0.0, 0.5,-0.5, STOP, 0.0, 0.0, 0.0, 0.0,\n" //<
+    "    LINE,-0.6, 0.3, 0.6, 0.3, LINE,-0.6,-0.3, 0.6,-0.3, STOP, 0.0, 0.0, 0.0, 0.0,\n" //=
+    "    LINE, 0.5, 0.0,-0.5, 0.5, LINE, 0.5, 0.0,-0.5,-0.5, STOP, 0.0, 0.0, 0.0, 0.0,\n" //>
+    "    OTOP, 0.0, 0.5, 0.5, 0.5, LINE, 0.5, 0.5,-0.5,-0.5, OVAL,-0.5,-0.8, 0.2, 0.2,\n" //?
+    "    OLEF, 0.0, 0.0, 0.8, 1.0, OVAL, 0.0, 0.0, 0.4, 0.5, LINE, 0.0, 1.0, 0.1,-0.2,\n" //@
     "  );\n"
-    "  if(vCharCode>=48 && vCharCode<=57)\n"
+    "  if(vCharCode<48)return; if(vCharCode>64)return;\n"
+    "  int offset=(vCharCode-48)*3*5, i;\n"
+    "  for(i=0;i<3;i++)\n"
     "  {\n"
-    "    int offset=(vCharCode-48)*3*5, i;\n"
-    "    for(i=0;i<3;i++)\n"
+    "    if(chars[offset]<=STOP+0.1) break;\n"
+    "    if(chars[offset]<=OVAL+0.1)\n"
     "    {\n"
-    "      if(chars[offset]<=STOP+0.1) break;\n"
-    "      if(chars[offset]<=OVAL+0.1)\n"
-    "      {\n"
-    "        float dFC=distance(vec2(chars[offset+1]*vCharMul, chars[offset+2].y), vec2(tc.x*vCharMul*char[offset+3]/char[offset+4],tc.y));\n"
-    "        if(distanceFromCenter <= chars[offset+4]+vLineSize/2)\n"
-    "          if(distanceFromCenter >= chars[offset+4]-vLineSize/2)\n"
-    "          { gl_FragColor = vColor; break; }\n"
-    "      }\n"
-    "      else if(chars[offset]<=LINE+0.1)\n"
+    "      float dFC=distance(vec2(chars[offset+1]*vCharMul, chars[offset+2].y), vec2(tc.x*vCharMul*char[offset+3]/char[offset+4],tc.y));\n"
+    "      if(distanceFromCenter <= chars[offset+4]+vLineSize/2)\n"
+    "        if(distanceFromCenter >= chars[offset+4]-vLineSize/2)\n"
+    "        { gl_FragColor = vColor; break; }\n"
+    "    }\n"
+    "    else if(chars[offset]<=LINE+0.1)\n"
+    "    {\n"
+    "      vec2 pt1 = vec2(chars[offset+3], chars[offset+4]);\n"
+    "      vec2 lineDir = vec2(chars[offset+1],chars[offset+2]) - pt1;\n"
+    "      vec2 perpDir = vec2(lineDir.y, -lineDir.x);\n"
+    "      vec2 dirToPt1 = pt1 - tc.xy;\n"
+    "      if(abs(dot(normalize(perpDir), dirToPt1)) <= vLineSize/2)\n"
+    "      { gl_FragColor = vColor; break; }\n"
+    "    }\n"
+    "    else if(chars[offset]<=OTOP+0.1)\n"
+    "    {\n"
+    "      if(vp.y >= chars[offset+2])\n"
     "      {\n"
     "        float dFC=distance(vec2(chars[offset+1]*vCharMul, chars[offset+2].y), vec2(tc.x*vCharMul*char[offset+3]/char[offset+4],tc.y));\n"
     "        if(distanceFromCenter <= chars[offset+4]+vLineSize/2)\n"
@@ -220,6 +237,7 @@
     "          { gl_FragColor = vColor; break; }\n"
     "      }\n"
     "    }\n"
+    "    offset+=5;\n"
     "  }\n"
     "}\n"
   ;

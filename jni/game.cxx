@@ -110,10 +110,14 @@ void Game::Init()
   vFontPosition = glGetAttribLocation(fontProgram, "vCharPos");
   vFontOffset = glGetAttribLocation(fontProgram, "vCharTC");
   vFontCharCode = glGetUniformLocation(fontProgram, "vCharCode");
+  vFontLineSize = glGetUniformLocation(fontProgram, "vLineSize");
   vFontColor = glGetUniformLocation(fontProgram, "vCharColor");
+  vCharMul = glGetUniformLocation(fontProgram, "vCharMul");
   glEnableVertexAttribArray(vFontPosition);
   glVertexAttribPointer(vFloorPosition, 3, GL_FLOAT, false, sizeof(MyVertex), (void*)offsetof(MyVertex,pos));
   glVertexAttribPointer(vFontOffset, 2, GL_FLOAT, false, sizeof(MyVertex), (void*)offsetof(MyVertex,txtcrds));
+
+  glUniform1f(vFontLineSize, CHAR_LINE_SIZE);
   glUseProgram(0);
 
   glClearColor(0.0, 0.0, 0.0, 1.0);

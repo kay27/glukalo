@@ -53,7 +53,7 @@
       GLint vPosition, vTextureCoordinate, vColor, vOffset, vSpeed, vRadius, vMul,
         vGapPosition, vGapTextureCoordinate, vGap, vLevel, vOffsetX, vHalfSize,
         vFloorPosition, vFloorOffset, vFontPosition, vFontOffset, vFontCharCode,
-        vFontColor;
+        vFontColor, vCharMul, vFontLineSize;
      
       GLuint birdProgram, floorProgram, gapProgram, fontProgram;
 

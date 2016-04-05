@@ -316,7 +316,7 @@ void Game::Render()
   glDrawArrays(GL_TRIANGLE_STRIP, 8, 4);
 
   glUseProgram(fontProgram);
-  glUniform1i(vFontCharCode, '0');
+  glUniform1i(vFontCharCode, 49);
   glUniform4f(vFontColor, 1.0f, 0.7f, 0.7f, 1.0f);
   glDrawArrays(GL_TRIANGLE_STRIP, 12, 4);
 

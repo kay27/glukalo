@@ -244,7 +244,10 @@ void Game::Render()
     }
   }
 //  floorOffset += deltaX; if(floorOffset > 553.305561) floorOffset -= 553.305561;
-  floorOffset += deltaX; if(floorOffset >= 8.0) floorOffset -= 8.0;
+  if(!gameOver)
+  {
+    floorOffset += deltaX; if(floorOffset >= 8.0) floorOffset -= 8.0;
+  }
   if(!gameOver) y-=delta/27000*speed;
   if(!(gameStarted||gameOver))
   {

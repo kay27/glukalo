@@ -321,29 +321,31 @@ void Game::Render()
   glUniform1f(vFloorOffset, floorOffset);
   glDrawArrays(GL_TRIANGLE_STRIP, 8, 4);
 
-  glUseProgram(fontProgram);
-  glUniform1i(vFontCharCode, 48);
-  glUniform4f(vCharOffset, -1+charWidth*0.5, 1-CHAR_HALFHEIGHT, 0, 0);
-  glUniform4f(vFontColor, 1.0, 0.7, 0.7, 1.0);
-  glDrawArrays(GL_TRIANGLE_STRIP, 12, 4);
-  glUniform1i(vFontCharCode, 49);
-  glUniform4f(vCharOffset, -1+charWidth*1.5, 1-CHAR_HALFHEIGHT, 0.0, 0.0);
-  glUniform4f(vFontColor, 0.7, 0.7, 1.0, 1.0);
-  glDrawArrays(GL_TRIANGLE_STRIP, 12, 4);
-  glUniform1i(vFontCharCode, 48);
-  glUniform4f(vCharOffset, -1+charWidth*2.5, 1-CHAR_HALFHEIGHT, 0, 0);
-  glDrawArrays(GL_TRIANGLE_STRIP, 12, 4);
-
-  glUniform1i(vFontCharCode, 50);
-  glUniform4f(vCharOffset, 1.0-charWidth*0.5, 1.0-CHAR_HALFHEIGHT, 0, 0);
-  glUniform4f(vFontColor, 1.0, 0.7, 0.7, 1.0);
-  glDrawArrays(GL_TRIANGLE_STRIP, 12, 4);
-
+  PrintScore();
 
   if(audio!=nullptr)
   {
     if(!gameOver) audio->MakeNoise((unsigned)((y+1.0)/2*14000));
     else audio->Clear(); //fixme (iteration)
+  }
+}
+
+void Game::PrintScore()
+{
+  glUseProgram(fontProgram);
+  glUniform4f(vFontColor, 1.0, 0.7, 0.7, 1.0);
+  int n=0, s=score;
+  if(s==0) n=1;
+  else for(s=score;s>0;s=s/10,n++);
+  float x=charWidth*(0.5+n-1);
+  s=score;
+  while(s>0)
+  {
+    glUniform1i(vFontCharCode, 48+(s%10));
+    glUniform4f(vCharOffset, -1+x, 1-CHAR_HALFHEIGHT, 0, 0);
+    glDrawArrays(GL_TRIANGLE_STRIP, 12, 4);
+    x-=charWidth;
+    s=s/10;
   }
 }
 

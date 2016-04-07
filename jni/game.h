@@ -25,6 +25,7 @@
       int GetLevel(int newScore);
       void Init();
       void Pause();
+      void PrintScore();
       void Tap();
       float Rand();
       void Render();

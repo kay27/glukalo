@@ -33,10 +33,10 @@
     {{ -1               ,  FLOOR_HEIGHT-1,  0.0f }, { 0.0f, 2.0f}},
     {{  1               ,            -1.0,  0.0f }, { 2.0f, 0.0f}},
     {{  1               ,  FLOOR_HEIGHT-1,  0.0f }, { 2.0f, 2.0f}},
-    {{-CHAR_HALFWIDTH*2.0f,-CHAR_HALFWIDTH*1.5f,0.0f},{-2.0f,-1.5f}}, // char
-    {{-CHAR_HALFWIDTH*2.0f, CHAR_HALFWIDTH*1.5f,0.0f},{-2.0f, 1.5f}},
-    {{ CHAR_HALFWIDTH*2.0f,-CHAR_HALFWIDTH*1.5f,0.0f},{ 2.0f,-1.5f}},
-    {{ CHAR_HALFWIDTH*2.0f, CHAR_HALFWIDTH*1.5f,0.0f},{ 2.0f, 1.5f}},
+    {{ -CHAR_HEIGHT     , -CHAR_HEIGHT*0.75f,0.0f}, {-2.0f,-1.5f}}, // char
+    {{ -CHAR_HEIGHT     ,  CHAR_HEIGHT*0.75f,0.0f}, {-2.0f, 1.5f}},
+    {{  CHAR_HEIGHT     , -CHAR_HEIGHT*0.75f,0.0f}, { 2.0f,-1.5f}},
+    {{  CHAR_HEIGHT     ,  CHAR_HEIGHT*0.75f,0.0f}, { 2.0f, 1.5f}},
   };
 
   static const char * birdVertexShader =
@@ -194,7 +194,7 @@
     "  where = where * vec4(vCharMul, 1.0, vCharMul, 1.0);\n"
     "  if(what == OVAL)\n"
     "  {\n"
-    "    float dFC=distance(where.xy, vec2(tc.x*where.z/where.w,tc.y));\n"
+    "    float dFC=distance(where.xy/where.zw, tc.xy/where.zw);\n"
     "    if(dFC <= where.w+vLineSize/2.0)\n"
     "      if(dFC >= where.w-vLineSize/2.0)\n"
     "      { gl_FragColor = vCharColor; return true; }\n"
@@ -202,9 +202,9 @@
     "  }\n"
     "  else if(what == LINE)\n"
     "  {\n"
-    "    vec2 p=vec2(tc.x*where.z/where.w, tc.y);\n"
-    "    float a=abs(distance(where.xy,p));\n"
-    "    float b=abs(distance(where.zw,p));\n"
+//    "    vec2 p=vec2(tc.x*where.z/where.w, tc.y);\n"
+    "    float a=abs(distance(where.xy,tc.xy));\n"
+    "    float b=abs(distance(where.zw,tc.xy));\n"
     "    float c=abs(distance(where.xy,where.zw));\n"
     "    if(a+b-vLineSize/2.0 > c) return false;\n"
     "    if(a+b+vLineSize/2.0 < c) return false;\n"
@@ -227,11 +227,15 @@
     "{\n"
     "  if(vCharCode==48)\n"
     "  {\n"
+    "    if(!draw(OVAL,vec4(0.0, 0.0, 0.8, 1.0))) discard;\n"
+    "  }\n"
+    "  else if(vCharCode==50)\n"
+    "  {\n"
     "    if(!draw(OVAL,vec4(0.0, 0.0, 1.0, 1.0))) discard;\n"
     "  }\n"
     "  else if(vCharCode==49)\n"
     "  {\n"
-    "    if(!draw(LINE,vec4(-0.5, 0.0, 0.5,-1.0))) discard;\n"
+    "    if(!draw(LINE,vec4(-0.5, 0.0, 0.5, 1.0))) discard;\n"
     "    if(!draw(LINE,vec4( 0.5, 1.0, 0.5,-1.0))) discard;\n"
     "  }\n"
     "  else discard;\n"

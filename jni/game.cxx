@@ -8,6 +8,8 @@ Game::Game()
 
   yMulValue = 1;
 
+  charWidth = CHAR_HEIGHT;
+
   maxLevel = 0;
 
   floorOffset = 0;
@@ -179,6 +181,8 @@ void Game::Resize(int w, int h)
   if(h>0)
   {
     yMulValue = float(w)/h;
+    charWidth = CHAR_HEIGHT/yMulValue;
+
     glUseProgram(birdProgram);
     glUniform1f(vMul, yMulValue);
     glUseProgram(fontProgram);
@@ -208,6 +212,7 @@ void Game::Render()
   gettimeofday(&now, NULL);
   float delta = (now.tv_sec - lastTime.tv_sec) * 1000000 + ((int)now.tv_usec - (int)lastTime.tv_usec);
   lastTime = now;
+  if(delta>50000) return; // CPU overloaded?
 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -318,19 +323,19 @@ void Game::Render()
 
   glUseProgram(fontProgram);
   glUniform1i(vFontCharCode, 48);
-  glUniform4f(vCharOffset, -0.5, -0.5, 0, 0);
+  glUniform4f(vCharOffset, -1, 1-CHAR_HEIGHT, 0, 0);
   glUniform4f(vFontColor, 1.0, 0.7, 0.7, 1.0);
   glDrawArrays(GL_TRIANGLE_STRIP, 12, 4);
   glUniform1i(vFontCharCode, 49);
-  glUniform4f(vCharOffset, -0.5+CHAR_WIDTH, -0.5, 0.0, 0.0);
+  glUniform4f(vCharOffset, -1+charWidth, 1-CHAR_HEIGHT, 0.0, 0.0);
   glUniform4f(vFontColor, 0.7, 0.7, 1.0, 1.0);
   glDrawArrays(GL_TRIANGLE_STRIP, 12, 4);
   glUniform1i(vFontCharCode, 48);
-  glUniform4f(vCharOffset, -0.5+2*CHAR_WIDTH, -0.5, 0, 0);
+  glUniform4f(vCharOffset, -1+2*charWidth, 1-CHAR_HEIGHT, 0, 0);
   glDrawArrays(GL_TRIANGLE_STRIP, 12, 4);
 
-  glUniform1i(vFontCharCode, 48);
-  glUniform4f(vCharOffset, 1.0-CHAR_WIDTH, 1.0-CHAR_WIDTH, 0, 0);
+  glUniform1i(vFontCharCode, 50);
+  glUniform4f(vCharOffset, 1.0-charWidth, 1.0-CHAR_HEIGHT, 0, 0);
   glUniform4f(vFontColor, 1.0, 0.7, 0.7, 1.0);
   glDrawArrays(GL_TRIANGLE_STRIP, 12, 4);
 

@@ -43,7 +43,8 @@
       float gameOverTime;
 
       GLfloat speed, x, y, speedVect, yMulValue,
-        blockPos, floorOffset, swingSpeed, jawsSpeed;
+        blockPos, floorOffset, swingSpeed, jawsSpeed,
+        charWidth;
 
       GLfloat gaps[MAX_COLUMNS], swingVectors[MAX_COLUMNS], gapHalfSizes[MAX_COLUMNS], jawsVectors[MAX_COLUMNS];
 

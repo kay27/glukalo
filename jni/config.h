@@ -48,8 +48,8 @@
   const SLEnvironmentalReverbSettings REVERB_SETTINGS = SL_I3DL2_ENVIRONMENT_PRESET_STONECORRIDOR;
 
 
-  const float CHAR_WIDTH     = 0.1;
-  const float CHAR_HALFWIDTH = CHAR_WIDTH / 2;
+  const float CHAR_HEIGHT    = 0.1;
+  const float CHAR_HALFHEIGHT = CHAR_HEIGHT / 2;
   const float CHAR_LINE_SIZE = 0.1;
 
 #endif // #ifndef H_CONFIG_GLUKALO

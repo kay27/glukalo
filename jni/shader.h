@@ -33,10 +33,10 @@
     {{ -1               ,  FLOOR_HEIGHT-1,  0.0f }, { 0.0f, 2.0f}},
     {{  1               ,            -1.0,  0.0f }, { 2.0f, 0.0f}},
     {{  1               ,  FLOOR_HEIGHT-1,  0.0f }, { 2.0f, 2.0f}},
-    {{ -CHAR_HALFWIDTH  ,-CHAR_HALFWIDTH ,  0.0f }, {-1.0f,-1.0f}}, // char
-    {{ -CHAR_HALFWIDTH  , CHAR_HALFWIDTH ,  0.0f }, {-1.0f, 1.0f}},
-    {{  CHAR_HALFWIDTH  ,-CHAR_HALFWIDTH ,  0.0f }, { 1.0f,-1.0f}},
-    {{  CHAR_HALFWIDTH  , CHAR_HALFWIDTH ,  0.0f }, { 1.0f, 1.0f}},
+    {{-CHAR_HALFWIDTH*2.0f,-CHAR_HALFWIDTH*1.5f,0.0f},{-2.0f,-1.5f}}, // char
+    {{-CHAR_HALFWIDTH*2.0f, CHAR_HALFWIDTH*1.5f,0.0f},{-2.0f, 1.5f}},
+    {{ CHAR_HALFWIDTH*2.0f,-CHAR_HALFWIDTH*1.5f,0.0f},{ 2.0f,-1.5f}},
+    {{ CHAR_HALFWIDTH*2.0f, CHAR_HALFWIDTH*1.5f,0.0f},{ 2.0f, 1.5f}},
   };
 
   static const char * birdVertexShader =
@@ -164,11 +164,12 @@
   static const char * fontVertexShader =
     "attribute vec4 vCharPos;\n"
     "attribute vec4 vCharTC;\n"
+    "uniform vec4 vCharOffset;\n"
     "varying vec4 vp;\n"
     "varying vec4 tc;\n"
     "void main()\n"
     "{\n"
-    "  gl_Position = vCharPos;\n"
+    "  gl_Position = vCharPos + vCharOffset;\n"
     "  vp = vCharPos;\n"
     "  tc = vCharTC;\n"
     "}\n"
@@ -228,6 +229,7 @@
     "    if(draw(LINE,vec4(-0.5*vCharMul, 0.0, 0.5*vCharMul,-1.0))) discard;\n"
     "    if(draw(LINE,vec4(0.5*vCharMul, 1.0, 0.5*vCharMul,-1.0))) discard;\n"
     "  }\n"
+    "  else discard;\n"
     "}\n"
   ;
 

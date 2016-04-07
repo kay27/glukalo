@@ -1,5 +1,5 @@
 @set name=glukalo
-@set myandroiddir=g:\Android
+@set myandroiddir=d:\Android
 @set target=release
 @set platform=android-15
 @set ndkbuild=%myandroiddir%\android-ndk-r10e\ndk-build.cmd
@@ -42,7 +42,7 @@ if %step% leq 3 (
 )
 if %step% leq 4 (
   if "%target%"=="release" (
-    set ccmd=%adb% install %name%.apk
+    set ccmd=%adb% install -r %name%.apk
   ) else (
     set ccmd=%adb% install bin\%name%-%target%.apk
   )

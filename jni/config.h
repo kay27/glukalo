@@ -50,6 +50,6 @@
 
   const float CHAR_WIDTH     = 0.1;
   const float CHAR_HALFWIDTH = CHAR_WIDTH / 2;
-  const float CHAR_LINE_SIZE = CHAR_WIDTH * 0.07;
+  const float CHAR_LINE_SIZE = CHAR_WIDTH * 0.17;
 
 #endif // #ifndef H_CONFIG_GLUKALO

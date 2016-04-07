@@ -10,6 +10,8 @@ Game::Game()
 
   maxLevel = 0;
 
+  floorOffset = 0;
+
   highScore = MyCallback::GetHighScore();
 
   Init();
@@ -108,7 +110,7 @@ void Game::Init()
   vFontLineSize = glGetUniformLocation(fontProgram, "vLineSize");
   vFontColor    = glGetUniformLocation(fontProgram, "vCharColor");
   vCharMul      = glGetUniformLocation(fontProgram, "vCharMul");
-  vCharOffset   = glGetAttribLocation(fontProgram, "vCharOffset");
+  vCharOffset   = glGetUniformLocation(fontProgram, "vCharOffset");
   glEnableVertexAttribArray(vFontPosition);
   glEnableVertexAttribArray(vFontOffset);
   glVertexAttribPointer(vFontPosition, 3, GL_FLOAT, false, sizeof(MyVertex), (void*)offsetof(MyVertex,pos));
@@ -132,7 +134,6 @@ void Game::Restart()
   gameLooped     =  0;
   impulse        =  0;
   blockPos       =  1.5;
-  floorOffset    =  0;
   level          = -1;
   score          =  highScore - (highScore % NEXT_LEVEL_SCORE) - 1;
   AddScore();
@@ -211,10 +212,10 @@ void Game::Render()
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   if(impulse) {impulse = 0; speed = -TAP_IMPULSE;}
+  float deltaX = delta*H_SPEED;
   if(gameStarted)
   {
     speed+=delta*ACCELERATION;
-    float deltaX = delta*H_SPEED;
     if(x>-FLY_BACK)
     {
       x=x-deltaX;
@@ -223,7 +224,6 @@ void Game::Render()
     if(!gameOver)
     {
       blockPos -= deltaX;
-      floorOffset += deltaX; if(floorOffset > 553.305561) floorOffset -= 553.305561;
       if((scoreRestarted == 2) && (blockPos <= -FLY_BACK)) AddScore();
       if(blockPos < -1-COLUMN_HALFWIDTH)
       {
@@ -243,6 +243,8 @@ void Game::Render()
       }
     }
   }
+//  floorOffset += deltaX; if(floorOffset > 553.305561) floorOffset -= 553.305561;
+  floorOffset += deltaX; if(floorOffset >= 8.0) floorOffset -= 8.0;
   if(!gameOver) y-=delta/27000*speed;
   if(!(gameStarted||gameOver))
   {
@@ -312,16 +314,18 @@ void Game::Render()
   glDrawArrays(GL_TRIANGLE_STRIP, 8, 4);
 
   glUseProgram(fontProgram);
-  glUniform1i(vFontCharCode, 195);
-  glUniform4f(vCharOffset, 1.0-CHAR_WIDTH, 1.0-CHAR_WIDTH, 0.0, 0.0);
+  glUniform1i(vFontCharCode, 48);
+  glUniform4f(vCharOffset, -1.0, -1.0, 0, 0);
   glUniform4f(vFontColor, 1.0, 0.7, 0.7, 1.0);
   glDrawArrays(GL_TRIANGLE_STRIP, 12, 4);
-/*
   glUniform1i(vFontCharCode, 49);
   glUniform4f(vCharOffset, -1.0+CHAR_WIDTH, -1.0, 0.0, 0.0);
   glUniform4f(vFontColor, 0.7, 0.7, 1.0, 1.0);
   glDrawArrays(GL_TRIANGLE_STRIP, 12, 4);
-*/
+  glUniform1i(vFontCharCode, 48);
+  glUniform4f(vCharOffset, -1.0+2*CHAR_WIDTH, -1.0, 0, 0);
+  glDrawArrays(GL_TRIANGLE_STRIP, 12, 4);
+
 
   if(audio!=nullptr)
   {

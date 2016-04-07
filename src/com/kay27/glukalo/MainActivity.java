@@ -10,6 +10,7 @@ import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 //import java.lang.Thread;
@@ -30,6 +31,7 @@ public class MainActivity extends Activity
     boolean supportES2 = (info.reqGlEsVersion >= 0x20000);
     if(supportES2)
     {
+      requestWindowFeature(Window.FEATURE_NO_TITLE);
       getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
       mGLView = new MyGLSurfaceView(this);
       setContentView(mGLView);

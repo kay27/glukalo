@@ -323,19 +323,19 @@ void Game::Render()
 
   glUseProgram(fontProgram);
   glUniform1i(vFontCharCode, 48);
-  glUniform4f(vCharOffset, -1, 1-CHAR_HEIGHT, 0, 0);
+  glUniform4f(vCharOffset, -1+charWidth*0.5, 1-CHAR_HALFHEIGHT, 0, 0);
   glUniform4f(vFontColor, 1.0, 0.7, 0.7, 1.0);
   glDrawArrays(GL_TRIANGLE_STRIP, 12, 4);
   glUniform1i(vFontCharCode, 49);
-  glUniform4f(vCharOffset, -1+charWidth, 1-CHAR_HEIGHT, 0.0, 0.0);
+  glUniform4f(vCharOffset, -1+charWidth*1.5, 1-CHAR_HALFHEIGHT, 0.0, 0.0);
   glUniform4f(vFontColor, 0.7, 0.7, 1.0, 1.0);
   glDrawArrays(GL_TRIANGLE_STRIP, 12, 4);
   glUniform1i(vFontCharCode, 48);
-  glUniform4f(vCharOffset, -1+2*charWidth, 1-CHAR_HEIGHT, 0, 0);
+  glUniform4f(vCharOffset, -1+charWidth*2.5, 1-CHAR_HALFHEIGHT, 0, 0);
   glDrawArrays(GL_TRIANGLE_STRIP, 12, 4);
 
   glUniform1i(vFontCharCode, 50);
-  glUniform4f(vCharOffset, 1.0-charWidth, 1.0-CHAR_HEIGHT, 0, 0);
+  glUniform4f(vCharOffset, 1.0-charWidth*0.5, 1.0-CHAR_HALFHEIGHT, 0, 0);
   glUniform4f(vFontColor, 1.0, 0.7, 0.7, 1.0);
   glDrawArrays(GL_TRIANGLE_STRIP, 12, 4);
 

@@ -223,7 +223,7 @@
     "{\n"
     "  if(vCharCode==48)\n"
     "  {\n"
-    "    if(!draw(OVAL,vec4(0.0/vCharMul, 0.0, 0.8/vCharMul, 1.0))) discard;\n"
+    "    if(!draw(OVAL,vec4(0.0/vCharMul, 0.0, 0.8*vCharMul, 1.0))) discard;\n"
     "  }\n"
     "  else if(vCharCode==49)\n"
     "  {\n"

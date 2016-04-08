@@ -327,8 +327,19 @@ void Game::PrintScore()
 {
   int q = 0;
   if(!gameOver && gameStarted) q = lastTime.tv_sec & 1;
-  PrintNumber(-1.0+charWidth*0.5, 1-CHAR_HALFHEIGHT, q*0.3+0.5, q*0.3+0.5, 1.0, score);
-  PrintNumber(1-charWidth*(GetNumberLength(highScore)-0.5), 1-CHAR_HALFHEIGHT, 1, 0.2, 0.2, highScore);
+
+  if(score>highScore)
+  {
+    PrintNumber(-1.0+charWidth*0.5, 1-CHAR_HALFHEIGHT, q*0.5+0.5, 0.7-q*0.3, 0.7-q*0.3, score);
+    return;
+  }
+
+  if(highScore>0)
+    PrintNumber(1-charWidth*(GetNumberLength(highScore)-0.5), 1-CHAR_HALFHEIGHT, 1, 0.2, 0.2, highScore);
+
+  if(score>0)
+    PrintNumber(-1.0+charWidth*0.5, 1-CHAR_HALFHEIGHT, q*0.3+0.5, q*0.3+0.5, 1.0, score);
+
 }
 
 int Game::GetNumberLength(int number)
@@ -393,9 +404,6 @@ void Game::GameOver()
   gameOverTime = 0;
   gameOver=1;
   UpdateHighScore();
-//  char msg[40];
-//  sprintf(msg, "Game over: %d / %d", score, highScore);
-//  MyCallback::Toast(msg);
 }
 
 void Game::ChangeLevel()
@@ -449,7 +457,7 @@ void Game::AddScore()
 {
   if(scoreRestarted>0) scoreRestarted--;
 
-  score++; if(score>highScore) highScore=score;
+  score++;
 
   swingSpeed=((float)(score/3))*0.005;
   if(swingSpeed>0.1)

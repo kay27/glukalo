@@ -205,7 +205,7 @@
     "\n"
     "  if(what == OVAL)\n"
     "  {\n"
-    "    if(abs(pow(t.x-where.x,2.0)/pow(where.z,2.0) + pow(t.y-where.y,2.0)/pow(where.w,2.0) - 1.0) <= vLineSize*2.5)\n"
+    "    if(abs(pow(t.x-where.x,2.0)/pow(where.z,2.0) + pow(t.y-where.y,2.0)/pow(where.w,2.0) - 1.0) <= vLineSize*3.1416)\n"
     "    { gl_FragColor = vCharColor; return true; }\n"
     "    return false;\n"
     "  }\n"

@@ -12,8 +12,6 @@ Game::Game()
 
   maxLevel = 0;
 
-  floorOffset = 0;
-
   highScore = MyCallback::GetHighScore();
 
   Init();
@@ -137,6 +135,7 @@ void Game::Restart()
   impulse        =  0;
   blockPos       =  1.5;
   level          = -1;
+  floorOffset    =  0;
   score          =  highScore - (highScore % NEXT_LEVEL_SCORE) - 1;
   AddScore();
   scoreRestarted =  (MAX_COLUMNS+1) >> 1;
@@ -153,12 +152,7 @@ void Game::Restart()
   glUniform1f(vRadius, (float)1.0);
   glUseProgram(0);
 
-//  glUseProgram(gapProgram);
-//  glUniform1f(vLevel, (float)level);
-//  glUseProgram(0);
-
   gettimeofday(&lastTime, NULL);
-
 }
 
 void Game::Pause()
@@ -248,7 +242,6 @@ void Game::Render()
       }
     }
   }
-//  floorOffset += deltaX; if(floorOffset > 553.305561) floorOffset -= 553.305561;
   if(!gameOver)
   {
     floorOffset += deltaX; if(floorOffset >= 8.0) floorOffset -= 8.0;
@@ -332,8 +325,10 @@ void Game::Render()
 
 void Game::PrintScore()
 {
-  PrintNumber(-1.0+charWidth*0.5, 1-CHAR_HALFHEIGHT, Rand()*0.3+0.5, Rand()*0.3+0.5, 1.0, score);
-  PrintNumber(1-charWidth*(GetNumberLength(highScore)-0.5), 1-CHAR_HALFHEIGHT, 1, Rand()*0.3+0.2, Rand()*0.3+0.2, highScore);
+  int q = 0;
+  if(!gameOver && gameStarted) q = lastTime.tv_sec & 1;
+  PrintNumber(-1.0+charWidth*0.5, 1-CHAR_HALFHEIGHT, q*0.3+0.5, q*0.3+0.5, 1.0, score);
+  PrintNumber(1-charWidth*(GetNumberLength(highScore)-0.5), 1-CHAR_HALFHEIGHT, 1, 0.2, 0.2, highScore);
 }
 
 int Game::GetNumberLength(int number)
@@ -454,7 +449,7 @@ void Game::AddScore()
 {
   if(scoreRestarted>0) scoreRestarted--;
 
-  score++;
+  score++; if(score>highScore) highScore=score;
 
   swingSpeed=((float)(score/3))*0.005;
   if(swingSpeed>0.1)

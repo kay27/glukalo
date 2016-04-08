@@ -332,21 +332,32 @@ void Game::Render()
 
 void Game::PrintScore()
 {
+  PrintNumber(-1.0+charWidth*0.5, 1-CHAR_HALFHEIGHT, Rand()*0.3+0.5, Rand()*0.3+0.5, 1.0, score);
+  PrintNumber(1-charWidth*(GetNumberLength(highScore)-0.5), 1-CHAR_HALFHEIGHT, 1, Rand()*0.3+0.2, Rand()*0.3+0.2, highScore);
+}
+
+int Game::GetNumberLength(int number)
+{
+  if(number==0) return 1;
+  int n=0, s;
+  if(number<0) n++;
+  for(s=number;s>0;s=s/10,n++);
+  return n;
+}
+
+void Game::PrintNumber(float xcrd, float ycrd, float r, float g, float b, int number)
+{
   glUseProgram(fontProgram);
-  glUniform4f(vFontColor, 1.0, 0.7, 0.7, 1.0);
-  int n=0, s=score;
-  if(s==0) n=1;
-  else for(s=score;s>0;s=s/10,n++);
-  float x=charWidth*(0.5+n-1);
-  s=score;
-  while(s>0)
-  {
-    glUniform1i(vFontCharCode, 48+(s%10));
-    glUniform4f(vCharOffset, -1+x, 1-CHAR_HALFHEIGHT, 0, 0);
+  glUniform4f(vFontColor, r, g, b, 1.0);
+  int n = GetNumberLength(number);
+  float x = charWidth * (n - 1) + xcrd;
+  do {
+    glUniform1i(vFontCharCode, 48 + (number % 10));
+    glUniform4f(vCharOffset, x, ycrd, 0, 0);
     glDrawArrays(GL_TRIANGLE_STRIP, 12, 4);
-    x-=charWidth;
-    s=s/10;
-  }
+    x -= charWidth;
+    number /= 10;
+  } while(number > 0);
 }
 
 bool Game::Collision(float x0, float x1, float y0, float gapHalfSize)

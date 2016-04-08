@@ -23,8 +23,10 @@
       ~Game();
       void GameOver();
       int GetLevel(int newScore);
+      int GetNumberLength(int number);
       void Init();
       void Pause();
+      void PrintNumber(float xcrd, float ycrd, float r, float g, float b, int number);
       void PrintScore();
       void Tap();
       float Rand();

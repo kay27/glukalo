@@ -199,8 +199,8 @@
     "    gl_FragColor = vCharColor; return true;\n"
     "  }\n"
     "  else if(what == OTOP) { if(tc.y < where.y) return false; what=OVAL; }\n"
-    "  else if(what == ORIG) { if(tc.x < where.x) return false; what=OVAL; }\n"
-    "  else if(what == OLEF) { if(tc.x > where.x) return false; what=OVAL; }\n"
+    "  else if(what == ORIG) { if(tc.x < where.x/vCharMul) return false; what=OVAL; }\n"
+    "  else if(what == OLEF) { if(tc.x > where.x/vCharMul) return false; what=OVAL; }\n"
     "  else if(what == OBOT) { if(tc.y > where.y) return false; what=OVAL; }\n"
     "\n"
     "  if(what == OVAL)\n"
@@ -240,7 +240,7 @@
     "  }\n"
     "  else if(vCharCode==54)\n" //6
     "  {\n"
-    "    if(!draw(OVAL,vec4(0.0,-0.5,0.8,0.5))) if(!draw(OLEF,vec4(0.8,0.0,1.6,1.0))) discard;\n"
+    "    if(!draw(OVAL,vec4(0.0,-0.5,0.8,0.5))) if(!draw(OLEF,vec4(0.6,0.0,1.4,1.0))) discard;\n"
     "  }\n"
     "  else if(vCharCode==55)\n" //7
     "  {\n"
@@ -252,7 +252,7 @@
     "  }\n"
     "  else if(vCharCode==57)\n" //9
     "  {\n"
-    "    if(!draw(OVAL,vec4(0.0,0.5,0.8,0.5))) if(!draw(ORIG,vec4(-0.8,0.0,1.6,1.0))) discard;\n"
+    "    if(!draw(OVAL,vec4(0.0,0.5,0.8,0.5))) if(!draw(ORIG,vec4(-0.6,0.0,1.4,1.0))) discard;\n"
     "  }\n"
     "  else discard;\n"
     "}\n"

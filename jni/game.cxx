@@ -398,9 +398,9 @@ void Game::GameOver()
   gameOverTime = 0;
   gameOver=1;
   UpdateHighScore();
-  char msg[40];
-  sprintf(msg, "Game over: %d / %d", score, highScore);
-  MyCallback::Toast(msg);
+//  char msg[40];
+//  sprintf(msg, "Game over: %d / %d", score, highScore);
+//  MyCallback::Toast(msg);
 }
 
 void Game::ChangeLevel()

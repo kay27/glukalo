@@ -12,9 +12,11 @@
 # include "jni2game.h"
 # include "sound.h"
 
+  enum BonusType { GUN, SLOWDOWN, SPEEDUP };
+
   struct Bonus
   {
-    int type;
+    BonusType type;
     float x,y;
   }
 

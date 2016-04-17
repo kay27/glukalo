@@ -12,6 +12,12 @@
 # include "jni2game.h"
 # include "sound.h"
 
+  struct Bonus
+  {
+    int type;
+    float x,y;
+  }
+
   class Game
   {
     public:

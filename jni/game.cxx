@@ -1,6 +1,6 @@
 #include "game.h"
 //#include <mutex>
-//#include <string>
+#include <string>
 
 Game::Game()
 {

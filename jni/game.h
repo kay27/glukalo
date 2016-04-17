@@ -18,7 +18,7 @@
   {
     BonusType type;
     float x,y;
-  }
+  };
 
   class Game
   {

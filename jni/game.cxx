@@ -472,11 +472,11 @@ void Game::AddScore()
   int s = (score ^ SCORE_XOR_CODE) + 1;
   score = s ^ SCORE_XOR_CODE;
 
-  swingSpeed=((float)(s/3))*0.005;
+  swingSpeed=((float)(s/3))*0.001;
   if(swingSpeed>0.13)
     swingSpeed=0.13;
 
-  jawsSpeed=((float)(s/7))*0.01;
+  jawsSpeed=((float)(s/7))*0.002;
   if(jawsSpeed>0.11)
     jawsSpeed=0.11;
 

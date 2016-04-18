@@ -11,6 +11,8 @@
 
   const int START_LEVEL = 0;
 
+  const int SCORE_XOR_CODE = 0x5a13;
+
   const int NEXT_LEVEL_SCORE = 20;
 //  const int NEXT_LEVEL_SCORE = 4;
 
@@ -50,6 +52,6 @@
 
   const float CHAR_HEIGHT    = 0.08;
   const float CHAR_HALFHEIGHT = CHAR_HEIGHT / 2;
-  const float CHAR_LINE_SIZE = 0.1;
+  const float CHAR_LINE_SIZE = 0.13;
 
 #endif // #ifndef H_CONFIG_GLUKALO

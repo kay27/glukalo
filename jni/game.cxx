@@ -13,6 +13,7 @@ Game::Game()
   maxLevel = 0;
 
   highScore = MyCallback::GetHighScore();
+  if(highScore == -1) highScore = SCORE_XOR_CODE;
 
   Init();
 
@@ -136,7 +137,14 @@ void Game::Restart()
   blockPos       =  1.5;
   level          = -1;
   floorOffset    =  0;
-  score          =  highScore - (highScore % NEXT_LEVEL_SCORE) - 1;
+
+  {
+    int hs0 = highScore ^ SCORE_XOR_CODE;
+    if(hs0 >= NEXT_LEVEL_SCORE * NUMBER_OF_LEVELS)
+      hs0 = NEXT_LEVEL_SCORE * NUMBER_OF_LEVELS - 1;
+    score = (hs0 - (hs0 % NEXT_LEVEL_SCORE) - 1) ^ SCORE_XOR_CODE;
+  }
+
   AddScore();
   scoreRestarted =  (MAX_COLUMNS+1) >> 1;
 
@@ -300,7 +308,7 @@ void Game::Render()
 //  if(blockPos <= -1 - COLUMN_HALFWIDTH + SEGMENT) blockScore--;
   for(int i=0; i<MAX_COLUMNS; i++)
   {
-    int blockScore = score+i-1;
+    int blockScore = (score ^ SCORE_XOR_CODE) + i - 1;
     if(i==0 && scoreRestarted) blockScore++;
 //    glUniform1f(vLevel, (float)GetLevel(score+i-1));
     glUniform1f(vLevel, (float)GetLevel(blockScore));
@@ -328,17 +336,20 @@ void Game::PrintScore()
   int q = 0;
   if(!gameOver && gameStarted) q = lastTime.tv_sec & 1;
 
-  if(score>highScore)
+  int s  = score     ^ SCORE_XOR_CODE;
+  int hs = highScore ^ SCORE_XOR_CODE;
+
+  if(s>hs)
   {
-    PrintNumber(-1.0+charWidth*0.5, 1-CHAR_HALFHEIGHT, q*0.5+0.5, 0.7-q*0.3, 0.7-q*0.3, score);
+    PrintNumber(-1.0+charWidth*0.5, 1-CHAR_HALFHEIGHT, q*0.5+0.5, 0.7-q*0.3, 0.7-q*0.3, s);
     return;
   }
 
-  if(highScore>0)
-    PrintNumber(1-charWidth*(GetNumberLength(highScore)-0.5), 1-CHAR_HALFHEIGHT, 1, 0.2, 0.2, highScore);
+  if(hs > 0)
+    PrintNumber(1-charWidth*(GetNumberLength(hs)-0.5), 1-CHAR_HALFHEIGHT, 1, 0.2, 0.2, hs);
 
-  if(score>0)
-    PrintNumber(-1.0+charWidth*0.5, 1-CHAR_HALFHEIGHT, q*0.3+0.5, q*0.3+0.5, 1.0, score);
+  if(s>0)
+    PrintNumber(-1.0+charWidth*0.5, 1-CHAR_HALFHEIGHT, q*0.3+0.5, q*0.3+0.5, 1.0, s);
 
 }
 
@@ -408,7 +419,7 @@ void Game::GameOver()
 
 void Game::ChangeLevel()
 {
-  level=GetLevel(score);
+  level=GetLevel(score ^ SCORE_XOR_CODE);
   if(level>maxLevel) maxLevel = level;
 
   if(blockPos<1.4)
@@ -418,7 +429,7 @@ void Game::ChangeLevel()
       gameLooped++;
       MyCallback::Toast("You win!");
     }
-    else
+    else if(!gameLooped)
     {
       char msg[32];
       sprintf(msg, "Level %d", level + 1);
@@ -445,7 +456,7 @@ inline int Game::GetLevel(int newScore)
 
 void Game::UpdateHighScore()
 {
-  if(score<=highScore)
+  if((score ^ SCORE_XOR_CODE) <= (highScore ^ SCORE_XOR_CODE))
     return;
 
   highScore=score;
@@ -457,16 +468,18 @@ void Game::AddScore()
 {
   if(scoreRestarted>0) scoreRestarted--;
 
-  score++;
+//  score++;
+  int s = (score ^ SCORE_XOR_CODE) + 1;
+  score = s ^ SCORE_XOR_CODE;
 
-  swingSpeed=((float)(score/3))*0.005;
-  if(swingSpeed>0.1)
-    swingSpeed=0.1;
+  swingSpeed=((float)(s/3))*0.005;
+  if(swingSpeed>0.13)
+    swingSpeed=0.13;
 
-  jawsSpeed=((float)(score/7))*0.01;
-  if(jawsSpeed>0.1)
-    jawsSpeed=0.1;
+  jawsSpeed=((float)(s/7))*0.01;
+  if(jawsSpeed>0.11)
+    jawsSpeed=0.11;
 
-  if(GetLevel(score) > level)
+  if(GetLevel(s) > level)
     ChangeLevel();
 }

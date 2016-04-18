@@ -83,7 +83,7 @@ public class MainActivity extends Activity
   }
   public static int CBGetHighScore()
   {
-    return activity.getSharedPreferences(PREFS_ID, MODE_PRIVATE).getInt("hs", 0);
+    return activity.getSharedPreferences(PREFS_ID, MODE_PRIVATE).getInt("hs", -1);
   }
 
   private MyGLSurfaceView mGLView;

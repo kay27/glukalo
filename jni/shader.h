@@ -21,22 +21,26 @@
 
   static const MyVertex vertices[] =
   {
-    {{ -BIRD_RADIUS*2.0f,-BIRD_RADIUS*1.5f, 0.0f }, {-2.0f,-1.5f}}, // bird
-    {{ -BIRD_RADIUS*2.0f, BIRD_RADIUS*1.5f, 0.0f }, {-2.0f, 1.5f}},
-    {{  BIRD_RADIUS*2.0f,-BIRD_RADIUS*1.5f, 0.0f }, { 2.0f,-1.5f}},
-    {{  BIRD_RADIUS*2.0f, BIRD_RADIUS*1.5f, 0.0f }, { 2.0f, 1.5f}},
-    {{ -COLUMN_HALFWIDTH,            -1.0,  0.0f }, { 0.0f, 0.0f}}, // gap
-    {{ -COLUMN_HALFWIDTH,             1.0,  0.0f }, { 0.0f, 2.0f}},
-    {{  COLUMN_HALFWIDTH,            -1.0,  0.0f }, { 2.0f, 0.0f}},
-    {{  COLUMN_HALFWIDTH,             1.0,  0.0f }, { 2.0f, 2.0f}},
-    {{ -1               ,            -1.0,  0.0f }, { 0.0f, 0.0f}}, // floor
-    {{ -1               ,  FLOOR_HEIGHT-1,  0.0f }, { 0.0f, 2.0f}},
-    {{  1               ,            -1.0,  0.0f }, { 2.0f, 0.0f}},
-    {{  1               ,  FLOOR_HEIGHT-1,  0.0f }, { 2.0f, 2.0f}},
-    {{ -CHAR_HEIGHT     , -CHAR_HEIGHT*0.75f,0.0f}, {-2.0f,-1.5f}}, // char
-    {{ -CHAR_HEIGHT     ,  CHAR_HEIGHT*0.75f,0.0f}, {-2.0f, 1.5f}},
-    {{  CHAR_HEIGHT     , -CHAR_HEIGHT*0.75f,0.0f}, { 2.0f,-1.5f}},
-    {{  CHAR_HEIGHT     ,  CHAR_HEIGHT*0.75f,0.0f}, { 2.0f, 1.5f}},
+    {{   -BIRD_RADIUS*2.0f,   -BIRD_RADIUS*1.5f,  0.0f }, {-2.0f,-1.5f}}, // bird
+    {{   -BIRD_RADIUS*2.0f,    BIRD_RADIUS*1.5f,  0.0f }, {-2.0f, 1.5f}},
+    {{    BIRD_RADIUS*2.0f,   -BIRD_RADIUS*1.5f,  0.0f }, { 2.0f,-1.5f}},
+    {{    BIRD_RADIUS*2.0f,    BIRD_RADIUS*1.5f,  0.0f }, { 2.0f, 1.5f}},
+    {{   -COLUMN_HALFWIDTH,                -1.0,  0.0f }, { 0.0f, 0.0f}}, // gap
+    {{   -COLUMN_HALFWIDTH,                 1.0,  0.0f }, { 0.0f, 2.0f}},
+    {{    COLUMN_HALFWIDTH,                -1.0,  0.0f }, { 2.0f, 0.0f}},
+    {{    COLUMN_HALFWIDTH,                 1.0,  0.0f }, { 2.0f, 2.0f}},
+    {{                  -1,                -1.0,  0.0f }, { 0.0f, 0.0f}}, // floor
+    {{                  -1,      FLOOR_HEIGHT-1,  0.0f }, { 0.0f, 2.0f}},
+    {{                   1,                -1.0,  0.0f }, { 2.0f, 0.0f}},
+    {{                   1,      FLOOR_HEIGHT-1,  0.0f }, { 2.0f, 2.0f}},
+    {{        -CHAR_HEIGHT,  -CHAR_HEIGHT*0.75f,  0.0f }, {-2.0f,-1.5f}}, // char
+    {{        -CHAR_HEIGHT,   CHAR_HEIGHT*0.75f,  0.0f }, {-2.0f, 1.5f}},
+    {{         CHAR_HEIGHT,  -CHAR_HEIGHT*0.75f,  0.0f }, { 2.0f,-1.5f}},
+    {{         CHAR_HEIGHT,   CHAR_HEIGHT*0.75f,  0.0f }, { 2.0f, 1.5f}},
+    {{-MISSILE_RADIUS*2.0f,-MISSILE_RADIUS*1.5f,  0.0f }, {-2.0f,-1.5f}}, // missile
+    {{-MISSILE_RADIUS*2.0f, MISSILE_RADIUS*1.5f,  0.0f }, {-2.0f, 1.5f}},
+    {{ MISSILE_RADIUS*2.0f,-MISSILE_RADIUS*1.5f,  0.0f }, { 2.0f,-1.5f}},
+    {{ MISSILE_RADIUS*2.0f, MISSILE_RADIUS*1.5f,  0.0f }, { 2.0f, 1.5f}},
   };
 
   static const char * birdVertexShader =
@@ -279,5 +283,36 @@
     "  else discard;\n"
     "}\n"
   ;
+
+  static const char * missileVertexShader =
+    "attribute vec4 vPosition;\n"
+    "attribute vec4 vTextureCoordinate;\n"
+    "uniform vec4 vOffset;\n"
+    "varying vec4 vp;\n"
+    "varying vec2 tc;\n"
+    "void main()\n"
+    "{\n"
+    "  gl_Position = vPosition + vOffset;\n"
+    "  vp = vPosition;\n"
+    "  tc = vTextureCoordinate.xy;\n"
+    "}\n"
+  ;
+
+# define STR_EXPAND(tok) #tok
+# define STR(tok) STR_EXPAND(tok)
+
+  static const char * missileFragmentShader =
+    "precision mediump float;\n"
+    "varying vec4 vp;\n"
+    "varying vec2 tc;\n"
+    "uniform float vMul;\n"
+    "void main()\n"
+    "{\n"
+    "  float distanceFromCenter = distance(vec2(vp.x*vMul, vp.y), vec2(tc.x*vMul,tc.y));\n"
+    "  if(distanceFromCenter > 1.0*" STR(MISSILE_RADIUS) ") discard;\n"
+    "  gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0) * fract(vp.x*sin(vp.y)+tc.x*1.117);\n"
+    "}\n"
+  ;
+
 
 #endif // #ifndef H_SHADER_GLUKALO

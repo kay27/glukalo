@@ -20,6 +20,8 @@
 
   const float BIRD_RADIUS = 0.1f;
 
+  const float MISSILE_RADIUS = 0.04f;
+
   const float GAP_HALFSIZE = 0.28;
   const float GAP_HALFSIZE_MIN = 0.26;
   const float GAP_HALFSIZE_MAX = 0.381;

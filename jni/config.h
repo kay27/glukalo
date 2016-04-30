@@ -14,7 +14,6 @@
   const int SCORE_XOR_CODE = 0x5a13;
 
   const int NEXT_LEVEL_SCORE = 20;
-//  const int NEXT_LEVEL_SCORE = 4;
 
   const int MAX_COLUMNS = 3;
 

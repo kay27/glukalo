@@ -2,7 +2,6 @@
 # define H_GAME_GLUKALO
 
 # include <unistd.h>
-# include <cstdlib>
 # include <GLES2/gl2.h>
 
   class Game;
@@ -11,10 +10,11 @@
 # include "shader.h"
 # include "jni2game.h"
 # include "sound.h"
+# include "system.h"
 
   enum BonusType { GUN, SLOWDOWN, SPEEDUP };
 
-  class Game;
+//  class Game;
 
   struct Bonus
   {
@@ -61,7 +61,6 @@
       void PrintNumber(float xcrd, float ycrd, float r, float g, float b, int number);
       void PrintScore();
       void Tap();
-      static float Rand();
       void Render();
       void Resize(int w, int h);
       void Restart();

@@ -5,10 +5,12 @@ include $(CLEAR_VARS)
 LOCAL_MODULE := glukalo
 
 LOCAL_SRC_FILES := \
+  column.cxx \
   game.cxx \
   jni2game.cxx \
   shader.cxx \
   sound.cxx \
+  system.cxx \
 
 LOCAL_CPPFLAGS := -std=c++11
 

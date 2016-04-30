@@ -230,7 +230,7 @@ void Game::Render()
           jawsVectors[i]=jawsVectors[i+1];
           gapHalfSizes[i]=gapHalfSizes[i+1];
         }
-        gaps[MAX_COLUMNS-1]=(Rand()*GAP_MAX_OFFSET*2-GAP_MAX_OFFSET)*(1-2*BIRD_RADIUS);
+//        gaps[MAX_COLUMNS-1]=(Rand()*GAP_MAX_OFFSET*2-GAP_MAX_OFFSET)*(1-2*BIRD_RADIUS);
         swingVectors[MAX_COLUMNS-1]=-swingVectors[MAX_COLUMNS-2];
         jawsVectors[MAX_COLUMNS-1]=jawsVectors[MAX_COLUMNS-2];
         gapHalfSizes[MAX_COLUMNS-1]=GAP_HALFSIZE;
@@ -486,13 +486,33 @@ void Game::AddScore()
     ChangeLevel();
 }
 
-GLint Column::gapProgram            = 0;
-GLint Column::vGapPosition          = 0;
-GLint Column::vGapTextureCoordinate = 0;
-GLint Column::vGap                  = 0;
-GLint Column::vOffsetX              = 0;
-GLint Column::vHalfSize             = 0;
-GLint Column::vLevel                = 0;
+GLint Column::gapProgram            =  0;
+GLint Column::vGapPosition          =  0;
+GLint Column::vGapTextureCoordinate =  0;
+GLint Column::vGap                  =  0;
+GLint Column::vOffsetX              =  0;
+GLint Column::vHalfSize             =  0;
+GLint Column::vLevel                =  0;
+GLint Column::lastSwingVector       =  0;
+int   Column::gapCount              =  0;
+int   Column::lastLevel             = -1;
+
+Column::Column(float x_, int level_)
+: x(x_), level(level_), passed(0), swingVector(-lastSwingVector), jawsVector(1)
+{
+  y = (Game::Rand() * GAP_MAX_OFFSET * 2 - GAP_MAX_OFFSET) * (1 - 2 * BIRD_RADIUS);
+
+  lastSwingVector = swingVector;
+
+  if(level != lastLevel)
+  {
+    gapCount = 0;
+    lastLevel = level;
+  }
+  else
+    if((++gapCount) >= NEXT_LEVEL_SCORE/2)
+      jawsVector = -1;
+}
 
 void Column::Render()
 {

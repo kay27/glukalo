@@ -14,6 +14,8 @@
 
   enum BonusType { GUN, SLOWDOWN, SPEEDUP };
 
+  class Game;
+
   struct Bonus
   {
     BonusType type;
@@ -24,16 +26,22 @@
   {
     public:
       static void Init();
-      Column(float x_, int level_)
-        : x(x_), level(level_), passed(0) {}
+
+      Column(float x_, int level_);
+     
       void Render();
+
       bool Pass();
 
     private:
       int passed;
       float x, y, halfSize;
       int level;
-      static GLint gapProgram, vGapPosition, vGapTextureCoordinate, vGap, vOffsetX, vHalfSize, vLevel;
+      GLfloat swingVector, jawsVector;
+
+      static GLint gapProgram, vGapPosition, vGapTextureCoordinate, vGap, vOffsetX, vHalfSize, vLevel,
+        lastSwingVector;
+      static int gapCount, lastLevel;
   };
 
   class Game
@@ -53,7 +61,7 @@
       void PrintNumber(float xcrd, float ycrd, float r, float g, float b, int number);
       void PrintScore();
       void Tap();
-      float Rand();
+      static float Rand();
       void Render();
       void Resize(int w, int h);
       void Restart();

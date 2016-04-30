@@ -220,6 +220,9 @@ void Game::Render()
 
   if(impulse) { impulse = 0; speed = -TAP_IMPULSE; }
   float deltaX = delta*H_SPEED;
+
+  int antiGravity = (level & 3) == 3;
+
   if(gameStarted)
   {
     speed+=delta*ACCELERATION;
@@ -256,7 +259,7 @@ void Game::Render()
   }
   if(!gameOver)
   {
-    if(level&1) y += delta/27000*speed;
+    if(antiGravity) y += delta/27000*speed;
       else y -= delta/27000*speed;
   }
   if(!(gameStarted||gameOver))
@@ -309,7 +312,7 @@ void Game::Render()
     glUniform1f(vRadius,deltaGameOver);
   }
   glUniform4f(vOffset, x, y, 0.0, 0.0);
-  glUniform1f(vEyeY, 0.5 - (vLevel & 1));
+  glUniform1f(vEyeY, 0.5 - antiGravity);
   glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
   glUseProgram(gapProgram);

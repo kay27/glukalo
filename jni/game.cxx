@@ -62,7 +62,7 @@ void Game::Init()
   vOffset = glGetUniformLocation(birdProgram, "vOffset");
   vRadius = glGetUniformLocation(birdProgram, "vRadius");
   vMul    = glGetUniformLocation(birdProgram, "vMul");
-  vSpeed  = glGetUniformLocation(birdProgram, "vSpeed");
+  vEyeY   = glGetUniformLocation(birdProgram, "vEyeY");
 
   glEnableVertexAttribArray(vPosition);
   glEnableVertexAttribArray(vTextureCoordinate);
@@ -218,7 +218,7 @@ void Game::Render()
 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  if(impulse) {impulse = 0; speed = -TAP_IMPULSE;}
+  if(impulse) { impulse = 0; speed = -TAP_IMPULSE; }
   float deltaX = delta*H_SPEED;
   if(gameStarted)
   {
@@ -254,7 +254,11 @@ void Game::Render()
   {
     floorOffset += deltaX; if(floorOffset >= 8.0) floorOffset -= 8.0;
   }
-  if(!gameOver) y-=delta/27000*speed;
+  if(!gameOver)
+  {
+    if(level&1) y += delta/27000*speed;
+      else y -= delta/27000*speed;
+  }
   if(!(gameStarted||gameOver))
   {
     y += speedVect * delta / 253427; // greater -> slower initial animation
@@ -262,7 +266,11 @@ void Game::Render()
     if(y<-0.006) {y=-0.006; speedVect=0.011;}
   }
 
-  if(y > 1+BIRD_RADIUS*0.9) { y = 1+BIRD_RADIUS*0.9; speed=0; }
+  if(y > 1+BIRD_RADIUS*0.9)
+  {
+    y = 1+BIRD_RADIUS*0.9;
+    speed = - TAP_IMPULSE * (level & 1) / 2; // 0 or smth like player jumps from the sky
+  }
 
   if(y < BIRD_RADIUS+FLOOR_HEIGHT-1)
   {
@@ -301,7 +309,7 @@ void Game::Render()
     glUniform1f(vRadius,deltaGameOver);
   }
   glUniform4f(vOffset, x, y, 0.0, 0.0);
-  glUniform1f(vSpeed, speed);
+  glUniform1f(vEyeY, 0.5 - (vLevel & 1));
   glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
   glUseProgram(gapProgram);

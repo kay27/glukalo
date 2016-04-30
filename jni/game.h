@@ -62,7 +62,7 @@
       int impulse, pause, score, highScore, level, maxLevel;
 
       GLuint vb;
-      GLint vPosition, vTextureCoordinate, vColor, vOffset, vSpeed, vRadius, vMul,
+      GLint vPosition, vTextureCoordinate, vColor, vOffset, vEyeY, vRadius, vMul,
         vGapPosition, vGapTextureCoordinate, vGap, vLevel, vOffsetX, vHalfSize,
         vFloorPosition, vFloorOffset, vFontPosition, vFontOffset, vFontCharCode,
         vFontColor, vCharMul, vFontLineSize, vCharOffset;

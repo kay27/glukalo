@@ -72,22 +72,7 @@ void Game::Init()
   glUniform1f(vRadius, (float)1.0);
   glUseProgram(0);
 
-  gapProgram = MyShader::CreateProgram();
-  MyShader::AttachVertexShader(gapProgram, gapVertexShader);
-  MyShader::AttachFragmentShader(gapProgram, gapFragmentShader);
-  MyShader::LinkProgram(gapProgram);
-  glUseProgram(gapProgram);
-  vGapPosition          = glGetAttribLocation(gapProgram, "vPosition");
-  vGapTextureCoordinate = glGetAttribLocation(gapProgram, "vTextureCoordinate");
-  vOffsetX              = glGetUniformLocation(gapProgram, "vOffsetX");
-  vGap                  = glGetUniformLocation(gapProgram, "vGap");
-  vHalfSize             = glGetUniformLocation(gapProgram, "vHalfSize");
-  vLevel                = glGetUniformLocation(gapProgram, "vLevel");
-  glEnableVertexAttribArray(vGapPosition);
-  glEnableVertexAttribArray(vGapTextureCoordinate);
-  glVertexAttribPointer(vPosition, 3, GL_FLOAT, false, sizeof(MyVertex), (void*)offsetof(MyVertex,pos));
-  glVertexAttribPointer(vTextureCoordinate, 2, GL_FLOAT, false, sizeof(MyVertex), (void*)offsetof(MyVertex,txtcrds));
-  glUseProgram(0);
+  Column::Init();
 
   floorProgram = MyShader::CreateProgram();
   MyShader::AttachVertexShader(floorProgram, floorVertexShader);
@@ -315,8 +300,13 @@ void Game::Render()
   glUniform1f(vEyeY, 0.5 - antiGravity);
   glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
-  glUseProgram(gapProgram);
+  for(int i=0; i<MAX_COLUMNS; i++)
+  {
+  }
+
+//  glUseProgram(gapProgram);
 //  if(blockPos <= -1 - COLUMN_HALFWIDTH + SEGMENT) blockScore--;
+/*
   for(int i=0; i<MAX_COLUMNS; i++)
   {
     int blockScore = (score ^ SCORE_XOR_CODE) + i - 1;
@@ -328,6 +318,7 @@ void Game::Render()
     glUniform1f(vHalfSize, gapHalfSizes[i]);
     glDrawArrays(GL_TRIANGLE_STRIP, 4, 4);
   }
+*/
 
   glUseProgram(floorProgram);
   glUniform1f(vFloorOffset, floorOffset);
@@ -448,9 +439,9 @@ void Game::ChangeLevel()
     }
   }
 
-  glUseProgram(gapProgram);
-  glUniform1f(vLevel, (float)level);
-  glUseProgram(0);
+//  glUseProgram(gapProgram);
+//  glUniform1f(vLevel, (float)level);
+//  glUseProgram(0);
 
   UpdateHighScore();
 }
@@ -493,4 +484,49 @@ void Game::AddScore()
 
   if(GetLevel(s) > level)
     ChangeLevel();
+}
+
+GLint Column::gapProgram            = 0;
+GLint Column::vGapPosition          = 0;
+GLint Column::vGapTextureCoordinate = 0;
+GLint Column::vGap                  = 0;
+GLint Column::vOffsetX              = 0;
+GLint Column::vHalfSize             = 0;
+GLint Column::vLevel                = 0;
+
+void Column::Render()
+{
+  glUseProgram(gapProgram);
+  glUniform1f(vLevel, level);
+  glUniform1f(vOffsetX, x);
+  glUniform1f(vGap, y);
+  glUniform1f(vHalfSize, halfSize);
+  glDrawArrays(GL_TRIANGLE_STRIP, 4, 4);
+}
+
+void Column::Init()
+{
+  gapProgram = MyShader::CreateProgram();
+  MyShader::AttachVertexShader(gapProgram, gapVertexShader);
+  MyShader::AttachFragmentShader(gapProgram, gapFragmentShader);
+  MyShader::LinkProgram(gapProgram);
+  glUseProgram(gapProgram);
+  vGapPosition          = glGetAttribLocation(gapProgram, "vPosition");
+  vGapTextureCoordinate = glGetAttribLocation(gapProgram, "vTextureCoordinate");
+  vOffsetX              = glGetUniformLocation(gapProgram, "vOffsetX");
+  vGap                  = glGetUniformLocation(gapProgram, "vGap");
+  vHalfSize             = glGetUniformLocation(gapProgram, "vHalfSize");
+  vLevel                = glGetUniformLocation(gapProgram, "vLevel");
+  glEnableVertexAttribArray(vGapPosition);
+  glEnableVertexAttribArray(vGapTextureCoordinate);
+  glVertexAttribPointer(vGapPosition, 3, GL_FLOAT, false, sizeof(MyVertex), (void*)offsetof(MyVertex,pos));
+  glVertexAttribPointer(vGapTextureCoordinate, 2, GL_FLOAT, false, sizeof(MyVertex), (void*)offsetof(MyVertex,txtcrds));
+  glUseProgram(0);
+}
+
+bool Column::Pass()
+{
+  if (passed) return false;
+  passed = (x <= -0.34);
+  return passed;
 }

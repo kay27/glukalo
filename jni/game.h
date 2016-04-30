@@ -20,6 +20,22 @@
     float x,y;
   };
 
+  class Column
+  {
+    public:
+      static void Init();
+      Column(float x_, int level_)
+        : x(x_), level(level_), passed(0) {}
+      void Render();
+      bool Pass();
+
+    private:
+      int passed;
+      float x, y, halfSize;
+      int level;
+      static GLint gapProgram, vGapPosition, vGapTextureCoordinate, vGap, vOffsetX, vHalfSize, vLevel;
+  };
+
   class Game
   {
     public:
@@ -63,11 +79,10 @@
 
       GLuint vb;
       GLint vPosition, vTextureCoordinate, vColor, vOffset, vEyeY, vRadius, vMul,
-        vGapPosition, vGapTextureCoordinate, vGap, vLevel, vOffsetX, vHalfSize,
         vFloorPosition, vFloorOffset, vFontPosition, vFontOffset, vFontCharCode,
         vFontColor, vCharMul, vFontLineSize, vCharOffset;
      
-      GLuint birdProgram, floorProgram, gapProgram, fontProgram;
+      GLuint birdProgram, floorProgram, fontProgram;
 
       MyAudio *audio;
   };

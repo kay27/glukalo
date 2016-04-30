@@ -158,11 +158,9 @@
     "uniform float vOffset;\n"
     "void main()\n"
     "{\n"
-//    "  gl_FragColor = vec4((sin(vp.y*191.1+(vp.x+vOffset)/0.001)+1.0)/2.0, abs((vp.x+vOffset)*vp.y), abs((vp.x+vOffset)*vp.y), 1.0);\n"
     "  float x=vp.x+vOffset;\n"
-//    "  gl_FragColor = vec4((sin(vp.y*191.1+x/0.001)+1.0)/2.0*fract(x*991.1), (sin(vp.y*19.1+x/0.001)+1.0)/2.0*fract(x*121.1), (sin(vp.y*331.09+x/0.01)+1.0)/2.0*fract(x*221.77), 1.0);\n"
-//    "  gl_FragColor = vec4(fract(x*8.11+vp.y*11.3), fract(x*8.21+vp.y*11.9), fract(x*8.31+vp.y*12.19), 1.0);\n"
-    "  gl_FragColor = vec4(fract(x+vp.y*11.3), fract(x*2.0+vp.y*11.9), fract(x*4.0+vp.y*12.19), 1.0);\n"
+//    "  gl_FragColor = vec4(fract(x+vp.y*11.3), fract(x*2.0+vp.y*11.9), fract(x*4.0+vp.y*12.19), 1.0);\n"
+    "  gl_FragColor = vec4(fract(x+vp.y*11.3)*0.9, fract(x*2.0+vp.y*11.9)*0.6, fract(x*4.0+vp.y*12.19)*0.2, 1.0);\n"
     "}\n"
   ;
 

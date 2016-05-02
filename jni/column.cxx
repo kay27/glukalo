@@ -35,6 +35,8 @@ void Column::OnCreate()
 {
   y = (RandFloat() * GAP_MAX_OFFSET * 2 - GAP_MAX_OFFSET) * (1 - 2 * BIRD_RADIUS);
 
+  level %= NUMBER_OF_LEVELS;
+
   if(level != lastLevel)
   {
     gapCount = 0;
@@ -56,19 +58,20 @@ void Column::OnCreate()
 }
 
 //Column::Column(float x_, int score_)
-//: x(x_), level(score / NEXT_LEVEL_SCORE), passed(0), swingVector(-lastSwingVector), jawsVector(1), score(score_)
+//: x(x_), level(score / NEXT_LEVEL_SCORE), passed(0), swingVector(-lastSwingVector), jawsVector(1), score(score_), halfSize(GAP_HALFSIZE)
 //{
 //  OnCreate();
 //}
 
 void Column::Restart(float x_, int score_)
 {
-  x = x_;
-  level = score / NEXT_LEVEL_SCORE;
-  passed = 0;
+  x           = x_;
+  level       = score / NEXT_LEVEL_SCORE;
+  passed      = 0;
   swingVector = -lastSwingVector;
-  jawsVector = 1;
-  score = score_;
+  jawsVector  = 1;
+  score       = score_;
+  halfSize    = GAP_HALFSIZE;
   OnCreate();
 }
 
@@ -82,9 +85,9 @@ float Column::Move(float dx)
   if(y > GAP_MAX_OFFSET*(1-2*BIRD_RADIUS)) swingVector = -1;
   else if(y < -GAP_MAX_OFFSET*(1-2*BIRD_RADIUS)) swingVector = 1;
 
-  y += jawsVector * jawsSpeed * delta / 400000;
-  if(y > GAP_HALFSIZE_MAX) jawsVector = -1;
-  else if(y < GAP_HALFSIZE_MIN) jawsVector = 1;
+  halfSize += jawsVector * jawsSpeed * delta / 400000;
+  if(halfSize > GAP_HALFSIZE_MAX) jawsVector = -1;
+  else if(halfSize < GAP_HALFSIZE_MIN) jawsVector = 1;
 
   return x;
 }

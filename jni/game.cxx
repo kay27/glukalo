@@ -205,11 +205,7 @@ void Game::Render()
   {
     speed+=delta*ACCELERATION;
 
-    if(x>-FLY_BACK)
-    {
-      x=x-deltaX;
-      if(x<-FLY_BACK) x=-FLY_BACK;
-    }
+    if(x>-FLY_BACK) { x=x-deltaX; if(x<-FLY_BACK) x=-FLY_BACK; }
 
     if(!gameOver)
     {

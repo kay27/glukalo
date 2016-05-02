@@ -243,6 +243,7 @@ void Game::Render()
   {
     y = 1+BIRD_RADIUS*0.9;
     if(antiGravity) speed = -TAP_IMPULSE /*/ 2*/;
+    else speed=0;
   }
 
   if(y < BIRD_RADIUS+FLOOR_HEIGHT-1)
@@ -252,16 +253,15 @@ void Game::Render()
   }
 
   if(!gameOver)
-    for(int i=0; i<MAX_COLUMNS-1; i++)
+    for(int i=0; i<MAX_COLUMNS; i++)
       if(gaps[i].Collision(x, y, yMulValue))
         GameOver();
 
   glUseProgram(birdProgram);
-  float deltaGameOver = 1.0;
   if(gameOver)
   {
     gameOverTime += delta;
-    deltaGameOver = (1000000.0 - gameOverTime)/1000000.0;
+    float deltaGameOver = (1000000.0 - gameOverTime)/1000000.0;
     if(deltaGameOver<=0)
     {
       glClearColor(0.0, 0.0, 0.0, 1.0);

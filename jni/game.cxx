@@ -78,7 +78,7 @@ void Game::Init()
   MyShader::LinkProgram(floorProgram);
   glUseProgram(floorProgram);
   vFloorPosition = glGetAttribLocation(floorProgram, "vPosition");
-  vFloorOffset = glGetUniformLocation(floorProgram, "vOffset");
+  vFloorOffset = glGetUniformLocation(floorProgram, "vOM");
   glEnableVertexAttribArray(vFloorPosition);
   glVertexAttribPointer(vFloorPosition, 3, GL_FLOAT, false, sizeof(MyVertex), (void*)offsetof(MyVertex,pos));
   glUseProgram(0);
@@ -226,7 +226,8 @@ void Game::Render()
 
   if(!gameOver)
   {
-    floorOffset += deltaX; if(floorOffset >= 8.0) floorOffset -= 8.0;
+//    floorOffset += deltaX; while (floorOffset >= 1/yMulValue) floorOffset -= 1/yMulValue;
+    floorOffset = fmod(floorOffset + deltaX, 1/yMulValue);
 
     if(antiGravity) y += delta/27000*speed;
       else y -= delta/27000*speed;
@@ -278,7 +279,10 @@ void Game::Render()
   for(int i=0; i<MAX_COLUMNS; i++) gaps[i].Render();
 
   glUseProgram(floorProgram);
-  glUniform1f(vFloorOffset, floorOffset);
+  if(antiGravity)
+    glUniform4f(vFloorOffset, floorOffset, yMulValue, 1, 0);
+  else
+    glUniform4f(vFloorOffset, floorOffset, yMulValue, 0, 0);
   glDrawArrays(GL_TRIANGLE_STRIP, 8, 4);
 
   PrintScore();

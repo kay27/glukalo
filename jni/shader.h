@@ -155,12 +155,18 @@
   static const char * floorFragmentShader =
     "precision mediump float;\n"
     "varying vec4 vp;\n"
-    "uniform float vOffset;\n"
+    "uniform vec4 vOM;\n"
     "void main()\n"
     "{\n"
-    "  float x=vp.x+vOffset;\n"
-//    "  gl_FragColor = vec4(fract(x+vp.y*11.3), fract(x*2.0+vp.y*11.9), fract(x*4.0+vp.y*12.19), 1.0);\n"
-    "  gl_FragColor = vec4(fract(x+vp.y*11.3)*0.9, fract(x*2.0+vp.y*11.9)*0.6, fract(x*4.0+vp.y*12.19)*0.2, 1.0);\n"
+    "  float x=vp.x+vOM.x;\n"
+//    "  gl_FragColor = vec4(fract(x*vOM.y+vp.y*11.3)*0.9, fract(x*vOM.y*4.0+vp.y*11.9)*0.6, fract(x*2.0*vOM.y+vp.y*12.19)*0.2, 1.0);\n"
+//    "  gl_FragColor = vec4(fract(x*vOM.y+vp.y*11.3+sin(x*4.0*vOM.y*2.0*3.14159265))*0.9, 0.0, fract(x*2.0*vOM.y+vp.y*12.19)*0.2, 1.0);\n"
+//    "  gl_FragColor = vec4(fract(vp.y*11.3+sin(x*4.0*vOM.y*2.0*3.14159265))*0.9, 0.0, fract(x*2.0*vOM.y+vp.y*12.19)*0.2, 1.0);\n"
+//    "  if(vOM.z < 0.9) gl_FragColor = vec4(fract(vp.y*11.3+sin(x*4.0*vOM.y*2.0*3.14159265))*0.9, 0.0, 0.0, 1.0);\n"
+//    "  else gl_FragColor = vec4(fract(vp.y*11.3+sin(x*4.0*vOM.y*2.0*3.14159265))*0.6, 0.0, fract(sin(x*32.0*vOM.y*2.0*3.14159265)*29.1)*0.8, 1.0);\n"
+    "  float q = fract(vp.y*11.3+sin(x*4.0*vOM.y*2.0*3.14159265));\n"
+    "  if(vOM.z < 0.9) gl_FragColor = vec4(q*0.8, q*0.2, q*0.19, 1.0);\n"
+    "  else gl_FragColor = vec4((1.0-q)*0.2, q*0.2, q*fract(sin(x*32.0*vOM.y*2.0*3.14159265)*29.1), 1.0);\n"
     "}\n"
   ;
 

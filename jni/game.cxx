@@ -256,7 +256,10 @@ void Game::Render()
   if(!gameOver)
     for(int i=0; i<MAX_COLUMNS; i++)
       if(gaps[i].Collision(x, y, yMulValue))
+      {
         GameOver();
+        break;
+      }
 
   glUseProgram(birdProgram);
   if(gameOver)

@@ -37,19 +37,13 @@
 
   const float H_SPEED = 0.0000005;
 
+
 # define ACTIVITY_NAME "com.kay27.Glukalo.MainActivity"
 
-
-
   const short MY_AUDIO_NOISE_VOLUME = 3000;
-
-
-  const int MY_AUDIO_SAMPLE_RATE = 44100;
-
-  const int MY_AUDIO_BUFFER_FRAMES = 441;
-
+  const int   MY_AUDIO_SAMPLE_RATE = 44100;
+  const int   MY_AUDIO_BUFFER_FRAMES = 441;
   const SLEnvironmentalReverbSettings REVERB_SETTINGS = SL_I3DL2_ENVIRONMENT_PRESET_STONECORRIDOR;
-
 
   const float CHAR_HEIGHT    = 0.08;
   const float CHAR_HALFHEIGHT = CHAR_HEIGHT / 2;

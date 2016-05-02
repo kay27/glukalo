@@ -192,7 +192,7 @@ void Game::Render()
   gettimeofday(&now, NULL);
   float delta = (now.tv_sec - lastTime.tv_sec) * 1000000 + ((int)now.tv_usec - (int)lastTime.tv_usec);
   lastTime = now;
-  if(delta>50000) return; // CPU overloaded?
+  if(delta>50000) return; // CPU overload
 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -242,7 +242,7 @@ void Game::Render()
   if(y > 1+BIRD_RADIUS*0.9)
   {
     y = 1+BIRD_RADIUS*0.9;
-    if(antiGravity) speed = -TAP_IMPULSE /*/ 2*/;
+    if(antiGravity) speed = -TAP_IMPULSE / 1.5;
     else speed=0;
   }
 

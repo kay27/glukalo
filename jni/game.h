@@ -2,6 +2,8 @@
 # define H_GAME_GLUKALO
 
 # include <unistd.h>
+# include <string>
+# include <math.h>
 # include <GLES2/gl2.h>
 
   class Game;
@@ -27,17 +29,28 @@
     public:
       static void Init();
 
-      Column(float x_, int level_);
+      bool Collision(float x0, float y0, float yMulValue);
+
+//      Column(float x_, int score_);
+//      Column(float x_, int score_);
+
+      float Move(float dx);
      
+      void OnCreate();
+
       void Render();
+
+      void Restart(float x_, int score_);
+
+      void SetSpeed(const float ss, const float js);
 
       bool Pass();
 
     private:
       int passed;
       float x, y, halfSize;
-      int level;
-      GLfloat swingVector, jawsVector;
+      int level, score;
+      GLfloat swingVector, jawsVector, swingSpeed, jawsSpeed;
 
       static GLint gapProgram, vGapPosition, vGapTextureCoordinate, vGap, vOffsetX, vHalfSize, vLevel,
         lastSwingVector;
@@ -49,8 +62,6 @@
     public:
       void AddScore();
       void ChangeLevel();
-      float Clamp(float x, float a, float b);
-      bool Collision(float x0, float x1, float y0, float gapHalfSize);
       Game();
       ~Game();
       void GameOver();
@@ -77,10 +88,10 @@
       float gameOverTime;
 
       GLfloat speed, x, y, speedVect, yMulValue,
-        blockPos, floorOffset, swingSpeed, jawsSpeed,
+        blockPos, floorOffset, //swingSpeed, jawsSpeed,
         charWidth;
 
-      GLfloat gaps[MAX_COLUMNS], swingVectors[MAX_COLUMNS], gapHalfSizes[MAX_COLUMNS], jawsVectors[MAX_COLUMNS];
+      Column gaps[MAX_COLUMNS];
 
       int impulse, pause, score, highScore, level, maxLevel;
 

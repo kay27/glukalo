@@ -1,6 +1,4 @@
 #include "game.h"
-//#include <mutex>
-#include <string>
 
 Game::Game()
 {
@@ -134,12 +132,7 @@ void Game::Restart()
   scoreRestarted =  (MAX_COLUMNS+1) >> 1;
 
   for(int i=0; i<MAX_COLUMNS; i++)
-  {
-    gaps[i]=RandFloat()-0.5; // easy at start
-    swingVectors[i]=((i&1)<<1) - 1; //-1 or 1
-    jawsVectors[i]=1;
-    gapHalfSizes[i]=GAP_HALFSIZE;
-  }
+    gaps[i].Restart(2+SEGMENT+i, score+i);
 
   glUseProgram(birdProgram);
   glUniform1f(vRadius, (float)1.0);
@@ -211,42 +204,38 @@ void Game::Render()
   if(gameStarted)
   {
     speed+=delta*ACCELERATION;
+
     if(x>-FLY_BACK)
     {
       x=x-deltaX;
       if(x<-FLY_BACK) x=-FLY_BACK;
     }
+
     if(!gameOver)
     {
-      blockPos -= deltaX;
-      if((scoreRestarted == 2) && (blockPos <= -FLY_BACK)) AddScore();
-      if(blockPos < -1-COLUMN_HALFWIDTH)
+      for(int i=0;i<MAX_COLUMNS-1;i++)
       {
-        blockPos += SEGMENT;
-        for(int i=0;i<MAX_COLUMNS-1;i++)
+        float xNew = gaps[i].Move(deltaX);
+
+        if(gaps[i].Pass()) AddScore();
+
+        if(xNew < -1 - COLUMN_HALFWIDTH)
         {
-          gaps[i]=gaps[i+1];
-          swingVectors[i]=swingVectors[i+1];
-          jawsVectors[i]=jawsVectors[i+1];
-          gapHalfSizes[i]=gapHalfSizes[i+1];
+          xNew += SEGMENT * MAX_COLUMNS;
+          gaps[i].Restart(xNew, (score ^ SCORE_XOR_CODE) + round((xNew - FLY_BACK) / SEGMENT));
         }
-//        gaps[MAX_COLUMNS-1]=(Rand()*GAP_MAX_OFFSET*2-GAP_MAX_OFFSET)*(1-2*BIRD_RADIUS);
-        swingVectors[MAX_COLUMNS-1]=-swingVectors[MAX_COLUMNS-2];
-        jawsVectors[MAX_COLUMNS-1]=jawsVectors[MAX_COLUMNS-2];
-        gapHalfSizes[MAX_COLUMNS-1]=GAP_HALFSIZE;
-        AddScore();
       }
     }
   }
+
   if(!gameOver)
   {
     floorOffset += deltaX; if(floorOffset >= 8.0) floorOffset -= 8.0;
-  }
-  if(!gameOver)
-  {
+
     if(antiGravity) y += delta/27000*speed;
       else y -= delta/27000*speed;
   }
+
   if(!(gameStarted||gameOver))
   {
     y += speedVect * delta / 253427; // greater -> slower initial animation
@@ -268,18 +257,8 @@ void Game::Render()
 
   if(!gameOver)
     for(int i=0; i<MAX_COLUMNS-1; i++)
-    {
-      gaps[i]+=swingVectors[i]*swingSpeed*delta/500000;
-      if(gaps[i] > GAP_MAX_OFFSET*(1-2*BIRD_RADIUS)) swingVectors[i]=-1;
-      else if(gaps[i] < -GAP_MAX_OFFSET*(1-2*BIRD_RADIUS)) swingVectors[i]=1;
-
-      gapHalfSizes[i]+=jawsVectors[i]*jawsSpeed*delta/400000;
-      if(gapHalfSizes[i] > GAP_HALFSIZE_MAX) jawsVectors[i]=-1;
-      else if(gapHalfSizes[i] < GAP_HALFSIZE_MIN) jawsVectors[i]=1;
-
-      if(Collision(blockPos+SEGMENT*i-COLUMN_HALFWIDTH, blockPos+SEGMENT*i+COLUMN_HALFWIDTH, gaps[i], gapHalfSizes[i]))
+      if(gaps[i].Collision(x, y, yMulValue))
         GameOver();
-    }
 
   glUseProgram(birdProgram);
   float deltaGameOver = 1.0;
@@ -300,25 +279,7 @@ void Game::Render()
   glUniform1f(vEyeY, 0.5 - antiGravity);
   glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
-  for(int i=0; i<MAX_COLUMNS; i++)
-  {
-  }
-
-//  glUseProgram(gapProgram);
-//  if(blockPos <= -1 - COLUMN_HALFWIDTH + SEGMENT) blockScore--;
-/*
-  for(int i=0; i<MAX_COLUMNS; i++)
-  {
-    int blockScore = (score ^ SCORE_XOR_CODE) + i - 1;
-    if(i==0 && scoreRestarted) blockScore++;
-//    glUniform1f(vLevel, (float)GetLevel(score+i-1));
-    glUniform1f(vLevel, (float)GetLevel(blockScore));
-    glUniform1f(vOffsetX, blockPos + SEGMENT * i);
-    glUniform1f(vGap, gaps[i]);
-    glUniform1f(vHalfSize, gapHalfSizes[i]);
-    glDrawArrays(GL_TRIANGLE_STRIP, 4, 4);
-  }
-*/
+  for(int i=0; i<MAX_COLUMNS; i++) gaps[i].Render();
 
   glUseProgram(floorProgram);
   glUniform1f(vFloorOffset, floorOffset);
@@ -379,34 +340,6 @@ void Game::PrintNumber(float xcrd, float ycrd, float r, float g, float b, int nu
   } while(number > 0);
 }
 
-bool Game::Collision(float x0, float x1, float y0, float gapHalfSize)
-{
-  // based on http://stackoverflow.com/a/1879223/5920627
-
-  float closestX = Clamp(x, x0, x1);
-  float distanceX = x - closestX;
-
-  if(distanceX < BIRD_RADIUS/yMulValue) distanceX*=yMulValue;
-
-  float dx2 = distanceX*distanceX;
-
-  float closestY = Clamp(y, -2, y0-gapHalfSize);
-  float distanceY = y - closestY;
-  if (dx2+distanceY*distanceY < BIRD_RADIUS*BIRD_RADIUS)
-    return true;
-
-  closestY = Clamp(y, y0+gapHalfSize, 2);
-  distanceY = y - closestY;
-  return dx2+distanceY*distanceY < BIRD_RADIUS*BIRD_RADIUS;
-}
-
-inline float Game::Clamp(float x, float a, float b)
-{
-  // http://www.gamedev.net/topic/473207-clamping-a-value-to-a-range-in-c-quickly/#entry4105200
-
-  return x < a ? a : (x > b ? b : x);
-}
-
 void Game::GameOver()
 {
   gameOverTime = 0;
@@ -433,10 +366,6 @@ void Game::ChangeLevel()
       MyCallback::Toast(msg);
     }
   }
-
-//  glUseProgram(gapProgram);
-//  glUniform1f(vLevel, (float)level);
-//  glUseProgram(0);
 
   UpdateHighScore();
 }
@@ -468,14 +397,6 @@ void Game::AddScore()
 //  score++;
   int s = (score ^ SCORE_XOR_CODE) + 1;
   score = s ^ SCORE_XOR_CODE;
-
-  swingSpeed=((float)(s/3))*0.001;
-  if(swingSpeed>0.13)
-    swingSpeed=0.13;
-
-  jawsSpeed=((float)(s/7))*0.002;
-  if(jawsSpeed>0.11)
-    jawsSpeed=0.11;
 
   if(GetLevel(s) > level)
     ChangeLevel();

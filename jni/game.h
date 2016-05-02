@@ -16,8 +16,6 @@
 
   enum BonusType { GUN, SLOWDOWN, SPEEDUP };
 
-//  class Game;
-
   struct Bonus
   {
     BonusType type;
@@ -30,9 +28,6 @@
       static void Init();
 
       bool Collision(float x0, float y0, float yMulValue);
-
-//      Column(float x_, int score_);
-//      Column(float x_, int score_);
 
       float Move(float dx);
      

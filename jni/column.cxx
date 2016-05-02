@@ -57,20 +57,14 @@ void Column::OnCreate()
   lastSwingVector = swingVector;
 }
 
-//Column::Column(float x_, int score_)
-//: x(x_), level(score / NEXT_LEVEL_SCORE), passed(0), swingVector(-lastSwingVector), jawsVector(1), score(score_), halfSize(GAP_HALFSIZE)
-//{
-//  OnCreate();
-//}
-
 void Column::Restart(float x_, int score_)
 {
   x           = x_;
+  score       = score_;
   level       = score / NEXT_LEVEL_SCORE;
   passed      = 0;
   swingVector = -lastSwingVector;
   jawsVector  = 1;
-  score       = score_;
   halfSize    = GAP_HALFSIZE;
   OnCreate();
 }
@@ -125,6 +119,6 @@ void Column::Init()
 bool Column::Pass()
 {
   if (passed) return false;
-  passed = (x <= -0.34);
+  passed = (x <= -FLY_BACK);
   return passed;
 }

@@ -132,7 +132,7 @@ void Game::Restart()
   scoreRestarted =  (MAX_COLUMNS+1) >> 1;
 
   for(int i=0; i<MAX_COLUMNS; i++)
-    gaps[i].Restart(2+SEGMENT+i, score+i);
+    gaps[i].Restart(SEGMENT*i + 1.5, (score ^ SCORE_XOR_CODE) + i);
 
   glUseProgram(birdProgram);
   glUniform1f(vRadius, (float)1.0);
@@ -209,7 +209,7 @@ void Game::Render()
 
     if(!gameOver)
     {
-      for(int i=0;i<MAX_COLUMNS-1;i++)
+      for(int i=0; i<MAX_COLUMNS; i++)
       {
         float xNew = gaps[i].Move(deltaX);
 
@@ -242,7 +242,7 @@ void Game::Render()
   if(y > 1+BIRD_RADIUS*0.9)
   {
     y = 1+BIRD_RADIUS*0.9;
-    speed = - TAP_IMPULSE * (level & 1) / 2; // 0 or smth like player jumps from the sky
+    if(antiGravity) speed = -TAP_IMPULSE /*/ 2*/;
   }
 
   if(y < BIRD_RADIUS+FLOOR_HEIGHT-1)

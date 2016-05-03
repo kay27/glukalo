@@ -8,7 +8,7 @@ GLint Column::vGap                  =  0;
 GLint Column::vOffsetX              =  0;
 GLint Column::vHalfSize             =  0;
 GLint Column::vLevel                =  0;
-GLint Column::lastSwingVector       =  0;
+GLint Column::lastSwingVector       = -1;
 int   Column::gapCount              =  0;
 int   Column::lastLevel             = -1;
 

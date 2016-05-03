@@ -19,10 +19,12 @@
 
   const float BIRD_RADIUS = 0.1f;
 
-//  const float MISSILE_RADIUS = 0.04f;
-# define MISSILE_RADIUS 0.04f
+  const float MISSILE_RADIUS = 0.04f;
+//  const float MISSILE_RADIUS = 0.29f;
+//# define MISSILE_RADIUS 0.04f
 
   const float EXPLODE_TIMEOUT = 120000;
+//  const float EXPLODE_TIMEOUT = 500000;
 
   const float GAP_HALFSIZE = 0.28;
   const float GAP_HALFSIZE_MIN = 0.26;
@@ -40,8 +42,9 @@
 
   const float H_SPEED = 0.0000005;
 
-//  const float H_MISSILE_SPEED = H_SPEED * 2.7;
-  const float H_MISSILE_SPEED = H_SPEED;
+  const float H_MISSILE_SPEED = H_SPEED * 2.7;
+//  const float H_MISSILE_SPEED = H_SPEED;
+//  const float H_MISSILE_SPEED = H_SPEED*1.3;
 
 
 # define ACTIVITY_NAME "com.kay27.Glukalo.MainActivity"

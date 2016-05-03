@@ -317,10 +317,10 @@
     "varying float vMul;\n"
     "void main()\n"
     "{\n"
-//    "  if(phase>1.999) { gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0); return; }\n"
-    "  gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0); return;\n"
+    "  if(phase>1.999) { gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0); return; }\n"
+//    "  gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0); return;\n"
     "  float distanceFromCenter = distance(vec2(vp.x*vMul, vp.y), vec2(tc.x*vMul,tc.y));\n"
-//    "  if(distanceFromCenter > 1.0*" STR(MISSILE_RADIUS) ") discard;\n"
+    "  if(distanceFromCenter > 1.0) discard;\n"
     "  gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0) * fract(vp.x*sin(vp.y)+tc.x*1.117);\n"
     "}\n"
   ;

@@ -41,7 +41,7 @@
     private:
       static GLint program, vPos, vTC, vOffs, vMul;
       int phase;
-      float x, y, de, lastDelta;
+      float x, y, ec;
 
 float vm;
   };

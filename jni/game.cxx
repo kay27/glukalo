@@ -200,7 +200,13 @@ void Game::Render()
 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  if(impulse) { impulse = 0; speed = -TAP_IMPULSE; m.Start(x, y); }
+  if(impulse)
+  {
+    impulse = 0;
+    speed = -TAP_IMPULSE;
+
+    if(!gameOver) if(gameStarted) m.Start(x, y);
+  }
   float deltaX = delta*H_SPEED;
 
   int antiGravity = (level & 3) == 3;
@@ -225,10 +231,10 @@ void Game::Render()
           gaps[i].Restart(xNew, (score ^ SCORE_XOR_CODE) + round((xNew - FLY_BACK) / SEGMENT));
         }
       }
-
-      m.Move(delta);
     }
   }
+
+  m.Move(delta);
 
   if(!gameOver)
   {
@@ -261,15 +267,16 @@ void Game::Render()
 
   if(!gameOver)
   {
-    for(int i=0; i<MAX_COLUMNS; i++)
-    {
-      if(gaps[i].Collision(x, y, yMulValue)) { GameOver(); break; }
-
-      if(m.GetPhase() == 1)
+    if(m.GetPhase() == 1)
+      for(int i=0; i<MAX_COLUMNS; i++)
         if(gaps[i].Collision(m.GetX(), m.GetY(), m.GetR(), yMulValue))
           m.Explode();
-    }
+
+    for(int i=0; i<MAX_COLUMNS; i++)
+      if(gaps[i].Collision(x, y, yMulValue)) { GameOver(); break; }
   }
+  else
+    if(m.GetPhase() == 1) m.Explode();
 
   glUseProgram(birdProgram);
   if(gameOver)
@@ -426,7 +433,7 @@ GLint Missile::vMul = 0;
 void Missile::Explode()
 {
 //  { char msg[32]; sprintf(msg, "Explode. Program # %d", program); MyCallback::Toast(msg); }
-  de = lastDelta;
+//  de = lastDelta;
   if(phase != 1) return;
   phase = 2;
 }
@@ -454,19 +461,20 @@ void Missile::Init()
 
 void Missile::Move(float delta)
 {
-  lastDelta = delta;
   if(phase == 2)
   {
     x -= delta * H_SPEED;
-    if(delta - de >= EXPLODE_TIMEOUT)
+    ec+=delta;
+    if(ec >= EXPLODE_TIMEOUT)
     {
       phase = 0;
+      ec = 0;
       return;
     }
   }
   else if(phase == 1) x += delta * H_MISSILE_SPEED;
 
-  if((x > 1 + MISSILE_RADIUS) || (x < 1 - MISSILE_RADIUS))
+  if((x > 1 + MISSILE_RADIUS) || (x < -1 - MISSILE_RADIUS))
   {
     phase = 0;
     return;
@@ -485,13 +493,15 @@ void Missile::Render()
 {
   if(!phase) return;
   glUseProgram(program);
-  glUniform4f(vOffs, x, y, vm, phase);
+  glUniform4f(vOffs, x*vm, y, vm, phase);
   glDrawArrays(GL_TRIANGLE_STRIP, 16, 4);
 }
 
 
 void Missile::Start(float x_, float y_)
 {
+  if(phase>0) return;
+  ec=0;
   phase = 1;
   x = x_;
   y = y_;

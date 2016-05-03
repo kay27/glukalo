@@ -31,6 +31,25 @@ bool Column::Collision(float x0, float y0, float yMulValue)
   return dx2 + distanceY*distanceY < BIRD_RADIUS*BIRD_RADIUS;
 }
 
+bool Column::Collision(float x0, float y0, float r0, float yMulValue)
+{
+  float closestX = Clamp(x0, x - COLUMN_HALFWIDTH, x + COLUMN_HALFWIDTH);
+  float distanceX = x0 - closestX;
+
+  if(distanceX < r0/yMulValue) distanceX *= yMulValue;
+
+  float dx2 = distanceX * distanceX;
+
+  float closestY = Clamp(y0, -2, y - halfSize);
+  float distanceY = y0 - closestY;
+  if (dx2 + distanceY*distanceY < r0*r0)
+    return true;
+
+  closestY = Clamp(y0, y + halfSize, 2);
+  distanceY = y0 - closestY;
+  return dx2 + distanceY*distanceY < r0*r0;
+}
+
 void Column::OnCreate()
 {
   y = (RandFloat() * GAP_MAX_OFFSET * 2 - GAP_MAX_OFFSET) * (1 - 2 * BIRD_RADIUS);

@@ -22,12 +22,38 @@
     float x,y;
   };
 
+  class Missile
+  {
+    public:
+//      Missile() : phase(0) {};
+      Missile() : phase(0), vm(1) {};
+      void Explode();
+      inline float GetPhase(){ return phase; }
+      inline float GetR(){ return MISSILE_RADIUS; }
+      inline float GetX(){ return x; }
+      inline float GetY(){ return y; }
+      static void Init();
+      void Move(float delta);
+      void Render();
+//      static void Resize(float newMulValue);
+      void Resize(float newMulValue);
+      void Start(float x_, float y_);
+    private:
+      static GLint program, vPos, vTC, vOffs, vMul;
+      int phase;
+      float x, y, de, lastDelta;
+
+float vm;
+  };
+
   class Column
   {
     public:
       static void Init();
 
       bool Collision(float x0, float y0, float yMulValue);
+
+      bool Collision(float x0, float y0, float r0, float yMulValue);
 
       float Move(float dx);
      
@@ -98,6 +124,8 @@
       GLuint birdProgram, floorProgram, fontProgram;
 
       MyAudio *audio;
+
+      Missile m;
   };
 
 #endif // #ifndef H_GAME_GLUKALO

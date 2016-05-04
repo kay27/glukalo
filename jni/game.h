@@ -33,7 +33,7 @@
       inline float GetX(){ return x; }
       inline float GetY(){ return y; }
       static void Init();
-      void Move(float delta);
+      void Move(float delta, int antiGravity);
       void Render();
 //      static void Resize(float newMulValue);
       void Resize(float newMulValue);
@@ -41,7 +41,7 @@
     private:
       static GLint program, vPos, vTC, vOffs, vMul;
       int phase;
-      float x, y, ec;
+      float a, x, y, ec;
 
 float vm;
   };
@@ -55,6 +55,10 @@ float vm;
 
       bool Collision(float x0, float y0, float r0, float yMulValue);
 
+      inline const float GetY(){ return y; }
+
+      inline const float GetHalfSize(){ return halfSize; }
+
       float Move(float dx);
      
       void OnCreate();
@@ -62,6 +66,10 @@ float vm;
       void Render();
 
       void Restart(float x_, int score_);
+
+      inline void SetY(float y_){ y = y_; }
+
+      inline void SetHalfSize(float halfSize_){ halfSize = halfSize_; }
 
       void SetSpeed(const float ss, const float js);
 

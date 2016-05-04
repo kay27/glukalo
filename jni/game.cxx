@@ -234,15 +234,15 @@ void Game::Render()
     }
   }
 
-  m.Move(delta);
+  m.Move(delta, antiGravity);
 
   if(!gameOver)
   {
 //    floorOffset += deltaX; while (floorOffset >= 1/yMulValue) floorOffset -= 1/yMulValue;
     floorOffset = fmod(floorOffset + deltaX, 1/yMulValue);
 
-    if(antiGravity) y += delta/27000*speed;
-      else y -= delta/27000*speed;
+    if(antiGravity) y += delta/GRAVITY_TUNE*speed;
+      else y -= delta/GRAVITY_TUNE*speed;
   }
 
   if(!(gameStarted||gameOver))
@@ -270,7 +270,17 @@ void Game::Render()
     if(m.GetPhase() == 1)
       for(int i=0; i<MAX_COLUMNS; i++)
         if(gaps[i].Collision(m.GetX(), m.GetY(), m.GetR(), yMulValue))
+        {
           m.Explode();
+          float gy = gaps[i].GetY(), ghs = gaps[i].GetHalfSize();
+          float y0 = gy - ghs, y1 = gy + ghs;
+          float my = m.GetY();
+          float tp = y0, bp = y1;
+          if(m.GetY() < y1) { tp = my - GAP_HALFSIZE; if(tp<-1) tp=-1;}
+            else {bp = my + GAP_HALFSIZE; if(bp>1) bp=1; }
+          gaps[i].SetY((tp+bp)/2.0);
+          gaps[i].SetHalfSize((bp-tp)/2.0);
+        }
 
     for(int i=0; i<MAX_COLUMNS; i++)
       if(gaps[i].Collision(x, y, yMulValue)) { GameOver(); break; }
@@ -459,8 +469,12 @@ void Missile::Init()
 //  glUseProgram(0);
 }
 
-void Missile::Move(float delta)
+void Missile::Move(float delta, int antiGravity)
 {
+  if(antiGravity) y += delta/GRAVITY_TUNE*a*0.9;
+    else y -= delta/GRAVITY_TUNE*a*0.9;
+  a += delta*ACCELERATION;
+
   if(phase == 2)
   {
     x -= delta * H_SPEED;
@@ -474,7 +488,7 @@ void Missile::Move(float delta)
   }
   else if(phase == 1) x += delta * H_MISSILE_SPEED;
 
-  if((x > 1 + MISSILE_RADIUS) || (x < -1 - MISSILE_RADIUS))
+  if((x > 1 + MISSILE_RADIUS) || (x < -1 - MISSILE_RADIUS) || (y < -1 - MISSILE_RADIUS))
   {
     phase = 0;
     return;
@@ -493,7 +507,7 @@ void Missile::Render()
 {
   if(!phase) return;
   glUseProgram(program);
-  glUniform4f(vOffs, x*vm, y, vm, phase);
+  glUniform4f(vOffs, x, y, vm, phase);
   glDrawArrays(GL_TRIANGLE_STRIP, 16, 4);
 }
 
@@ -505,4 +519,6 @@ void Missile::Start(float x_, float y_)
   phase = 1;
   x = x_;
   y = y_;
+
+  a = -TAP_IMPULSE*1.5;
 }

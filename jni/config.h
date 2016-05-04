@@ -20,11 +20,14 @@
   const float BIRD_RADIUS = 0.1f;
 
   const float MISSILE_RADIUS = 0.04f;
-//  const float MISSILE_RADIUS = 0.29f;
-//# define MISSILE_RADIUS 0.04f
 
-  const float EXPLODE_TIMEOUT = 120000;
-//  const float EXPLODE_TIMEOUT = 500000;
+  const float EXPLODE_TIMEOUT = 111111;
+
+  const float MISSILE_DELAY = 500000;
+
+  const int MAX_MISSILES = 3;
+
+  const float GRAVITY_TUNE = 27000;
 
   const float GAP_HALFSIZE = 0.28;
   const float GAP_HALFSIZE_MIN = 0.26;

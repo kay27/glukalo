@@ -269,7 +269,9 @@ void Game::Render()
     {
       float my = m.GetY();
       for(int i=0; i<MAX_COLUMNS; i++)
-        if(gaps[i].Collision(m.GetX(), my, m.GetR(), yMulValue))
+      {
+        int c = gaps[i].Collision(m.GetX(), my, m.GetR(), yMulValue);
+        if(c != 0)
         {
           m.Explode();
           float gy  = gaps[i].GetY(),
@@ -278,22 +280,15 @@ void Game::Render()
                 y1 = gy + ghs;
           float tp = y1, // gap top position
                 bp = y0; // gap bottom position
-          if(my < y1)
-          {
-            bp = my - GAP_HALFSIZE;
-            if(bp < -1) bp = -1;
-          }
-          else
-          {
-            tp = my + GAP_HALFSIZE;
-            if(tp > 1) tp = 1;
-          }
+          if(c == -1) { bp = my - GAP_HALFSIZE;   if(bp < -1) bp = -1; }
+          else        { tp = my + GAP_HALFSIZE;   if(tp >  1) tp =  1; }
           float newY  = (tp + bp) / 2.0,
                 newHS = (tp - bp) / 2.0;
           gaps[i].Freeze(newY, newHS);
 
           break;
         }
+      }
     }
 
     for(int i=0; i<MAX_COLUMNS; i++)
@@ -301,6 +296,8 @@ void Game::Render()
   }
   else
     if(m.GetPhase() == 1) m.Explode();
+
+  m.Render();
 
   glUseProgram(birdProgram);
   if(gameOver)
@@ -321,8 +318,6 @@ void Game::Render()
   glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
   for(int i=0; i<MAX_COLUMNS; i++) gaps[i].Render();
-
-  m.Render();
 
   glUseProgram(floorProgram);
   if(antiGravity)

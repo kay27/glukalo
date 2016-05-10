@@ -53,7 +53,9 @@ float vm;
 
       bool Collision(float x0, float y0, float yMulValue);
 
-      bool Collision(float x0, float y0, float r0, float yMulValue);
+      int Collision(float x0, float y0, float r0, float yMulValue);
+
+      inline void Freeze(float y_, float halfSize_){  y = y_; halfSize = halfSize_; freeze = 1; }
 
       inline const float GetY(){ return y; }
 
@@ -70,8 +72,6 @@ float vm;
 //      inline void SetY(float y_){ y = y_; }
 
 //      inline void SetHalfSize(float halfSize_){ halfSize = halfSize_; }
-
-      inline void Freeze(float y_, float halfSize_){  y = y_; halfSize = halfSize_; freeze = 1; }
 
       void SetSpeed(const float ss, const float js);
 

@@ -93,12 +93,17 @@ float vm;
     public:
       void AddScore();
       void ChangeLevel();
+      void CheckColumns();
+      void CheckMissiles();
+      void DemoAnimation(float delta);
       Game();
       ~Game();
       void GameOver();
       int GetLevel(int newScore);
       int GetNumberLength(int number);
+      float GetTimeInterval();
       void Init();
+      void MoveColumnsCheckPass(float deltaX);
       void Pause();
       void PrintNumber(float xcrd, float ycrd, float r, float g, float b, int number);
       void PrintScore();

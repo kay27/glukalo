@@ -192,11 +192,7 @@ void Game::Render()
 {
   if(pause) return;
 
-  struct timeval now;
-  gettimeofday(&now, NULL);
-  float delta = (now.tv_sec - lastTime.tv_sec) * 1000000 + ((int)now.tv_usec - (int)lastTime.tv_usec);
-  lastTime = now;
-  if(delta>50000) return; // CPU overload
+  float delta = GetTimeInterval(); if(delta>50000) return; // CPU overload
 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -218,20 +214,7 @@ void Game::Render()
     if(x>-FLY_BACK) { x=x-deltaX; if(x<-FLY_BACK) x=-FLY_BACK; }
 
     if(!gameOver)
-    {
-      for(int i=0; i<MAX_COLUMNS; i++)
-      {
-        float xNew = gaps[i].Move(deltaX);
-
-        if(gaps[i].Pass()) AddScore();
-
-        if(xNew < -1 - COLUMN_HALFWIDTH)
-        {
-          xNew += SEGMENT * MAX_COLUMNS;
-          gaps[i].Restart(xNew, (score ^ SCORE_XOR_CODE) + round((xNew - FLY_BACK) / SEGMENT));
-        }
-      }
-    }
+      MoveColumnsCheckPass(deltaX);
   }
 
   m.Move(delta, antiGravity);
@@ -245,11 +228,7 @@ void Game::Render()
   }
 
   if(!(gameStarted||gameOver))
-  {
-    y += speedVect * delta / 253427; // greater -> slower initial animation
-    if(y>0.008) {y=0.008; speedVect=-0.0095;}
-    if(y<-0.006) {y=-0.006; speedVect=0.011;}
-  }
+    DemoAnimation(delta);
 
   if(y > 1+BIRD_RADIUS*0.9)
   {
@@ -264,39 +243,8 @@ void Game::Render()
     GameOver();
   }
 
-  if(!gameOver)
-  {
-    if(m.GetPhase() == 1)
-    {
-      float my = m.GetY();
-      for(int i=0; i<MAX_COLUMNS; i++)
-      {
-        int c = gaps[i].Collision(m.GetX(), my, m.GetR(), yMulValue);
-        if(c != 0)
-        {
-          m.Explode();
-          float gy  = gaps[i].GetY(),
-                ghs = gaps[i].GetHalfSize();
-          float y0 = gy - ghs,
-                y1 = gy + ghs;
-          float tp = y1, // gap top position
-                bp = y0; // gap bottom position
-          if(c == -1) { bp = my - GAP_HALFSIZE;   if(bp < -1) bp = -1; }
-          else        { tp = my + GAP_HALFSIZE;   if(tp >  1) tp =  1; }
-          float newY  = (tp + bp) / 2.0,
-                newHS = (tp - bp) / 2.0;
-          gaps[i].Freeze(newY, newHS);
-
-          break;
-        }
-      }
-    }
-
-    for(int i=0; i<MAX_COLUMNS; i++)
-      if(gaps[i].Collision(x, y, yMulValue)) { GameOver(); break; }
-  }
-  else
-    if(m.GetPhase() == 1) m.Explode();
+  CheckMissiles();
+  CheckColumns();
 
   m.Render();
 
@@ -521,4 +469,87 @@ void Missile::Start(float x_, float y_)
   y = y_;
 
   a = -TAP_IMPULSE*1.5;
+}
+
+void Game::MoveColumnsCheckPass(float deltaX)
+{
+  for(int i=0; i<MAX_COLUMNS; i++)
+  {
+    float xNew = gaps[i].Move(deltaX);
+
+    if(gaps[i].Pass()) AddScore();
+
+    if(xNew < -1 - COLUMN_HALFWIDTH)
+    {
+      xNew += SEGMENT * MAX_COLUMNS;
+      gaps[i].Restart(xNew, (score ^ SCORE_XOR_CODE) + round((xNew - FLY_BACK) / SEGMENT));
+    }
+  }
+}
+
+float Game::GetTimeInterval()
+{
+  struct timeval now;
+  gettimeofday(&now, NULL);
+  float delta = (now.tv_sec - lastTime.tv_sec) * 1000000 + ((int)now.tv_usec - (int)lastTime.tv_usec);
+  lastTime = now;
+  return delta;
+}
+
+void Game::DemoAnimation(float delta)
+{
+  y += speedVect * delta / 253427; // greater -> slower initial animation
+  if(y>0.008) {y=0.008; speedVect=-0.0095;}
+  if(y<-0.006) {y=-0.006; speedVect=0.011;}
+}
+
+void Game::CheckMissiles()
+{
+  if(gameOver && (m.GetPhase() == 1))
+  {
+    m.Explode();
+    return;
+  }
+
+  if(m.GetPhase() != 1)
+    return;
+
+  float my = m.GetY();
+
+  for(int i=0; i<MAX_COLUMNS; i++)
+  {
+    int c = gaps[i].Collision(m.GetX(), my, m.GetR(), yMulValue);
+    if(c != 0)
+    {
+      float gy  = gaps[i].GetY(),
+            ghs = gaps[i].GetHalfSize();
+      float y0 = gy - ghs,
+            y1 = gy + ghs;
+      float tp = y1, // gap top position
+            bp = y0; // gap bottom position
+      if(c == -1) { bp = my - GAP_HALFSIZE;   if(bp < -1) bp = -1; }
+      else        { tp = my + GAP_HALFSIZE;   if(tp >  1) tp =  1; }
+      float newY  = (tp + bp) / 2.0,
+            newHS = (tp - bp) / 2.0;
+      gaps[i].Freeze(newY, newHS);
+
+      m.Explode();
+      return;
+    }
+  }
+}
+
+void Game::CheckColumns()
+{
+  if (gameOver)
+    return;
+
+  for(int i=0; i<MAX_COLUMNS; i++)
+  {
+    if(gaps[i].Collision(x, y, yMulValue))
+    {
+      GameOver();
+      return;
+    }
+  }
 }

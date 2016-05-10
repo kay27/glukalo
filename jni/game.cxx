@@ -391,10 +391,11 @@ void Game::GameOver()
 
 void Game::ChangeLevel()
 {
-  level = GetLevel(score ^ SCORE_XOR_CODE);
+  int s = score ^ SCORE_XOR_CODE;
+  level = GetLevel(s);
   if(level > maxLevel) maxLevel = level;
 
-  if(level==0)
+  if((level==0) && (s >= NEXT_LEVEL_SCORE) )
   {
     gameLooped++;
     MyCallback::Toast("You win!");
@@ -411,11 +412,12 @@ void Game::ChangeLevel()
 
 inline int Game::GetLevel(int newScore)
 {
-  if(newScore<0) newScore=0;
+  if(newScore < 0) newScore=0;
   newScore += START_LEVEL * NEXT_LEVEL_SCORE;
   newScore %= NUMBER_OF_LEVELS * NEXT_LEVEL_SCORE;
   int newLevel = newScore / NEXT_LEVEL_SCORE;
-  if(newLevel >= NUMBER_OF_LEVELS) newLevel = 0;
+  if(newLevel >= NUMBER_OF_LEVELS)
+    newLevel = 0;
   return newLevel;
 }
 
@@ -436,7 +438,7 @@ void Game::AddScore()
   int s = (score ^ SCORE_XOR_CODE) + 1;
   score = s ^ SCORE_XOR_CODE;
 
-  if(GetLevel(s) > level)
+  if(GetLevel(s) != level)
     ChangeLevel();
 }
 

@@ -112,7 +112,7 @@ float vm;
 
     protected:
 
-      int firstRun, gameStarted, gameOver, gameLooped, scoreRestarted;
+      int firstRun, gameStarted, gameOver, gameLooped, scoreRestarted, direction;
 
       struct timeval lastTime;
 

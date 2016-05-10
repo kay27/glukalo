@@ -120,6 +120,7 @@ void Game::Restart()
   impulse        =  0;
   level          = -1;
   floorOffset    =  0;
+  direction      =  1;
 
   {
     int hs0 = highScore ^ SCORE_XOR_CODE;
@@ -206,7 +207,7 @@ void Game::Render()
 
     if(!gameOver) if(gameStarted) m.Start(x, y);
   }
-  float deltaX = delta*H_SPEED;
+  float deltaX = delta*H_SPEED*direction;
 
   int antiGravity = (level & 3) == 3;
 
@@ -399,6 +400,7 @@ void Game::ChangeLevel()
   {
     gameLooped++;
     MyCallback::Toast("You win!");
+    direction = -1;
   }
   else if(!gameLooped)
   {

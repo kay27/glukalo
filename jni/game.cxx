@@ -266,9 +266,9 @@ void Game::Render()
   if(!gameOver)
   {
     if(m.GetPhase() == 1)
+    {
+      float my = m.GetY();
       for(int i=0; i<MAX_COLUMNS; i++)
-      {
-        float my = m.GetY();
         if(gaps[i].Collision(m.GetX(), my, m.GetR(), yMulValue))
         {
           m.Explode();
@@ -276,22 +276,25 @@ void Game::Render()
                 ghs = gaps[i].GetHalfSize();
           float y0 = gy - ghs,
                 y1 = gy + ghs;
-          float tp = y0, // gap top position
-                bp = y1; // gap bottom position
+          float tp = y1, // gap top position
+                bp = y0; // gap bottom position
           if(my < y1)
           {
-            tp = my - GAP_HALFSIZE;
-            if(tp < -1) tp = -1;
+            bp = my - GAP_HALFSIZE;
+            if(bp < -1) bp = -1;
           }
           else
           {
-            bp = my + GAP_HALFSIZE;
-            if(bp > 1) bp=1;
+            tp = my + GAP_HALFSIZE;
+            if(tp > 1) tp = 1;
           }
-          gaps[i].SetY((tp+bp)/2.0);
-          gaps[i].SetHalfSize((bp-tp)/2.0);
+          float newY  = (tp + bp) / 2.0,
+                newHS = (tp - bp) / 2.0;
+          gaps[i].Freeze(newY, newHS);
+
+          break;
         }
-      }
+    }
 
     for(int i=0; i<MAX_COLUMNS; i++)
       if(gaps[i].Collision(x, y, yMulValue)) { GameOver(); break; }

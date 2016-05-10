@@ -67,16 +67,18 @@ float vm;
 
       void Restart(float x_, int score_);
 
-      inline void SetY(float y_){ y = y_; }
+//      inline void SetY(float y_){ y = y_; }
 
-      inline void SetHalfSize(float halfSize_){ halfSize = halfSize_; }
+//      inline void SetHalfSize(float halfSize_){ halfSize = halfSize_; }
+
+      inline void Freeze(float y_, float halfSize_){  y = y_; halfSize = halfSize_; freeze = 1; }
 
       void SetSpeed(const float ss, const float js);
 
       bool Pass();
 
     private:
-      int passed;
+      int passed, freeze;
       float x, y, halfSize;
       int level, score;
       GLfloat swingVector, jawsVector, swingSpeed, jawsSpeed;

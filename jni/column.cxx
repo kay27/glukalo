@@ -74,6 +74,7 @@ void Column::OnCreate()
     jawsSpeed=0.11;
 
   lastSwingVector = swingVector;
+
 }
 
 void Column::Restart(float x_, int score_)
@@ -82,6 +83,7 @@ void Column::Restart(float x_, int score_)
   score       = score_;
   level       = score / NEXT_LEVEL_SCORE;
   passed      = 0;
+  freeze      = 0;
   swingVector = -lastSwingVector;
   jawsVector  = 1;
   halfSize    = GAP_HALFSIZE;
@@ -93,6 +95,8 @@ float Column::Move(float dx)
   x -= dx;
 
   float delta = dx / H_SPEED;
+  if(freeze)
+    delta /= 2.7;
 
   y += swingVector * swingSpeed * delta / 500000;
   if(y > GAP_MAX_OFFSET*(1-2*BIRD_RADIUS)) swingVector = -1;

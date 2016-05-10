@@ -118,7 +118,6 @@ void Game::Restart()
   gameStarted    =  0;
   gameLooped     =  0;
   impulse        =  0;
-  blockPos       =  1.5;
   level          = -1;
   floorOffset    =  0;
 
@@ -126,7 +125,7 @@ void Game::Restart()
     int hs0 = highScore ^ SCORE_XOR_CODE;
     if(hs0 >= NEXT_LEVEL_SCORE * NUMBER_OF_LEVELS)
       hs0 = NEXT_LEVEL_SCORE * NUMBER_OF_LEVELS - 1;
-    score = (hs0 - (hs0 % NEXT_LEVEL_SCORE) - 1) ^ SCORE_XOR_CODE;
+    score = (hs0 - (hs0 % (NEXT_LEVEL_SCORE/2)) - 1) ^ SCORE_XOR_CODE;
   }
 
   AddScore();
@@ -238,7 +237,6 @@ void Game::Render()
 
   if(!gameOver)
   {
-//    floorOffset += deltaX; while (floorOffset >= 1/yMulValue) floorOffset -= 1/yMulValue;
     floorOffset = fmod(floorOffset + deltaX, 1/yMulValue);
 
     if(antiGravity) y += delta/GRAVITY_TUNE*speed;
@@ -269,18 +267,31 @@ void Game::Render()
   {
     if(m.GetPhase() == 1)
       for(int i=0; i<MAX_COLUMNS; i++)
-        if(gaps[i].Collision(m.GetX(), m.GetY(), m.GetR(), yMulValue))
+      {
+        float my = m.GetY();
+        if(gaps[i].Collision(m.GetX(), my, m.GetR(), yMulValue))
         {
           m.Explode();
-          float gy = gaps[i].GetY(), ghs = gaps[i].GetHalfSize();
-          float y0 = gy - ghs, y1 = gy + ghs;
-          float my = m.GetY();
-          float tp = y0, bp = y1;
-          if(m.GetY() < y1) { tp = my - GAP_HALFSIZE; if(tp<-1) tp=-1;}
-            else {bp = my + GAP_HALFSIZE; if(bp>1) bp=1; }
+          float gy  = gaps[i].GetY(),
+                ghs = gaps[i].GetHalfSize();
+          float y0 = gy - ghs,
+                y1 = gy + ghs;
+          float tp = y0, // gap top position
+                bp = y1; // gap bottom position
+          if(my < y1)
+          {
+            tp = my - GAP_HALFSIZE;
+            if(tp < -1) tp = -1;
+          }
+          else
+          {
+            bp = my + GAP_HALFSIZE;
+            if(bp > 1) bp=1;
+          }
           gaps[i].SetY((tp+bp)/2.0);
           gaps[i].SetHalfSize((bp-tp)/2.0);
         }
+      }
 
     for(int i=0; i<MAX_COLUMNS; i++)
       if(gaps[i].Collision(x, y, yMulValue)) { GameOver(); break; }
@@ -363,7 +374,8 @@ void Game::PrintNumber(float xcrd, float ycrd, float r, float g, float b, int nu
   glUniform4f(vFontColor, r, g, b, 1.0);
   int n = GetNumberLength(number);
   float x = charWidth * (n - 1) + xcrd;
-  do {
+  do
+  {
     glUniform1i(vFontCharCode, 48 + (number % 10));
     glUniform4f(vCharOffset, x, ycrd, 0, 0);
     glDrawArrays(GL_TRIANGLE_STRIP, 12, 4);
@@ -381,22 +393,19 @@ void Game::GameOver()
 
 void Game::ChangeLevel()
 {
-  level=GetLevel(score ^ SCORE_XOR_CODE);
-  if(level>maxLevel) maxLevel = level;
+  level = GetLevel(score ^ SCORE_XOR_CODE);
+  if(level > maxLevel) maxLevel = level;
 
-  if(blockPos<1.4)
+  if(level==0)
   {
-    if(level==0)
-    {
-      gameLooped++;
-      MyCallback::Toast("You win!");
-    }
-    else if(!gameLooped)
-    {
-      char msg[32];
-      sprintf(msg, "Level %d", level + 1);
-      MyCallback::Toast(msg);
-    }
+    gameLooped++;
+    MyCallback::Toast("You win!");
+  }
+  else if(!gameLooped)
+  {
+    char msg[32];
+    sprintf(msg, "Level %d", level + 1);
+    MyCallback::Toast(msg);
   }
 
   UpdateHighScore();
@@ -426,7 +435,6 @@ void Game::AddScore()
 {
   if(scoreRestarted>0) scoreRestarted--;
 
-//  score++;
   int s = (score ^ SCORE_XOR_CODE) + 1;
   score = s ^ SCORE_XOR_CODE;
 
@@ -442,8 +450,6 @@ GLint Missile::vMul = 0;
 
 void Missile::Explode()
 {
-//  { char msg[32]; sprintf(msg, "Explode. Program # %d", program); MyCallback::Toast(msg); }
-//  de = lastDelta;
   if(phase != 1) return;
   phase = 2;
 }
@@ -451,10 +457,6 @@ void Missile::Explode()
 void Missile::Init()
 {
   program = MyShader::CreateProgram();
-
-
-//{ char msg[32]; sprintf(msg, "Init. Program # %d", program); MyCallback::Toast(msg); }
-
   MyShader::AttachVertexShader  (program, missileVertexShader);
   MyShader::AttachFragmentShader(program, missileFragmentShader);
   MyShader::LinkProgram(program);
@@ -466,7 +468,6 @@ void Missile::Init()
   glEnableVertexAttribArray(vTC);
   glVertexAttribPointer(vPos, 3, GL_FLOAT, false, sizeof(MyVertex), (void*)offsetof(MyVertex,pos));
   glVertexAttribPointer(vTC,  2, GL_FLOAT, false, sizeof(MyVertex), (void*)offsetof(MyVertex,txtcrds));
-//  glUseProgram(0);
 }
 
 void Missile::Move(float delta, int antiGravity)
@@ -497,9 +498,6 @@ void Missile::Move(float delta, int antiGravity)
 
 void Missile::Resize(float newMulValue)
 {
-//  MyCallback::Toast("Missile::Resize");
-//  glUseProgram(Missile::program);
-//  glUniform1f(Missile::vMul, newMulValue);
   vm = newMulValue;
 }
 

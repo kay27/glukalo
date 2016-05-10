@@ -116,9 +116,7 @@ float vm;
 
       float gameOverTime;
 
-      GLfloat speed, x, y, speedVect, yMulValue,
-        blockPos, floorOffset, //swingSpeed, jawsSpeed,
-        charWidth;
+      GLfloat speed, x, y, speedVect, yMulValue, floorOffset, charWidth;
 
       Column gaps[MAX_COLUMNS];
 

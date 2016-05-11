@@ -61,6 +61,8 @@ float vm;
 
       inline const float GetHalfSize(){ return halfSize; }
 
+      inline const float GetSolid(){ return solid; }
+
       float Move(float dx);
      
       void OnCreate();
@@ -78,7 +80,7 @@ float vm;
       bool Pass();
 
     private:
-      int passed, freeze;
+      int passed, freeze, solid;
       float x, y, halfSize;
       int level, score;
       GLfloat swingVector, jawsVector, swingSpeed, jawsSpeed;

@@ -54,7 +54,15 @@ int Column::Collision(float x0, float y0, float r0, float yMulValue)
 
 void Column::OnCreate()
 {
-  y = (RandFloat() * GAP_MAX_OFFSET * 2 - GAP_MAX_OFFSET) * (1 - 2 * BIRD_RADIUS);
+  if((score > NEXT_LEVEL_SCORE) && (((score / NEXT_LEVEL_SCORE) & 7) == 0))
+    solid = 1;
+  else
+    solid = 0;
+
+  if(solid)
+    y = -3;
+  else
+    y = (RandFloat() * GAP_MAX_OFFSET * 2 - GAP_MAX_OFFSET) * (1 - 2 * BIRD_RADIUS);
 
   level %= NUMBER_OF_LEVELS;
 
@@ -96,17 +104,20 @@ float Column::Move(float dx)
 {
   x -= dx;
 
-  float delta = dx / H_SPEED;
+  float delta = abs(dx / H_SPEED);
   if(freeze)
     delta /= 2.7;
 
-  y += swingVector * swingSpeed * delta / 500000;
-  if(y > GAP_MAX_OFFSET*(1-2*BIRD_RADIUS)) swingVector = -1;
-  else if(y < -GAP_MAX_OFFSET*(1-2*BIRD_RADIUS)) swingVector = 1;
+  if(!solid)
+  {
+    y += swingVector * swingSpeed * delta / 500000;
+    if(y > GAP_MAX_OFFSET*(1-2*BIRD_RADIUS)) swingVector = -1;
+    else if(y < -GAP_MAX_OFFSET*(1-2*BIRD_RADIUS)) swingVector = 1;
 
-  halfSize += jawsVector * jawsSpeed * delta / 400000;
-  if(halfSize > GAP_HALFSIZE_MAX) jawsVector = -1;
-  else if(halfSize < GAP_HALFSIZE_MIN) jawsVector = 1;
+    halfSize += jawsVector * jawsSpeed * delta / 400000;
+    if(halfSize > GAP_HALFSIZE_MAX) jawsVector = -1;
+    else if(halfSize < GAP_HALFSIZE_MIN) jawsVector = 1;
+  }
 
   return x;
 }

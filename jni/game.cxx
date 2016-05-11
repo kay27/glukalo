@@ -118,8 +118,8 @@ void Game::Restart()
 
   {
     int hs0 = highScore ^ SCORE_XOR_CODE;
-    if(hs0 >= NEXT_LEVEL_SCORE * NUMBER_OF_LEVELS)
-      hs0 = NEXT_LEVEL_SCORE * NUMBER_OF_LEVELS - 1;
+    if(hs0 >= 2 * NEXT_LEVEL_SCORE * NUMBER_OF_LEVELS)
+      hs0 = 2 * NEXT_LEVEL_SCORE * NUMBER_OF_LEVELS - 1;
     score = (hs0 - (hs0 % (NEXT_LEVEL_SCORE/2)) - 1) ^ SCORE_XOR_CODE;
   }
 
@@ -334,19 +334,23 @@ void Game::ChangeLevel()
   if(level > maxLevel) maxLevel = level;
 
   {
-    int s0 = score ^ (2 * NUMBER_OF_LEVELS * NEXT_LEVEL_SCORE);
+    int s0 = s % (2 * NUMBER_OF_LEVELS * NEXT_LEVEL_SCORE);
+
     if(s0 < NUMBER_OF_LEVELS * NEXT_LEVEL_SCORE)
       direction = 1;
     else direction = -1;
   }
 
-  if((level==0) && (s >= NEXT_LEVEL_SCORE) )
+  if( (level==0) && (s >= 2 * NUMBER_OF_LEVELS * NEXT_LEVEL_SCORE) )
   {
     gameLooped++;
     MyCallback::Toast("You win!");
-    direction = -1;
   }
-  else if(!gameLooped)
+  else if((level == NUMBER_OF_LEVELS-1) && (s >= NUMBER_OF_LEVELS * NEXT_LEVEL_SCORE))
+  {
+    MyCallback::Toast("Now go back to home!");
+  }
+  else if(!gameLooped) if(s < NUMBER_OF_LEVELS * NEXT_LEVEL_SCORE)
   {
     char msg[32];
     sprintf(msg, "Level %d", level + 1);
@@ -359,13 +363,16 @@ void Game::ChangeLevel()
 inline int Game::GetLevel(int newScore)
 {
   if(newScore < 0) newScore=0;
+
   newScore += START_LEVEL * NEXT_LEVEL_SCORE;
   newScore %= 2 * NUMBER_OF_LEVELS * NEXT_LEVEL_SCORE;
+
   int newLevel = newScore / NEXT_LEVEL_SCORE;
+
   if(newLevel >= NUMBER_OF_LEVELS)
   {
     if(newLevel < 2 * NUMBER_OF_LEVELS)
-      newLevel = 2 * NUMBER_OF_LEVELS - newLevel;
+      newLevel = 2 * NUMBER_OF_LEVELS - newLevel - 1;
     else
       newLevel = 0;
   }
@@ -389,7 +396,7 @@ void Game::AddScore()
   int s = (score ^ SCORE_XOR_CODE) + 1;
   score = s ^ SCORE_XOR_CODE;
 
-  if(GetLevel(s) != level)
+  if((GetLevel(s) != level) || (s % NEXT_LEVEL_SCORE == 0))
     ChangeLevel();
 }
 
@@ -456,6 +463,8 @@ void Game::CheckMissiles()
     {
       float gy  = gaps[i].GetY(),
             ghs = gaps[i].GetHalfSize();
+      if(gaps[i].GetSolid())
+        gy = my;
       float y0 = gy - ghs,
             y1 = gy + ghs;
       float tp = y1, // gap top position

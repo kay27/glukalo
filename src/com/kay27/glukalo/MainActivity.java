@@ -75,14 +75,18 @@ public class MainActivity extends Activity
   }
 
   public static final String PREFS_ID = "com_kay27_Glukalo_store"; 
+  public static final int PREFS_KEY = 5552;
   public static void CBSetHighScore(final int hs)
   {
     SharedPreferences.Editor editor = activity.getSharedPreferences(PREFS_ID, MODE_PRIVATE).edit();
     editor.putInt("hs", hs);
+    editor.putInt("hh", PREFS_KEY);
     editor.commit();
   }
   public static int CBGetHighScore()
   {
+    if(activity.getSharedPreferences(PREFS_ID, MODE_PRIVATE).getInt("hh",-1) != PREFS_KEY)
+      return -1;
     return activity.getSharedPreferences(PREFS_ID, MODE_PRIVATE).getInt("hs", -1);
   }
 

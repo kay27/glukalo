@@ -209,7 +209,7 @@ void Game::Render()
       MoveColumnsCheckPass(deltaX);
   }
 
-  m.Move(delta, antiGravity);
+  m.Move(delta, antiGravity, direction);
 
   if(!gameOver)
   {
@@ -391,7 +391,7 @@ void Game::MoveColumnsCheckPass(float deltaX)
 
     if(xNew < -1 - COLUMN_HALFWIDTH)
     {
-      xNew += SEGMENT * MAX_COLUMNS;
+      xNew += SEGMENT * MAX_COLUMNS * direction;
       gaps[i].Restart(xNew, (score ^ SCORE_XOR_CODE) + round((xNew - FLY_BACK) / SEGMENT));
     }
   }

@@ -28,7 +28,7 @@ void Missile::Init()
   glVertexAttribPointer(vTC,  2, GL_FLOAT, false, sizeof(MyVertex), (void*)offsetof(MyVertex,txtcrds));
 }
 
-void Missile::Move(float delta, int antiGravity)
+void Missile::Move(float delta, int antiGravity, int direction)
 {
   if(antiGravity) y += delta/GRAVITY_TUNE*a*0.9;
     else y -= delta/GRAVITY_TUNE*a*0.9;
@@ -36,8 +36,8 @@ void Missile::Move(float delta, int antiGravity)
 
   if(phase == 2)
   {
-    x -= delta * H_SPEED;
-    ec+=delta;
+    x -= delta * H_SPEED * direction;
+    ec += delta;
     if(ec >= EXPLODE_TIMEOUT)
     {
       phase = 0;
@@ -45,7 +45,7 @@ void Missile::Move(float delta, int antiGravity)
       return;
     }
   }
-  else if(phase == 1) x += delta * H_MISSILE_SPEED;
+  else if(phase == 1) x += delta * H_MISSILE_SPEED * direction;
 
   if((x > 1 + MISSILE_RADIUS) || (x < -1 - MISSILE_RADIUS) || (y < -1 - MISSILE_RADIUS))
   {

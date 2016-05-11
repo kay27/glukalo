@@ -33,7 +33,7 @@
       inline float GetX(){ return x; }
       inline float GetY(){ return y; }
       static void Init();
-      void Move(float delta, int antiGravity);
+      void Move(float delta, int antiGravity, int direction);
       void Render();
 //      static void Resize(float newMulValue);
       void Resize(float newMulValue);

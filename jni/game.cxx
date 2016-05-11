@@ -353,10 +353,15 @@ inline int Game::GetLevel(int newScore)
 {
   if(newScore < 0) newScore=0;
   newScore += START_LEVEL * NEXT_LEVEL_SCORE;
-  newScore %= NUMBER_OF_LEVELS * NEXT_LEVEL_SCORE;
+  newScore %= 2 * NUMBER_OF_LEVELS * NEXT_LEVEL_SCORE;
   int newLevel = newScore / NEXT_LEVEL_SCORE;
   if(newLevel >= NUMBER_OF_LEVELS)
-    newLevel = 0;
+  {
+    if(newLevel < 2 * NUMBER_OF_LEVELS)
+      newLevel = NUMBER_OF_LEVELS - (newLevel ^ NUMBER_OF_LEVELS);
+    else
+      newLevel = 0;
+  }
   return newLevel;
 }
 

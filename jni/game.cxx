@@ -333,6 +333,13 @@ void Game::ChangeLevel()
   level = GetLevel(s);
   if(level > maxLevel) maxLevel = level;
 
+  {
+    int s0 = score ^ (2 * NUMBER_OF_LEVELS * NEXT_LEVEL_SCORE);
+    if(s0 < NUMBER_OF_LEVELS * NEXT_LEVEL_SCORE)
+      direction = 1;
+    else direction = -1;
+  }
+
   if((level==0) && (s >= NEXT_LEVEL_SCORE) )
   {
     gameLooped++;
@@ -358,7 +365,7 @@ inline int Game::GetLevel(int newScore)
   if(newLevel >= NUMBER_OF_LEVELS)
   {
     if(newLevel < 2 * NUMBER_OF_LEVELS)
-      newLevel = NUMBER_OF_LEVELS - (newLevel ^ NUMBER_OF_LEVELS);
+      newLevel = 2 * NUMBER_OF_LEVELS - newLevel;
     else
       newLevel = 0;
   }

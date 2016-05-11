@@ -15,13 +15,7 @@ Game::Game()
 
   Init();
 
-/*
-  audio = new MyAudio();
-  if(audio!=nullptr) if(!audio->Play()) audio = nullptr;
-  if(audio==nullptr) MyCallback::Toast("Failed to start audio");
-*/
-
-  audio = nullptr;
+  InitAudio();
 }
 
 Game::~Game()
@@ -60,7 +54,7 @@ void Game::Init()
   vOffset = glGetUniformLocation(birdProgram, "vOffset");
   vRadius = glGetUniformLocation(birdProgram, "vRadius");
   vMul    = glGetUniformLocation(birdProgram, "vMul");
-  vEyeY   = glGetUniformLocation(birdProgram, "vEyeY");
+  vEye    = glGetUniformLocation(birdProgram, "vEye");
 
   glEnableVertexAttribArray(vPosition);
   glEnableVertexAttribArray(vTextureCoordinate);
@@ -144,13 +138,13 @@ void Game::Restart()
 
 void Game::Pause()
 {
-  if(audio != nullptr) audio->Pause();
+  PauseAudio();
   pause = 1;
 }
 
 void Game::Resume()
 {
-  if(audio != nullptr) audio->Continue();
+  ResumeAudio();
   Untap();
   gettimeofday(&lastTime, NULL);
   pause = 0;
@@ -163,10 +157,7 @@ void Game::Resize(int w, int h)
   {
     yMulValue = float(w)/h;
     charWidth = CHAR_HEIGHT/yMulValue;
-
-//    Missile::Resize(yMulValue);
     m.Resize(yMulValue);
-
     glUseProgram(birdProgram);
     glUniform1f(vMul, yMulValue);
     glUseProgram(fontProgram);
@@ -196,6 +187,10 @@ void Game::Render()
 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+  float deltaX = delta*H_SPEED*direction;
+
+  int antiGravity = ((level + 1) & 3) == 3;
+
   if(impulse)
   {
     impulse = 0;
@@ -203,15 +198,12 @@ void Game::Render()
 
     if(!gameOver) if(gameStarted) m.Start(x, y);
   }
-  float deltaX = delta*H_SPEED*direction;
-
-  int antiGravity = (level & 3) == 3;
 
   if(gameStarted)
   {
-    speed+=delta*ACCELERATION;
+    speed += delta * ACCELERATION;
 
-    if(x>-FLY_BACK) { x=x-deltaX; if(x<-FLY_BACK) x=-FLY_BACK; }
+    FlyAway(deltaX);
 
     if(!gameOver)
       MoveColumnsCheckPass(deltaX);
@@ -263,10 +255,11 @@ void Game::Render()
     glUniform1f(vRadius,deltaGameOver);
   }
   glUniform4f(vOffset, x, y, 0.0, 0.0);
-  glUniform1f(vEyeY, 0.5 - antiGravity);
+  glUniform2f(vEye, ((float)direction)/2.0, 0.5 - antiGravity);
   glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
-  for(int i=0; i<MAX_COLUMNS; i++) gaps[i].Render();
+  for(int i=0; i<MAX_COLUMNS; i++)
+    gaps[i].Render();
 
   glUseProgram(floorProgram);
   if(antiGravity)
@@ -277,11 +270,7 @@ void Game::Render()
 
   PrintScore();
 
-  if(audio!=nullptr)
-  {
-    if(!gameOver) audio->MakeNoise((unsigned)((y+1.0)/2*14000));
-    else audio->Clear(); //fixme (iteration)
-  }
+  PlayAudio();
 }
 
 void Game::PrintScore()
@@ -392,85 +381,6 @@ void Game::AddScore()
     ChangeLevel();
 }
 
-GLint Missile::program = 0;
-GLint Missile::vPos = 0;
-GLint Missile::vTC = 0;
-GLint Missile::vOffs = 0;
-GLint Missile::vMul = 0;
-
-void Missile::Explode()
-{
-  if(phase != 1) return;
-  phase = 2;
-}
-
-void Missile::Init()
-{
-  program = MyShader::CreateProgram();
-  MyShader::AttachVertexShader  (program, missileVertexShader);
-  MyShader::AttachFragmentShader(program, missileFragmentShader);
-  MyShader::LinkProgram(program);
-  glUseProgram(program);
-  vPos  = glGetAttribLocation (program, "vPos");
-  vTC   = glGetAttribLocation (program, "vTC");
-  vOffs = glGetUniformLocation(program, "vOffs");
-  glEnableVertexAttribArray(vPos);
-  glEnableVertexAttribArray(vTC);
-  glVertexAttribPointer(vPos, 3, GL_FLOAT, false, sizeof(MyVertex), (void*)offsetof(MyVertex,pos));
-  glVertexAttribPointer(vTC,  2, GL_FLOAT, false, sizeof(MyVertex), (void*)offsetof(MyVertex,txtcrds));
-}
-
-void Missile::Move(float delta, int antiGravity)
-{
-  if(antiGravity) y += delta/GRAVITY_TUNE*a*0.9;
-    else y -= delta/GRAVITY_TUNE*a*0.9;
-  a += delta*ACCELERATION;
-
-  if(phase == 2)
-  {
-    x -= delta * H_SPEED;
-    ec+=delta;
-    if(ec >= EXPLODE_TIMEOUT)
-    {
-      phase = 0;
-      ec = 0;
-      return;
-    }
-  }
-  else if(phase == 1) x += delta * H_MISSILE_SPEED;
-
-  if((x > 1 + MISSILE_RADIUS) || (x < -1 - MISSILE_RADIUS) || (y < -1 - MISSILE_RADIUS))
-  {
-    phase = 0;
-    return;
-  }
-}
-
-void Missile::Resize(float newMulValue)
-{
-  vm = newMulValue;
-}
-
-void Missile::Render()
-{
-  if(!phase) return;
-  glUseProgram(program);
-  glUniform4f(vOffs, x, y, vm, phase);
-  glDrawArrays(GL_TRIANGLE_STRIP, 16, 4);
-}
-
-
-void Missile::Start(float x_, float y_)
-{
-  if(phase>0) return;
-  ec=0;
-  phase = 1;
-  x = x_;
-  y = y_;
-
-  a = -TAP_IMPULSE*1.5;
-}
-
 void Game::MoveColumnsCheckPass(float deltaX)
 {
   for(int i=0; i<MAX_COLUMNS; i++)
@@ -552,4 +462,20 @@ void Game::CheckColumns()
       return;
     }
   }
+}
+
+void Game::FlyAway(float deltaX)
+{
+  if(direction == 1)
+  {
+    if (x <= -FLY_BACK) return;
+    x -= deltaX;
+    if(x < -FLY_BACK) x = -FLY_BACK;
+    return;
+  }
+
+  // direction == -1
+  if (x >= FLY_BACK) return;
+  x -= deltaX;
+  if(x > FLY_BACK) x = FLY_BACK;
 }

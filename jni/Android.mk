@@ -7,7 +7,9 @@ LOCAL_MODULE := glukalo
 LOCAL_SRC_FILES := \
   column.cxx \
   game.cxx \
+  game_audio.cxx \
   jni2game.cxx \
+  missile.cxx \
   shader.cxx \
   sound.cxx \
   system.cxx \

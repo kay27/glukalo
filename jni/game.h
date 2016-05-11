@@ -91,17 +91,18 @@ float vm;
   class Game
   {
     public:
+      Game();
+      ~Game();
       void AddScore();
       void ChangeLevel();
       void CheckColumns();
       void CheckMissiles();
       void DemoAnimation(float delta);
-      Game();
-      ~Game();
       void GameOver();
       int GetLevel(int newScore);
       int GetNumberLength(int number);
       float GetTimeInterval();
+      void FlyAway(float deltaX);
       void Init();
       void MoveColumnsCheckPass(float deltaX);
       void Pause();
@@ -114,6 +115,11 @@ float vm;
       void Resume();
       void Untap();
       void UpdateHighScore();
+
+      void InitAudio();
+      void PauseAudio();
+      void PlayAudio();
+      void ResumeAudio();
 
     protected:
 
@@ -130,7 +136,7 @@ float vm;
       int impulse, pause, score, highScore, level, maxLevel;
 
       GLuint vb;
-      GLint vPosition, vTextureCoordinate, vColor, vOffset, vEyeY, vRadius, vMul,
+      GLint vPosition, vTextureCoordinate, vColor, vOffset, vEye, vRadius, vMul,
         vFloorPosition, vFloorOffset, vFontPosition, vFontOffset, vFontCharCode,
         vFontColor, vCharMul, vFontLineSize, vCharOffset;
      

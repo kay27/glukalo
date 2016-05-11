@@ -1,4 +1,3 @@
-#include "config.h"
 #include "game.h"
 
 GLint Column::gapProgram            =  0;

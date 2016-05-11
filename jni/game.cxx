@@ -389,10 +389,21 @@ void Game::MoveColumnsCheckPass(float deltaX)
 
     if(gaps[i].Pass()) AddScore();
 
-    if(xNew < -1 - COLUMN_HALFWIDTH)
+    if(direction == 1)
     {
-      xNew += SEGMENT * MAX_COLUMNS * direction;
-      gaps[i].Restart(xNew, (score ^ SCORE_XOR_CODE) + round((xNew - FLY_BACK) / SEGMENT));
+      if(xNew < -1 - COLUMN_HALFWIDTH)
+      {
+        xNew += SEGMENT * MAX_COLUMNS;
+        gaps[i].Restart(xNew, (score ^ SCORE_XOR_CODE) + round((xNew - FLY_BACK) / SEGMENT));
+      }
+    }
+    else //direction == -1
+    {
+      if(xNew > 1 + COLUMN_HALFWIDTH)
+      {
+        xNew -= SEGMENT * MAX_COLUMNS;
+        gaps[i].Restart(xNew, (score ^ SCORE_XOR_CODE) + round((xNew - FLY_BACK) / SEGMENT));
+      }
     }
   }
 }

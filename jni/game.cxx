@@ -115,6 +115,7 @@ void Game::Restart()
   level          = -1;
   floorOffset    =  0;
   direction      =  1;
+  tapFire        =  0;
 
   {
     int hs0 = highScore ^ SCORE_XOR_CODE;
@@ -123,11 +124,13 @@ void Game::Restart()
     score = (hs0 - (hs0 % (NEXT_LEVEL_SCORE/2)) - 1) ^ SCORE_XOR_CODE;
   }
 
+//score = 795 ^ SCORE_XOR_CODE;
+
   AddScore();
   scoreRestarted =  (MAX_COLUMNS+1) >> 1;
 
   for(int i=0; i<MAX_COLUMNS; i++)
-    gaps[i].Restart(SEGMENT*i + 1.5, (score ^ SCORE_XOR_CODE) + i);
+    gaps[i].Restart(direction*SEGMENT*i + direction*1.5, (score ^ SCORE_XOR_CODE) + i);
 
   glUseProgram(birdProgram);
   glUniform1f(vRadius, (float)1.0);
@@ -196,7 +199,7 @@ void Game::Render()
     impulse = 0;
     speed = -TAP_IMPULSE;
 
-    if(!gameOver) if(gameStarted) m.Start(x, y);
+    if(tapFire) if(!gameOver) if(gameStarted) m.Start(x, y);
   }
 
   if(gameStarted)
@@ -341,7 +344,10 @@ void Game::ChangeLevel()
     else direction = -1;
   }
 
-  if( (level==0) && (s >= 2 * NUMBER_OF_LEVELS * NEXT_LEVEL_SCORE) )
+  if(s >= 5 * NEXT_LEVEL_SCORE)
+    tapFire = 1;
+
+  if(s == 2 * NUMBER_OF_LEVELS * NEXT_LEVEL_SCORE)
   {
     gameLooped++;
     MyCallback::Toast("You win!");
@@ -360,7 +366,7 @@ void Game::ChangeLevel()
   UpdateHighScore();
 }
 
-inline int Game::GetLevel(int newScore)
+int Game::GetLevel(int newScore)
 {
   if(newScore < 0) newScore=0;
 
@@ -406,7 +412,7 @@ void Game::MoveColumnsCheckPass(float deltaX)
   {
     float xNew = gaps[i].Move(deltaX);
 
-    if(gaps[i].Pass()) AddScore();
+    if(gaps[i].Pass(direction)) AddScore();
 
     if(direction == 1)
     {
@@ -421,7 +427,7 @@ void Game::MoveColumnsCheckPass(float deltaX)
       if(xNew > 1 + COLUMN_HALFWIDTH)
       {
         xNew -= SEGMENT * MAX_COLUMNS;
-        gaps[i].Restart(xNew, (score ^ SCORE_XOR_CODE) + round((xNew - FLY_BACK) / SEGMENT));
+        gaps[i].Restart(xNew, (score ^ SCORE_XOR_CODE) + round((FLY_BACK - xNew) / SEGMENT));
       }
     }
   }

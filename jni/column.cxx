@@ -91,7 +91,7 @@ void Column::Restart(float x_, int score_)
 {
   x           = x_;
   score       = score_;
-  level       = score / NEXT_LEVEL_SCORE;
+  level       = Game::GetLevel(score);
   passed      = 0;
   freeze      = 0;
   swingVector = -lastSwingVector;
@@ -152,9 +152,12 @@ void Column::Init()
   glUseProgram(0);
 }
 
-bool Column::Pass()
+bool Column::Pass(int direction)
 {
   if (passed) return false;
-  passed = (x <= -FLY_BACK);
+  if(direction == 1)
+    passed = (x <= -FLY_BACK);
+  else
+    passed = (x >= FLY_BACK);
   return passed;
 }

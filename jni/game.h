@@ -55,7 +55,7 @@ float vm;
 
       int Collision(float x0, float y0, float r0, float yMulValue);
 
-      inline void Freeze(float y_, float halfSize_){  y = y_; halfSize = halfSize_; freeze = 1; }
+      inline void Freeze(float y_, float halfSize_){  y = y_; halfSize = halfSize_; freeze = 1; solid = 0; }
 
       inline const float GetY(){ return y; }
 
@@ -77,7 +77,7 @@ float vm;
 
       void SetSpeed(const float ss, const float js);
 
-      bool Pass();
+      bool Pass(int direction);
 
     private:
       int passed, freeze, solid;
@@ -101,7 +101,7 @@ float vm;
       void CheckMissiles();
       void DemoAnimation(float delta);
       void GameOver();
-      int GetLevel(int newScore);
+      static int GetLevel(int newScore);
       int GetNumberLength(int number);
       float GetTimeInterval();
       void FlyAway(float deltaX);
@@ -135,7 +135,7 @@ float vm;
 
       Column gaps[MAX_COLUMNS];
 
-      int impulse, pause, score, highScore, level, maxLevel;
+      int impulse, pause, score, highScore, level, maxLevel, tapFire;
 
       GLuint vb;
       GLint vPosition, vTextureCoordinate, vColor, vOffset, vEye, vRadius, vMul,

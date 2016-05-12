@@ -334,7 +334,22 @@
     "varying float vMul;\n"
     "void main()\n"
     "{\n"
-    "  gl_Position = vPos + vec4(vOffs.xy, 0.0, 0.0);\n"
+    "  float angle = vOffs.w;\n"
+//
+//    "  gl_Position = vPos + vec4(vOffs.xy, 0.0, 0.0);\n"
+//
+//    "  mat2 rotationMatrix = mat2(\n"
+//    "    cos(angle), -sin(angle),\n"
+//    "    sin(angle),  cos(angle));\n"
+//    "  gl_Position = vPos + vec4(vOffs.xy * rotationMatrix, 0.0, 0.0);\n"
+//
+    "  mat4 rotationMatrix = mat4(\n"
+    "    cos(angle), -sin(angle), 0.0, 0.0,\n"
+    "    sin(angle),  cos(angle), 0.0, 0.0,\n"
+    "           0.0,         0.0, 1.0, 0.0,\n"
+    "           0.0,         0.0, 0.0, 1.0);\n"
+    "  gl_Position = rotationMatrix * (vPos + vec4(vOffs.xy, 0.0, 0.0));\n"
+//
     "  vMul = vOffs.z;\n"
     "  vp = vPos;\n"
     "  tc = vTC.xy;\n"

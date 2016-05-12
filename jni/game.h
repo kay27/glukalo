@@ -27,7 +27,7 @@
       static GLint program, vPos, vTC, vOffs;
       static float vm;
       BonusType type;
-      float x,y;
+      float x,y,angle;
   };
 
   class Missile

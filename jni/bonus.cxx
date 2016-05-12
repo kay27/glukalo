@@ -25,6 +25,8 @@ void Bonus::Init()
 void Bonus::Move(float delta, int antiGravity, int direction)
 {
   x -= delta * H_SPEED * direction;
+  angle += delta / 1000000;
+  if(angle > 4) angle -= 2*3.1415926;
 }
 
 void Bonus::Resize(float newMulValue)
@@ -34,9 +36,9 @@ void Bonus::Resize(float newMulValue)
 
 void Bonus::Render()
 {
-  x = 0.5; y=0.5;
+  x = 0.5; y=0.5; angle = 0.5;
 
   glUseProgram(program);
-  glUniform4f(vOffs, x, y, vm, 0);
+  glUniform4f(vOffs, x, y, vm, angle);
   glDrawArrays(GL_TRIANGLE_STRIP, 20, 4);
 }

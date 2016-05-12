@@ -5,6 +5,7 @@ include $(CLEAR_VARS)
 LOCAL_MODULE := glukalo
 
 LOCAL_SRC_FILES := \
+  bonus.cxx \
   column.cxx \
   game.cxx \
   game_audio.cxx \

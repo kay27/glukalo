@@ -16,17 +16,25 @@
 
   enum BonusType { GUN, SLOWDOWN, SPEEDUP };
 
-  struct Bonus
+  class Bonus
   {
-    BonusType type;
-    float x,y;
+    public:
+      static void Init();
+      void Move(float delta, int antiGravity, int direction);
+      void Render();
+      static void Resize(float newMulValue);
+    private:
+      static GLint program, vPos, vTC, vOffs;
+      static float vm;
+      BonusType type;
+      float x,y;
   };
 
   class Missile
   {
     public:
 //      Missile() : phase(0) {};
-      Missile() : phase(0), vm(1) {};
+      Missile() : phase(0) {};
       void Explode();
       inline float GetPhase(){ return phase; }
       inline float GetR(){ return MISSILE_RADIUS; }
@@ -36,14 +44,13 @@
       void Move(float delta, int antiGravity, int direction);
       void Render();
 //      static void Resize(float newMulValue);
-      void Resize(float newMulValue);
+      static void Resize(float newMulValue);
       void Start(float x_, float y_);
     private:
-      static GLint program, vPos, vTC, vOffs, vMul;
+      static GLint program, vPos, vTC, vOffs/*, vMul*/;
       int phase;
       float a, x, y, ec;
-
-float vm;
+      static float vm;
   };
 
   class Column

@@ -21,6 +21,8 @@
 
   const float MISSILE_RADIUS = 0.04f;
 
+  const float BONUS_RADIUS = 0.07f;
+
   const float EXPLODE_TIMEOUT = 111111;
 
   const float MISSILE_DELAY = 500000;

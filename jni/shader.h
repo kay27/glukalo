@@ -41,6 +41,10 @@
     {{-MISSILE_RADIUS*2.0f, MISSILE_RADIUS*1.5f,  0.0f }, {-2.0f, 1.5f}},
     {{ MISSILE_RADIUS*2.0f,-MISSILE_RADIUS*1.5f,  0.0f }, { 2.0f,-1.5f}},
     {{ MISSILE_RADIUS*2.0f, MISSILE_RADIUS*1.5f,  0.0f }, { 2.0f, 1.5f}},
+    {{  -BONUS_RADIUS*2.0f,  -BONUS_RADIUS*1.5f,  0.0f }, {-2.0f,-1.5f}}, // bonus
+    {{  -BONUS_RADIUS*2.0f,   BONUS_RADIUS*1.5f,  0.0f }, {-2.0f, 1.5f}},
+    {{   BONUS_RADIUS*2.0f,  -BONUS_RADIUS*1.5f,  0.0f }, { 2.0f,-1.5f}},
+    {{   BONUS_RADIUS*2.0f,   BONUS_RADIUS*1.5f,  0.0f }, { 2.0f, 1.5f}},
   };
 
   static const char * birdVertexShader =
@@ -299,16 +303,12 @@
     "void main()\n"
     "{\n"
     "  gl_Position = vPos + vec4(vOffs.xy, 0.0, 0.0);\n"
-//    "  gl_Position = vPos;\n"
     "  vMul = vOffs.z;\n"
     "  phase = vOffs.w;\n"
     "  vp = vPos;\n"
     "  tc = vTC.xy;\n"
     "}\n"
   ;
-
-# define STR_EXPAND(tok) #tok
-# define STR(tok) STR_EXPAND(tok)
 
   static const char * missileFragmentShader =
     "precision mediump float;\n"
@@ -322,6 +322,49 @@
     "  float dfc = distance(vec2(vp.x*vMul, vp.y), vec2(tc.x*vMul,tc.y));\n"
     "  if(dfc > 1.0) discard;\n"
     "  gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0) * fract(vp.x*sin(vp.y)+tc.x*1.117);\n"
+    "}\n"
+  ;
+
+  static const char * bonusVertexShader =
+    "attribute vec4 vPos;\n"
+    "attribute vec4 vTC;\n"
+    "uniform vec4 vOffs;\n"
+    "varying vec4 vp;\n"
+    "varying vec2 tc;\n"
+    "varying float vMul;\n"
+    "void main()\n"
+    "{\n"
+    "  gl_Position = vPos + vec4(vOffs.xy, 0.0, 0.0);\n"
+    "  vMul = vOffs.z;\n"
+    "  vp = vPos;\n"
+    "  tc = vTC.xy;\n"
+    "}\n"
+  ;
+
+  static const char * bonusFragmentShader =
+    "precision mediump float;\n"
+    "uniform int vType;\n"
+    "varying vec4 vp;\n"
+    "varying vec2 tc;\n"
+    "varying float vMul;\n"
+    "void main()\n"
+    "{\n"
+    "  float dfc = distance(vec2(vp.x*vMul, vp.y), vec2(tc.x*vMul,tc.y));\n"
+    "  if(dfc > 1.0) discard;\n"
+    "  float dft = distance(vec2(0.0, 2.0), vec2(tc.x*vMul,tc.y));\n"
+    "  if(dft < 2.0)\n"
+    "  {\n"
+    "    if(vType == 1)\n"
+    "      gl_FragColor = vec4(0.0, 0.0, 1.0, 1.0);\n"
+    "    else\n"
+    "      gl_FragColor = vec4(abs(sin(tc.x*999.0))*0.2, abs(sin(tc.x*999.1))*0.3, 0.95, 1.0);\n"
+    "    return;\n"
+    "  }\n"
+    "  else if(abs(tc.x*vMul) > 0.3) discard;\n"
+    "  if(vType == 1)\n"
+    "    gl_FragColor = vec4(0.0, 0.5, 0.8, 1.0);\n"
+    "  else\n"
+    "    gl_FragColor = vec4(0.8, 0.5, 0.9, 1.0);\n"
     "}\n"
   ;
 

@@ -4,7 +4,8 @@ GLint Missile::program = 0;
 GLint Missile::vPos = 0;
 GLint Missile::vTC = 0;
 GLint Missile::vOffs = 0;
-GLint Missile::vMul = 0;
+float Missile::vm = 1;
+//GLint Missile::vMul = 0;
 
 void Missile::Explode()
 {

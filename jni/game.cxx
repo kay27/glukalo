@@ -66,6 +66,7 @@ void Game::Init()
 
   Column::Init();
   Missile::Init();
+  Bonus::Init();
 
   floorProgram = MyShader::CreateProgram();
   MyShader::AttachVertexShader(floorProgram, floorVertexShader);
@@ -161,6 +162,7 @@ void Game::Resize(int w, int h)
     yMulValue = float(w)/h;
     charWidth = CHAR_HEIGHT/yMulValue;
     m.Resize(yMulValue);
+    Bonus::Resize(yMulValue);
     glUseProgram(birdProgram);
     glUniform1f(vMul, yMulValue);
     glUseProgram(fontProgram);
@@ -272,6 +274,10 @@ void Game::Render()
   glDrawArrays(GL_TRIANGLE_STRIP, 8, 4);
 
   PrintScore();
+
+  Bonus * q = new Bonus();
+  q->Render();
+  delete q;
 
   PlayAudio();
 }

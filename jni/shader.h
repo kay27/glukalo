@@ -45,10 +45,10 @@
     {{  -BONUS_RADIUS*2.0f,   BONUS_RADIUS*1.5f,  0.0f }, {-2.0f, 1.5f}},
     {{   BONUS_RADIUS*2.0f,  -BONUS_RADIUS*1.5f,  0.0f }, { 2.0f,-1.5f}},
     {{   BONUS_RADIUS*2.0f,   BONUS_RADIUS*1.5f,  0.0f }, { 2.0f, 1.5f}},
-    {{     -ICON_SIZE/2.0f,     -ICON_SIZE*1.5f,  0.0f }, {-2.0f,-1.5f}}, // icon
-    {{     -ICON_SIZE/2.0f,      ICON_SIZE/1.5f,  0.0f }, {-2.0f, 1.5f}},
-    {{      ICON_SIZE/2.0f,     -ICON_SIZE/1.5f,  0.0f }, { 2.0f,-1.5f}},
-    {{      ICON_SIZE/2.0f,      ICON_SIZE/1.5f,  0.0f }, { 2.0f, 1.5f}},
+    {{          -ICON_SIZE,    -ICON_SIZE*0.75f,  0.0f }, {-2.0f,-1.5f}}, // icon
+    {{          -ICON_SIZE,     ICON_SIZE*0.75f,  0.0f }, {-2.0f, 1.5f}},
+    {{           ICON_SIZE,    -ICON_SIZE*0.75f,  0.0f }, { 2.0f,-1.5f}},
+    {{           ICON_SIZE,     ICON_SIZE*0.75f,  0.0f }, { 2.0f, 1.5f}},
   };
 
   static const char * birdVertexShader =
@@ -409,7 +409,8 @@
     "  vec2 a = abs(p);\n"
     "  if( (a.x>0.8)||(a.y>0.8)||((a.x>0.2)&&(a.x<0.4))||((a.y>0.2)&&(a.y<0.4)) )\n"
     "  {\n"
-    "    gl_FragColor = vec4(0.0, 1.0, 0.0, 0.3);\n" //hash
+    "    if( (a.x>1.0) || (a.y>1.0) ) discard;\n"
+    "    else gl_FragColor = vec4(0.0, 1.0, 0.0, 0.3);\n" //hash
     "  }\n"
     "  else\n"
     "  {\n"
@@ -438,14 +439,16 @@
     "  {\n"
     "    gl_FragColor = vec4(abs(sin(tc.x*tc.y*2.9)), 0.3, 0.3, 1.0);\n" //magnet
     "  }\n"
-    "  else if( (p.x>-0.2)&&(p.x<0.6)&&(abs(p.y)-0.75*x < 0.55) )\n"
+    "  else if( (p.x>-0.2) && (p.x<0.6) && (abs(p.y)-0.75*p.x < 0.55) )\n"
     "  {\n"                                                              //diffuser
     "    if(vState==1) gl_FragColor = vec4(abs(sin(tc.x*tc.y*3.9)), abs(sin(tc.x*tc.y*4.9)), abs(sin(tc.x*tc.y*5.9)), 1.0);\n"
     "    else gl_FragColor = vec4(0.9, 0.6, 0.6, 0.7);\n"
     "  }\n"
+    "  else if( (abs(p.x)>1.0) || (abs(p.y)>1.0) ) discard;\n"
     "  else\n"
     "  {\n"
     "    gl_FragColor = vec4(0.0, 1.0, 0.0, 0.3);\n" // frame
+    "    gl_FragColor.a = 0.3;\n" // frame
     "  }\n"
     "}\n"
   ;

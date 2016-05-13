@@ -283,14 +283,14 @@ void Game::Render()
     glUniform4f(vFloorOffset, floorOffset, yMulValue, 0, 0);
   glDrawArrays(GL_TRIANGLE_STRIP, 8, 4);
 
+  icon.Render();
+
   PrintScore();
 
 //  Bonus * q = new Bonus();
   if(bonus)
     b.Render();
 //  delete q;
-
-  icon.Render();
 
   PlayAudio();
 }

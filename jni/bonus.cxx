@@ -44,21 +44,10 @@ void Bonus::Resize(float newMulValue)
 
 void Bonus::Render()
 {
-  x = 0.5; y=0.5; //angle = 0.5;
-
   glUseProgram(program);
   glUniform4f(vOffs, x, y, vm, angle);
   glUniform1i(vType, 1);
   glDrawArrays(GL_TRIANGLE_STRIP, 20, 4);
-
-  glUniform4f(vOffs, x, y-0.5, vm, angle);
-  glUniform1i(vType, 2);
-  glDrawArrays(GL_TRIANGLE_STRIP, 20, 4);
-
-  glUniform4f(vOffs, x, y-1.0, vm, angle);
-  glUniform1i(vType, 3);
-  glDrawArrays(GL_TRIANGLE_STRIP, 20, 4);
-
 }
 
 void Bonus::Set(float x_, float y_, BonusType type_)

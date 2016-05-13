@@ -89,7 +89,7 @@
 
 //      inline void SetHalfSize(float halfSize_){ halfSize = halfSize_; }
 
-      inline const float MakeSolid(){ solid = 1; }
+      inline const float MakeSolid(){ solid = 1; y = -3; }
 
       void SetSpeed(const float ss, const float js);
 

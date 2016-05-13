@@ -89,6 +89,8 @@
 
 //      inline void SetHalfSize(float halfSize_){ halfSize = halfSize_; }
 
+      inline const float MakeSolid(){ solid = 1; }
+
       void SetSpeed(const float ss, const float js);
 
       bool Pass(int direction);

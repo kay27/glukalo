@@ -118,7 +118,6 @@ void Game::Restart()
   direction      =  1;
   tapFire        =  0;
   bonus          =  0;
-score = 70;
 
   {
     int hs0 = highScore ^ SCORE_XOR_CODE;
@@ -128,6 +127,7 @@ score = 70;
   }
 
 //score = 795 ^ SCORE_XOR_CODE;
+score = 70 ^ SCORE_XOR_CODE;
 
   AddScore();
   scoreRestarted =  (MAX_COLUMNS+1) >> 1;
@@ -570,4 +570,6 @@ void Game::OnNewColumn(Column * c, float cx, int cScore, int cLevel)
     bonusColumn = c;
     b.Set(cx, c->GetY(), MUSHROOM_MISSILE);
   }
+  if ( (!loop) && (level == 3) && (tail == NEXT_LEVEL_SCORE - 1) )
+    c->MakeSolid();
 }

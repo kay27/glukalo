@@ -339,17 +339,17 @@
 //
 //    "  gl_Position = vPos + vec4(vOffs.xy, 0.0, 0.0);\n"
 //
-//    "  mat2 rotationMatrix = mat2(\n"
-//    "    cos(angle), -sin(angle),\n"
-//    "    sin(angle),  cos(angle));\n"
-//    "  gl_Position = vPos + vec4(vOffs.xy * rotationMatrix, 0.0, 0.0);\n"
+    "  mat2 rotationMatrix = mat2(\n"
+    "    cos(angle), -sin(angle),\n"
+    "    sin(angle),  cos(angle));\n"
+    "  gl_Position = vec4((vPos.xy*vec2(vMul,1.0) * rotationMatrix) / vec2(vMul, 1.0) + vOffs.xy, vPos.zw);\n"
 //
-    "  mat4 rotationMatrix = mat4(\n"
-    "    cos(angle), -sin(angle), 0.0, 0.0,\n"
-    "    sin(angle),  cos(angle), 0.0, 0.0,\n"
-    "           0.0,         0.0, 1.0, 0.0,\n"
-    "           0.0,         0.0, 0.0, 1.0);\n"
-    "  gl_Position = vPos * rotationMatrix + vec4(vOffs.xy, 0.0, 0.0);\n"
+//    "  mat4 rotationMatrix = mat4(\n"
+//    "    cos(angle), -sin(angle), 0.0, 0.0,\n"
+//    "    sin(angle),  cos(angle), 0.0, 0.0,\n"
+//    "           0.0,         0.0, 1.0, 0.0,\n"
+//    "           0.0,         0.0, 0.0, 1.0);\n"
+//    "  gl_Position = vPos * rotationMatrix + vec4(vOffs.xy, 0.0, 0.0);\n"
 //
 //    "  float x = vOffs.x;\n"
 //    "  float y = vOffs.y;\n"

@@ -216,6 +216,8 @@ void Game::Render()
 
   m.Move(delta, antiGravity, direction);
 
+  b.Move(delta, antiGravity, direction);
+
   if(!gameOver)
   {
     floorOffset = fmod(floorOffset + deltaX, 1/yMulValue);
@@ -275,9 +277,9 @@ void Game::Render()
 
   PrintScore();
 
-  Bonus * q = new Bonus();
-  q->Render();
-  delete q;
+//  Bonus * q = new Bonus();
+  b.Render();
+//  delete q;
 
   PlayAudio();
 }

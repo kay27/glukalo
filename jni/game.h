@@ -19,6 +19,7 @@
   class Bonus
   {
     public:
+      Bonus() : angle(0) {}
       static void Init();
       void Move(float delta, int antiGravity, int direction);
       void Render();
@@ -131,6 +132,8 @@
       void ResumeAudio();
 
     protected:
+
+      Bonus b;
 
       int firstRun, gameStarted, gameOver, gameLooped, scoreRestarted, direction;
 

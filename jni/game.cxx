@@ -354,7 +354,8 @@ void Game::ChangeLevel()
   }
 
   if(s >= 5 * NEXT_LEVEL_SCORE)
-    tapFire = 1;
+    if(tapFire == 0)
+      tapFire = 1;
 
   if(s == 2 * NUMBER_OF_LEVELS * NEXT_LEVEL_SCORE)
   {

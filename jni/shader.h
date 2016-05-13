@@ -410,7 +410,12 @@
     "  if( (a.x>0.8)||(a.y>0.8)||((a.x>0.2)&&(a.x<0.4))||((a.y>0.2)&&(a.y<0.4)) )\n"
     "  {\n"
     "    if( (a.x>1.0) || (a.y>1.0) ) discard;\n"
-    "    else gl_FragColor = vec4(0.0, 1.0, 0.0, 0.3);\n" //hash
+    "    else\n"
+    "    {\n"
+//    "      gl_FragColor = vec4(0.0, 1.0, 0.0, 0.3);\n" //hash
+    "      if(distance(vec2(vp.x*vMul, vp.y), vec2(tc.x*vMul,tc.y)) > 1.05) discard;\n" //hash
+    "      else if(fract(tc.x*tc.y*333.71)<0.71) discard; else gl_FragColor = vec4(0.0, abs(sin(tc.x*tc.y*27.1))*0.3, abs(cos(tc.x*tc.y+33.1+0.5))*0.3, 1.0);\n"
+    "    }\n"
     "  }\n"
     "  else\n"
     "  {\n"
@@ -420,7 +425,7 @@
     "    }\n"
     "    else\n"
     "    {\n"
-    "      gl_FragColor = vec4(0.7, 0.7, 0.8, 0.9);\n"
+    "      gl_FragColor = vec4(0.3, 0.3, 0.3, 1.0);\n"
     "    }\n"
     "  }\n"
     "}\n"
@@ -432,6 +437,7 @@
     "varying vec4 vp;\n"
     "varying vec2 tc;\n"
     "varying float vMul;\n"
+    "uniform sampler2D sampler;\n"
     "void main()\n"
     "{\n"
     "  vec2 p = vec2(tc.x*vMul, tc.y);\n"
@@ -441,14 +447,18 @@
     "  }\n"
     "  else if( (p.x>-0.2) && (p.x<0.6) && (abs(p.y)-0.75*p.x < 0.55) )\n"
     "  {\n"                                                              //diffuser
-    "    if(vState==1) gl_FragColor = vec4(abs(sin(tc.x*tc.y*3.9)), abs(sin(tc.x*tc.y*4.9)), abs(sin(tc.x*tc.y*5.9)), 1.0);\n"
+//    "    if(vState==1) gl_FragColor = vec4(abs(sin(tc.x*tc.y*3.9)), abs(sin(tc.x*tc.y*4.9)), abs(sin(tc.x*tc.y*5.9)), 1.0);\n"
+//    "    if(vState==1) gl_FragColor = vec4(fract(25.1*sin(tc.x*tc.y*3.9)), abs(sin(tc.x*tc.y*4.9)), abs(sin(tc.x*tc.y*5.9)), 1.0);\n"
+    "    if(vState==1) gl_FragColor = vec4(0.7, abs(sin(tc.x*tc.y*4.9))*0.6, abs(sin(tc.x*tc.y*5.9))*0.6, 1.0);\n"
     "    else gl_FragColor = vec4(0.9, 0.6, 0.6, 0.7);\n"
     "  }\n"
     "  else if( (abs(p.x)>1.0) || (abs(p.y)>1.0) ) discard;\n"
     "  else\n"
     "  {\n"
-    "    gl_FragColor = vec4(0.0, 1.0, 0.0, 0.3);\n" // frame
-    "    gl_FragColor.a = 0.3;\n" // frame
+//    "    gl_FragColor = vec4(0.0, 1.0, 0.0, 0.3);\n" // frame
+//    "    gl_FragColor = texture2D(sampler, tc) * 0.7 + vec4(0.0, 0.3, 0.0, 0.3);\n" // frame
+    "    if(distance(vec2(vp.x*vMul, vp.y), vec2(tc.x*vMul,tc.y)) > 1.05) discard;\n" //frame
+    "    else if(fract(tc.x*tc.y*333.71)<0.71) discard; else gl_FragColor = vec4(0.0, abs(sin(tc.x*tc.y*27.1))*0.3, abs(cos(tc.x*tc.y+33.1+0.5))*0.3, 1.0);\n"
     "  }\n"
     "}\n"
   ;

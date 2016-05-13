@@ -572,6 +572,6 @@ void Game::OnNewColumn(Column * c, float cx, int cScore, int cLevel)
   }
   else if ( (!loop) && (level == 3) && (tail == NEXT_LEVEL_SCORE - 1) )
     c->MakeSolid();
-  else if ( (!loop) && (level == 4) && (tail % 3 == 1) )
+  else if ( (!loop) && (level == 4) && (tail % (NEXT_LEVEL_SCORE/3) == 0) )
     c->MakeSolid();
 }

@@ -127,7 +127,7 @@ void Game::Restart()
   }
 
 //score = 795 ^ SCORE_XOR_CODE;
-score = 70 ^ SCORE_XOR_CODE;
+score = 73 ^ SCORE_XOR_CODE;
 
   AddScore();
   scoreRestarted =  (MAX_COLUMNS+1) >> 1;
@@ -570,6 +570,8 @@ void Game::OnNewColumn(Column * c, float cx, int cScore, int cLevel)
     bonusColumn = c;
     b.Set(cx, c->GetY(), MUSHROOM_MISSILE);
   }
-  if ( (!loop) && (level == 3) && (tail == NEXT_LEVEL_SCORE - 1) )
+  else if ( (!loop) && (level == 3) && (tail == NEXT_LEVEL_SCORE - 1) )
+    c->MakeSolid();
+  else if ( (!loop) && (level == 4) && (tail % 3 == 1) )
     c->MakeSolid();
 }

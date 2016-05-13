@@ -9,6 +9,7 @@ LOCAL_SRC_FILES := \
   column.cxx \
   game.cxx \
   game_audio.cxx \
+  icon.cxx \
   jni2game.cxx \
   missile.cxx \
   shader.cxx \

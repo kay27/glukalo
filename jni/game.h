@@ -14,6 +14,18 @@
 # include "sound.h"
 # include "system.h"
 
+  class Icon
+  {
+    public:
+      static void Init();
+      void Render();
+      static void Resize(float newMulValue);
+    private:
+      static GLint progLevel, vPosLevel, vTCLevel, vOffsLevel;
+      static GLint progSound, vPosSound, vTCSound, vOffsSound, vState;
+      static float vm;
+  };
+
   enum BonusType { MUSHROOM_MISSILE, SLOWDOWN, SPEEDUP };
 
   class Bonus
@@ -144,6 +156,7 @@
 
     protected:
 
+      Icon icon;
       Bonus b;
       Column * bonusColumn;
       int bonus;

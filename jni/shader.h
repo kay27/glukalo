@@ -45,6 +45,10 @@
     {{  -BONUS_RADIUS*2.0f,   BONUS_RADIUS*1.5f,  0.0f }, {-2.0f, 1.5f}},
     {{   BONUS_RADIUS*2.0f,  -BONUS_RADIUS*1.5f,  0.0f }, { 2.0f,-1.5f}},
     {{   BONUS_RADIUS*2.0f,   BONUS_RADIUS*1.5f,  0.0f }, { 2.0f, 1.5f}},
+    {{     -ICON_SIZE/2.0f,     -ICON_SIZE*1.5f,  0.0f }, {-2.0f,-1.5f}}, // icon
+    {{     -ICON_SIZE/2.0f,      ICON_SIZE/1.5f,  0.0f }, {-2.0f, 1.5f}},
+    {{      ICON_SIZE/2.0f,     -ICON_SIZE/1.5f,  0.0f }, { 2.0f,-1.5f}},
+    {{      ICON_SIZE/2.0f,      ICON_SIZE/1.5f,  0.0f }, { 2.0f, 1.5f}},
   };
 
   static const char * birdVertexShader =
@@ -375,6 +379,74 @@
     "    gl_FragColor = vec4(fract(tc.y*11.1), fract(tc.y*11.11+0.01), 1.0 - fract(tc.y*11.12+0.02), 1.0);\n"
     "  else\n"
     "    gl_FragColor = vec4(0.8, 0.5, 0.9, 1.0);\n"
+    "}\n"
+  ;
+
+  static const char * iconVertexShader =
+    "attribute vec4 vPos;\n"
+    "attribute vec4 vTC;\n"
+    "uniform vec4 vOffs;\n"
+    "varying vec4 vp;\n"
+    "varying vec2 tc;\n"
+    "varying float vMul;\n"
+    "void main()\n"
+    "{\n"
+    "  vMul = vOffs.z;\n"
+    "  gl_Position = vec4(vPos.xy + vOffs.xy, vPos.zw);\n"
+    "  vp = vPos;\n"
+    "  tc = vTC.xy;\n"
+    "}\n"
+  ;
+
+  static const char * iconLevelFragmentShader =
+    "precision mediump float;\n"
+    "varying vec4 vp;\n"
+    "varying vec2 tc;\n"
+    "varying float vMul;\n"
+    "void main()\n"
+    "{\n"
+    "  vec2 p = vec2(tc.x*vMul, tc.y);\n"
+    "  vec2 a = abs(p);\n"
+    "  if( (a.x>0.8)||(a.y>0.8)||((a.x>0.2)&&(a.x<0.4))||((a.y>0.2)&&(a.y<0.4)) )\n"
+    "  {\n"
+    "    gl_FragColor = vec4(0.0, 1.0, 0.0, 0.3);\n" //hash
+    "  }\n"
+    "  else\n"
+    "  {\n"
+    "    if( (p.y>0.2)||((p.y>-0.2)&&(p.x<-0.2)) )\n" //completed levels
+    "    {\n"
+    "      gl_FragColor = vec4(abs(sin(tc.y*tc.x*3.3)), abs(sin(tc.y*tc.x*4.5)), abs(sin(tc.y*tc.x*5.8)), 1.0);\n"
+    "    }\n"
+    "    else\n"
+    "    {\n"
+    "      gl_FragColor = vec4(0.7, 0.7, 0.8, 0.9);\n"
+    "    }\n"
+    "  }\n"
+    "}\n"
+  ;
+
+  static const char * iconSoundFragmentShader =
+    "precision mediump float;\n"
+    "uniform int vState;\n"
+    "varying vec4 vp;\n"
+    "varying vec2 tc;\n"
+    "varying float vMul;\n"
+    "void main()\n"
+    "{\n"
+    "  vec2 p = vec2(tc.x*vMul, tc.y);\n"
+    "  if( (abs(p.y)<0.4)&&(p.x>-0.6)&&(p.x<-0.2) )\n"
+    "  {\n"
+    "    gl_FragColor = vec4(abs(sin(tc.x*tc.y*2.9)), 0.3, 0.3, 1.0);\n" //magnet
+    "  }\n"
+    "  else if( (p.x>-0.2)&&(p.x<0.6)&&(abs(p.y)-0.75*x < 0.55) )\n"
+    "  {\n"                                                              //diffuser
+    "    if(vState==1) gl_FragColor = vec4(abs(sin(tc.x*tc.y*3.9)), abs(sin(tc.x*tc.y*4.9)), abs(sin(tc.x*tc.y*5.9)), 1.0);\n"
+    "    else gl_FragColor = vec4(0.9, 0.6, 0.6, 0.7);\n"
+    "  }\n"
+    "  else\n"
+    "  {\n"
+    "    gl_FragColor = vec4(0.0, 1.0, 0.0, 0.3);\n" // frame
+    "  }\n"
     "}\n"
   ;
 

@@ -3,6 +3,7 @@
 GLint Bonus::program = 0;
 GLint Bonus::vPos = 0;
 GLint Bonus::vTC = 0;
+GLint Bonus::vType = 0;
 GLint Bonus::vOffs = 0;
 float Bonus::vm = 1;
 
@@ -16,6 +17,7 @@ void Bonus::Init()
   vPos  = glGetAttribLocation (program, "vPos");
   vTC   = glGetAttribLocation (program, "vTC");
   vOffs = glGetUniformLocation(program, "vOffs");
+  vType = glGetUniformLocation(program, "vType");
   glEnableVertexAttribArray(vPos);
   glEnableVertexAttribArray(vTC);
   glVertexAttribPointer(vPos, 3, GL_FLOAT, false, sizeof(MyVertex), (void*)offsetof(MyVertex,pos));
@@ -39,5 +41,6 @@ void Bonus::Render()
 
   glUseProgram(program);
   glUniform4f(vOffs, x, y, vm, angle);
+  glUniform1i(vType, 1);
   glDrawArrays(GL_TRIANGLE_STRIP, 20, 4);
 }

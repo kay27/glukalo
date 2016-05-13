@@ -25,7 +25,7 @@
       void Render();
       static void Resize(float newMulValue);
     private:
-      static GLint program, vPos, vTC, vOffs;
+      static GLint program, vPos, vTC, vOffs, vType;
       static float vm;
       BonusType type;
       float x,y,angle;
@@ -34,7 +34,6 @@
   class Missile
   {
     public:
-//      Missile() : phase(0) {};
       Missile() : phase(0) {};
       void Explode();
       inline float GetPhase(){ return phase; }
@@ -44,7 +43,6 @@
       static void Init();
       void Move(float delta, int antiGravity, int direction);
       void Render();
-//      static void Resize(float newMulValue);
       static void Resize(float newMulValue);
       void Start(float x_, float y_);
     private:

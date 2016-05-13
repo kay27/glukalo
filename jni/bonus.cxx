@@ -7,6 +7,12 @@ GLint Bonus::vType = 0;
 GLint Bonus::vOffs = 0;
 float Bonus::vm = 1;
 
+bool Bonus::Collision(float x0, float y0)
+{
+  float d = sqrt(pow((x-x0)*vm, 2) + pow(y-y0, 2));
+  return d <= BIRD_RADIUS + BONUS_RADIUS;
+}
+
 void Bonus::Init()
 {
   program = MyShader::CreateProgram();
@@ -26,6 +32,7 @@ void Bonus::Init()
 
 void Bonus::Move(float delta, int antiGravity, int direction)
 {
+  x -= delta * H_SPEED * direction;
   angle += delta / 1000000;
   if(angle > 4) angle -= 2*3.1415926;
 }
@@ -52,4 +59,17 @@ void Bonus::Render()
   glUniform1i(vType, 3);
   glDrawArrays(GL_TRIANGLE_STRIP, 20, 4);
 
+}
+
+void Bonus::Set(float x_, float y_, int type_)
+{
+  x = x_;
+  y = y_;
+  type = type_;
+}
+
+void Bonus::Set(float x_, float y_)
+{
+  x = x_;
+  y = y_;
 }

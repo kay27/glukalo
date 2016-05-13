@@ -20,8 +20,11 @@
   {
     public:
       Bonus() : angle(0) {}
+      bool Collision(float x0, float y0);
       static void Init();
       void Move(float delta, int antiGravity, int direction);
+      void Set(float x_, float y_, int type_);
+      void Set(float x_, float y_, int type_);
       void Render();
       static void Resize(float newMulValue);
     private:
@@ -103,6 +106,7 @@
       ~Game();
       void AddScore();
       void ChangeLevel();
+      void CheckBonus();
       void CheckColumns();
       void CheckMissiles();
       void DemoAnimation(float delta);

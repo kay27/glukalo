@@ -216,7 +216,7 @@ void Game::Render()
 
   m.Move(delta, antiGravity, direction);
 
-  b.Move(delta, antiGravity, direction);
+  GetBonus();
 
   if(!gameOver)
   {
@@ -244,6 +244,7 @@ void Game::Render()
 
   CheckMissiles();
   CheckColumns();
+  CheckBonus();
 
   m.Render();
 
@@ -510,6 +511,14 @@ void Game::CheckColumns()
   }
 }
 
+void Game::CheckBonus()
+{
+  if(b.Collision(x, y))
+  {
+    MyCallback::Toast("Bonus!");
+  }
+}
+
 void Game::FlyAway(float deltaX)
 {
   if(direction == 1)
@@ -524,4 +533,9 @@ void Game::FlyAway(float deltaX)
   if (x >= FLY_BACK) return;
   x -= deltaX;
   if(x > FLY_BACK) x = FLY_BACK;
+}
+
+void Game::GetBonus()
+{
+  b.Move(delta, antiGravity, direction);
 }

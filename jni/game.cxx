@@ -127,7 +127,7 @@ void Game::Restart()
   }
 
 //score = 795 ^ SCORE_XOR_CODE;
-score = 73 ^ SCORE_XOR_CODE;
+//score = 73 ^ SCORE_XOR_CODE;
 
   AddScore();
   scoreRestarted =  (MAX_COLUMNS+1) >> 1;
@@ -213,11 +213,13 @@ void Game::Render()
     FlyAway(deltaX);
 
     if(!gameOver)
+    {
       MoveColumnsCheckPass(deltaX);
+      b.Move(delta, antiGravity, direction);
+    }
   }
 
   m.Move(delta, antiGravity, direction);
-  b.Move(delta, antiGravity, direction);
 
   MoveBonus();
 

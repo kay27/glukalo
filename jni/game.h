@@ -14,7 +14,7 @@
 # include "sound.h"
 # include "system.h"
 
-  enum BonusType { GUN, SLOWDOWN, SPEEDUP };
+  enum BonusType { MUSHROOM_MISSILE, SLOWDOWN, SPEEDUP };
 
   class Bonus
   {
@@ -23,8 +23,9 @@
       bool Collision(float x0, float y0);
       static void Init();
       void Move(float delta, int antiGravity, int direction);
-      void Set(float x_, float y_, int type_);
-      void Set(float x_, float y_, int type_);
+      void Set(float y_);
+      void Set(float x_, float y_);
+      void Set(float x_, float y_, BonusType type_);
       void Render();
       static void Resize(float newMulValue);
     private:
@@ -66,6 +67,8 @@
 
       inline void Freeze(float y_, float halfSize_){  y = y_; halfSize = halfSize_; freeze = 1; solid = 0; }
 
+      inline const float GetX(){ return x; }
+
       inline const float GetY(){ return y; }
 
       inline const float GetHalfSize(){ return halfSize; }
@@ -79,6 +82,8 @@
       void Render();
 
       void Restart(float x_, int score_);
+
+      void Restart(float x_, int score_, int level_);
 
 //      inline void SetY(float y_){ y = y_; }
 
@@ -116,7 +121,9 @@
       float GetTimeInterval();
       void FlyAway(float deltaX);
       void Init();
+      void MoveBonus();
       void MoveColumnsCheckPass(float deltaX);
+      void OnNewColumn(Column * c, float cx, int cScore, int cLevel);
       void Pause();
       void PrintNumber(float xcrd, float ycrd, float r, float g, float b, int number);
       void PrintScore();
@@ -136,6 +143,8 @@
     protected:
 
       Bonus b;
+      Column * bonusColumn;
+      int bonus;
 
       int firstRun, gameStarted, gameOver, gameLooped, scoreRestarted, direction;
 

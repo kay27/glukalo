@@ -87,6 +87,20 @@ void Column::OnCreate()
 
 }
 
+void Column::Restart(float x_, int score_, int level_)
+{
+  x           = x_;
+  score       = score_;
+//  level       = Game::GetLevel(score);
+  level       = level_;
+  passed      = 0;
+  freeze      = 0;
+  swingVector = -lastSwingVector;
+  jawsVector  = 1;
+  halfSize    = GAP_HALFSIZE;
+  OnCreate();
+}
+
 void Column::Restart(float x_, int score_)
 {
   x           = x_;

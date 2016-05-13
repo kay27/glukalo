@@ -117,6 +117,8 @@ void Game::Restart()
   floorOffset    =  0;
   direction      =  1;
   tapFire        =  0;
+  bonus          =  0;
+score = 70;
 
   {
     int hs0 = highScore ^ SCORE_XOR_CODE;
@@ -215,8 +217,9 @@ void Game::Render()
   }
 
   m.Move(delta, antiGravity, direction);
+  b.Move(delta, antiGravity, direction);
 
-  GetBonus();
+  MoveBonus();
 
   if(!gameOver)
   {
@@ -279,7 +282,8 @@ void Game::Render()
   PrintScore();
 
 //  Bonus * q = new Bonus();
-  b.Render();
+  if(bonus)
+    b.Render();
 //  delete q;
 
   PlayAudio();
@@ -429,7 +433,10 @@ void Game::MoveColumnsCheckPass(float deltaX)
       if(xNew < -1 - COLUMN_HALFWIDTH)
       {
         xNew += SEGMENT * MAX_COLUMNS;
-        gaps[i].Restart(xNew, (score ^ SCORE_XOR_CODE) + round((xNew - FLY_BACK) / SEGMENT));
+        int xScore = (score ^ SCORE_XOR_CODE) + round((xNew - FLY_BACK) / SEGMENT);
+        int xLevel = GetLevel(xScore);
+        gaps[i].Restart(xNew, xScore, xLevel);
+        OnNewColumn(&gaps[i], xNew, xScore, xLevel);
       }
     }
     else //direction == -1
@@ -437,7 +444,10 @@ void Game::MoveColumnsCheckPass(float deltaX)
       if(xNew > 1 + COLUMN_HALFWIDTH)
       {
         xNew -= SEGMENT * MAX_COLUMNS;
-        gaps[i].Restart(xNew, (score ^ SCORE_XOR_CODE) + round((FLY_BACK - xNew) / SEGMENT));
+        int xScore = (score ^ SCORE_XOR_CODE) + round((FLY_BACK - xNew) / SEGMENT);
+        int xLevel = GetLevel(xScore);
+        gaps[i].Restart(xNew, xScore, xLevel);
+        OnNewColumn(&gaps[i], xNew, xScore, xLevel);
       }
     }
   }
@@ -514,9 +524,13 @@ void Game::CheckColumns()
 
 void Game::CheckBonus()
 {
-  if(b.Collision(x, y))
+  if(!bonus) return;
+  if(!b.Collision(x, y)) return;
+  if(bonus==1)
   {
-    MyCallback::Toast("Bonus!");
+    tapFire = 1;
+    bonus = 0;
+    return;
   }
 }
 
@@ -536,7 +550,24 @@ void Game::FlyAway(float deltaX)
   if(x > FLY_BACK) x = FLY_BACK;
 }
 
-void Game::GetBonus()
+void Game::MoveBonus()
 {
-  b.Move(delta, antiGravity, direction);
+  if(!bonus) return;
+  if(bonus==1)
+  {
+    b.Set(bonusColumn->GetY());
+  }
+}
+
+void Game::OnNewColumn(Column * c, float cx, int cScore, int cLevel)
+{
+  int tail = cScore % NEXT_LEVEL_SCORE;
+  bool loop = cScore >= NEXT_LEVEL_SCORE * NUMBER_OF_LEVELS;
+
+  if ( (!loop) && (level == 3) && (tail == NEXT_LEVEL_SCORE - 2) )
+  { // end of level 4 - get missiles
+    bonus = 1;
+    bonusColumn = c;
+    b.Set(cx, c->GetY(), MUSHROOM_MISSILE);
+  }
 }

@@ -61,7 +61,7 @@ void Bonus::Render()
 
 }
 
-void Bonus::Set(float x_, float y_, int type_)
+void Bonus::Set(float x_, float y_, BonusType type_)
 {
   x = x_;
   y = y_;
@@ -71,5 +71,10 @@ void Bonus::Set(float x_, float y_, int type_)
 void Bonus::Set(float x_, float y_)
 {
   x = x_;
+  y = y_;
+}
+
+void Bonus::Set(float y_)
+{
   y = y_;
 }

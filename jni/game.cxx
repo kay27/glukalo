@@ -183,6 +183,12 @@ void Game::Resize(int w, int h)
 
 void Game::Tap(float x, float y)
 {
+ 
+    char msg[64];
+    sprintf(msg, "x=%f, y=%f", x, y);
+    MyCallback::Toast(msg);
+
+
   impulse = 1;
 
   if(!gameOver)

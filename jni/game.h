@@ -141,7 +141,7 @@
       void Pause();
       void PrintNumber(float xcrd, float ycrd, float r, float g, float b, int number);
       void PrintScore();
-      void Tap();
+      void Tap(float x, float y);
       void Render();
       void Resize(int w, int h);
       void Restart();

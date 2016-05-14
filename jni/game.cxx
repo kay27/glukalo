@@ -134,7 +134,13 @@ void Game::Restart()
   scoreRestarted =  (MAX_COLUMNS+1) >> 1;
 
   for(int i=0; i<MAX_COLUMNS; i++)
-    gaps[i].Restart(direction*SEGMENT*i + direction*1.5, (score ^ SCORE_XOR_CODE) + i);
+  {
+    float cx = direction*SEGMENT*i + direction*1.5;
+    int cs = (score ^ SCORE_XOR_CODE) + i;
+    int cl = GetLevel(cs);
+    gaps[i].Restart(cx, cs);
+    OnNewColumn(&gaps[i], cx, cs, cl);
+  }
 
   glUseProgram(birdProgram);
   glUniform1f(vRadius, (float)1.0);
@@ -175,7 +181,7 @@ void Game::Resize(int w, int h)
   }
 }
 
-void Game::Tap()
+void Game::Tap(float x, float y)
 {
   impulse = 1;
 
@@ -363,7 +369,7 @@ void Game::ChangeLevel()
     else direction = -1;
   }
 
-  if(s >= 5 * NEXT_LEVEL_SCORE)
+  if(s >= 4 * NEXT_LEVEL_SCORE)
     if(tapFire == 0)
       tapFire = 1;
 
@@ -576,8 +582,10 @@ void Game::OnNewColumn(Column * c, float cx, int cScore, int cLevel)
     bonusColumn = c;
     b.Set(cx, c->GetY(), MUSHROOM_MISSILE);
   }
+
   else if ( (!loop) && (level == 3) && (tail == NEXT_LEVEL_SCORE - 1) )
     c->MakeSolid();
+
   else if ( (!loop) && (level == 4) && (tail % (NEXT_LEVEL_SCORE/3) == 0) )
     c->MakeSolid();
 }

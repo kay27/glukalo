@@ -29,10 +29,10 @@ int MyCallback::Call(const char *javaStaticMethod)
 extern "C"
 {
 
-  JNIEXPORT void Java_com_kay27_Glukalo_MyGLSurfaceView_nativeKeyPress(JNIEnv* env)
+  JNIEXPORT void Java_com_kay27_Glukalo_MyGLSurfaceView_nativeKeyPress(JNIEnv* env, jobject thiz, float x, float y)
   {
     if(game)
-      game->Tap();
+      game->Tap(x, y);
   }
 
   JNIEXPORT void Java_com_kay27_Glukalo_MyGLSurfaceView_nativePause(JNIEnv* env)

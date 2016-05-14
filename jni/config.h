@@ -23,7 +23,7 @@
 
   const float BONUS_RADIUS = 0.07f;
 
-  const float ICON_SIZE = 0.2f;
+  const float ICON_SIZE = 0.17f;
 
   const float EXPLODE_TIMEOUT = 111111;
 

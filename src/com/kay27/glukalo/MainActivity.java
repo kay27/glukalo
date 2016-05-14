@@ -111,7 +111,7 @@ class MyGLSurfaceView extends GLSurfaceView
   public boolean onTouchEvent(final MotionEvent event)
   {
     int action = event.getAction();
-    if(action == MotionEvent.ACTION_DOWN) nativeKeyPress();
+    if(action == MotionEvent.ACTION_DOWN) nativeKeyPress(event.getX(), event.getY());
 //    else if(action == MotionEvent.ACTION_UP) nativeKeyRelease();
     return true;
   }
@@ -134,8 +134,8 @@ class MyGLSurfaceView extends GLSurfaceView
 
   private static native void nativePause();
   private static native void nativeResume();
-  private static native void nativeKeyPress();
-  private static native void nativeKeyRelease();
+  private static native void nativeKeyPress(float x, float y);
+//  private static native void nativeKeyRelease();
 
 }
 

@@ -6,14 +6,15 @@ import android.content.Context;
 import android.content.pm.ConfigurationInfo;
 import android.content.res.Configuration;
 import android.content.SharedPreferences;
+import android.graphics.Point;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Display;
 import android.view.MotionEvent;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
-//import java.lang.Thread;
 import javax.microedition.khronos.opengles.GL10;
 import javax.microedition.khronos.egl.EGLConfig;
 
@@ -33,7 +34,10 @@ public class MainActivity extends Activity
     {
       requestWindowFeature(Window.FEATURE_NO_TITLE);
       getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-      mGLView = new MyGLSurfaceView(this);
+      Display display = getWindowManager().getDefaultDisplay();
+      Point size = new Point();
+      display.getSize(size);
+      mGLView = new MyGLSurfaceView(this, size.x, size.y);
       setContentView(mGLView);
     }
     else
@@ -59,6 +63,10 @@ public class MainActivity extends Activity
   {
     super.onConfigurationChanged(newConfig);
     getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+    Display display = getWindowManager().getDefaultDisplay();
+    Point size = new Point();
+    display.getSize(size);
+    mGLView.Resize(size.x, size.y);
   }
 
   public static void ErrorCallback(final String message)
@@ -98,21 +106,25 @@ public class MainActivity extends Activity
 
 class MyGLSurfaceView extends GLSurfaceView
 {
-  public MyGLSurfaceView(Context context)
+  public MyGLSurfaceView(Context context, int w, int h)
   {
     super(context);
+    halfH=w/2; halfW=h/2;
     setEGLContextClientVersion(2);
     mRenderer = new MyRenderer();
-    setPreserveEGLContextOnPause(true); //???fix
     setRenderer(mRenderer);
     requestRender(); //temp
+  }
+
+  public void Resize(int w, int h)
+  {
+    halfH=w/2; halfW=h/2;
   }
 
   public boolean onTouchEvent(final MotionEvent event)
   {
     int action = event.getAction();
-    if(action == MotionEvent.ACTION_DOWN) nativeKeyPress(event.getX(), event.getY());
-//    else if(action == MotionEvent.ACTION_UP) nativeKeyRelease();
+    if(action == MotionEvent.ACTION_DOWN) nativeKeyPress(event.getX()/halfH-1, 1-event.getY()/halfW);
     return true;
   }
 
@@ -131,11 +143,11 @@ class MyGLSurfaceView extends GLSurfaceView
   }
 
   private MyRenderer mRenderer;
+  private float halfW, halfH;
 
   private static native void nativePause();
   private static native void nativeResume();
   private static native void nativeKeyPress(float x, float y);
-//  private static native void nativeKeyRelease();
 
 }
 

@@ -20,7 +20,9 @@
       static void Init();
       void Render();
       static void Resize(float newMulValue);
+      static int Tap(float tx, float ty);
     private:
+      static float x1, x2, y;
       static GLint progLevel, vPosLevel, vTCLevel, vOffsLevel;
       static GLint progSound, vPosSound, vTCSound, vOffsSound, vState;
       static float vm;

@@ -183,11 +183,16 @@ void Game::Resize(int w, int h)
 
 void Game::Tap(float x, float y)
 {
- 
-    char msg[64];
-    sprintf(msg, "x=%f, y=%f", x, y);
-    MyCallback::Toast(msg);
+  if(int i = icon.Tap(x, y))
+  {
+    if(i == 1) MyCallback::Toast("Level selection");
+    else if(i == 2) MyCallback::Toast("Mute sound");
+    return;
+  }
 
+//  char msg[64];
+//  sprintf(msg, "x=%f, y=%f", x, y);
+//  MyCallback::Toast(msg);
 
   impulse = 1;
 

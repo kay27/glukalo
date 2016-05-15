@@ -31,6 +31,7 @@ Game::~Game()
 void Game::Init()
 {
   pause = 0;
+  showMenu = 0;
 
   if(firstRun)
     MyCallback::Toast("Tap to play");
@@ -183,9 +184,11 @@ void Game::Resize(int w, int h)
 
 void Game::Tap(float x, float y)
 {
+  if(showMenu) { showMenu = 0; return; }
+
   if(int i = icon.Tap(x, y))
   {
-    if(i == 1) MyCallback::Toast("Level selection");
+    if(i == 1) showMenu = 1;
     else if(i == 2) MyCallback::Toast("Mute sound");
     return;
   }
@@ -208,6 +211,9 @@ inline void Game::Untap()
 void Game::Render()
 {
   if(pause) return;
+
+  if(showMenu)
+    return RenderMenu();
 
   float delta = GetTimeInterval(); if(delta>50000) return; // CPU overload
 
@@ -599,4 +605,9 @@ void Game::OnNewColumn(Column * c, float cx, int cScore, int cLevel)
 
   else if ( (!loop) && (level == 4) && (tail % (NEXT_LEVEL_SCORE/3) == 0) )
     c->MakeSolid();
+}
+
+void Game::RenderMenu()
+{
+
 }

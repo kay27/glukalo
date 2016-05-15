@@ -145,6 +145,7 @@
       void PrintScore();
       void Tap(float x, float y);
       void Render();
+      void RenderMenu();
       void Resize(int w, int h);
       void Restart();
       void Resume();
@@ -173,7 +174,7 @@
 
       Column gaps[MAX_COLUMNS];
 
-      int impulse, pause, score, highScore, level, maxLevel, tapFire;
+      int impulse, pause, score, highScore, level, maxLevel, tapFire, showMenu;
 
       GLuint vb;
       GLint vPosition, vTextureCoordinate, vColor, vOffset, vEye, vRadius, vMul,

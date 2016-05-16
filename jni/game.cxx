@@ -609,5 +609,38 @@ void Game::OnNewColumn(Column * c, float cx, int cScore, int cLevel)
 
 void Game::RenderMenu()
 {
+  int i, vertical = vMul >= 1;
+  float x[NUMBER_OF_LEVELS<<1], y[NUMBER_OF_LEVELS<<1];
+  if(vertical) //fixme CACHE IT!!! (always check vertical)
+  {
+    for (i = 0; i < NUMBER_OF_LEVELS; i++)
+    {
+      x[i] = ((i % (NUMBER_OF_LEVELS_X)) / NUMBER_OF_LEVELS_X + 0.5/NUMBER_OF_LEVELS_X - 0.5) * 2;
+      y[i] = - ((i / NUMBER_OF_LEVELS_X) / (NUMBER_OF_LEVELS_Y<<1) + 0.5/(NUMBER_OF_LEVELS_Y<<1) - 0.5) * 2;
+    }
+    for (i = 0; i < NUMBER_OF_LEVELS; i++)
+    {
+      x[i+NUMBER_OF_LEVELS] = x[i];
+      y[i+NUMBER_OF_LEVELS] = y[i]+0.5;
+    }
+  }
+  else
+  {
+    for (i = 0; i < NUMBER_OF_LEVELS; i++)
+    {
+      x[i] = ((i % (NUMBER_OF_LEVELS_X)) / (NUMBER_OF_LEVELS_X<<1) + 0.5/(NUMBER_OF_LEVELS_X<<1) - 0.5) * 2;
+      y[i] = - ((i / NUMBER_OF_LEVELS_X) / NUMBER_OF_LEVELS_Y + 0.5/NUMBER_OF_LEVELS_Y - 0.5) * 2;
+    }
+    for (i = 0; i < NUMBER_OF_LEVELS; i++)
+    {
+      x[i+NUMBER_OF_LEVELS] = x[i]+0.5;
+      y[i+NUMBER_OF_LEVELS] = y[i];
+    }
+  }
+
+  for (i = 0; i < NUMBER_OF_LEVELS; i++)
+  {
+    PrintNumber(x[i], y[i], 1, 1, 1, i + 1);
+  }
 
 }

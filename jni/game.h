@@ -107,15 +107,9 @@
 
       void Render();
 
-      void RenderBox();
-
       void Restart(float x_, int score_);
 
       void Restart(float x_, int score_, int level_);
-
-//      inline void SetY(float y_){ y = y_; }
-
-//      inline void SetHalfSize(float halfSize_){ halfSize = halfSize_; }
 
       inline const float MakeSolid(){ solid = 1; y = -3; }
 

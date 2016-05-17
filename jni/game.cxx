@@ -12,6 +12,8 @@ Game::Game()
 
   maxLevel = 0;
 
+  selectedLevelScore = (-1) ^ SCORE_XOR_CODE;
+
   highScore = MyCallback::GetHighScore();
   if(highScore == -1) highScore = SCORE_XOR_CODE;
 
@@ -71,8 +73,8 @@ void Game::Init()
   Missile::Init();
   Bonus::Init();
   ColumnPreview::Init();
-  levelIcon.Init(iconVertexShader, iconLevelFragmentShader, -ICON_SIZE-ICON_SIZE/4, -1+ICON_SIZE/2);
-  soundIcon.Init(iconVertexShader, iconSoundFragmentShader,  0+ICON_SIZE/4, -1+ICON_SIZE/2, 1);
+  levelIcon.Init(iconVertexShader, iconLevelFragmentShader, -ICON_SIZE/2-ICON_SIZE/4, -1+ICON_SIZE/2);
+  soundIcon.Init(iconVertexShader, iconSoundFragmentShader,  ICON_SIZE/2+ICON_SIZE/4, -1+ICON_SIZE/2, 1);
 
   floorProgram = MyShader::CreateProgram();
   MyShader::AttachVertexShader(floorProgram, floorVertexShader);
@@ -130,6 +132,14 @@ void Game::Restart()
     if(hs0 >= 2 * NEXT_LEVEL_SCORE * NUMBER_OF_LEVELS)
       hs0 = 2 * NEXT_LEVEL_SCORE * NUMBER_OF_LEVELS - 1;
     score = (hs0 - (hs0 % (NEXT_LEVEL_SCORE/2)) - 1) ^ SCORE_XOR_CODE;
+
+    int sls = selectedLevelScore^SCORE_XOR_CODE;
+    if(sls >= 0)
+    {
+      if (sls >= hs0) selectedLevelScore = (-1) ^ SCORE_XOR_CODE;
+      else
+        score = (sls - (sls % (NEXT_LEVEL_SCORE/2)) - 1) ^ SCORE_XOR_CODE;
+    }
   }
 
 //score = 795 ^ SCORE_XOR_CODE;
@@ -216,12 +226,16 @@ void Game::Render()
 {
   if(pause) return;
 
-  if(showMenu)
-    return RenderMenu();
-
   float delta = GetTimeInterval(); if(delta>50000) return; // CPU overload
 
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+  if(showMenu)
+  {
+    RenderMenu(delta);
+    PlayAudio();
+    return;
+  }
 
   float deltaX = delta*H_SPEED*direction;
 
@@ -375,6 +389,9 @@ void Game::GameOver()
   gameOverTime = 0;
   gameOver=1;
   UpdateHighScore();
+  int sls = selectedLevelScore^SCORE_XOR_CODE;
+  if(sls == -1) return;
+  selectedLevelScore = score;
 }
 
 void Game::ChangeLevel()
@@ -612,7 +629,7 @@ void Game::OnNewColumn(Column * c, float cx, int cScore, int cLevel)
     c->MakeSolid();
 }
 
-void Game::RenderMenu()
+void Game::RenderMenu(float delta)
 {
   int i;
   if(yMulValue != verticalMenu)
@@ -647,12 +664,15 @@ void Game::RenderMenu()
     verticalMenu = yMulValue;
   }
 
-  ColumnPreview cp;
-
+  int hs=(highScore ^ SCORE_XOR_CODE) / NEXT_LEVEL_SCORE;
   for (i = 0; i < NUMBER_OF_LEVELS; i++)
   {
-    cp.Render(menu_x[i], menu_y[i], i, yMulValue <= 1);
-    cp.Render(menu_x[NUMBER_OF_LEVELS+i], menu_y[NUMBER_OF_LEVELS+i], NUMBER_OF_LEVELS-i-1, yMulValue <= 1);
+    if(i<=hs) cp.Render(menu_x[i], menu_y[i], i, yMulValue <= 1);
+      else cp.Render(menu_x[i], menu_y[i], 999, yMulValue <= 1);
+    if(i<=NUMBER_OF_LEVELS+hs)
+      cp.Render(menu_x[NUMBER_OF_LEVELS+i], menu_y[NUMBER_OF_LEVELS+i], NUMBER_OF_LEVELS-i-1, yMulValue <= 1);
+    else
+      cp.Render(menu_x[NUMBER_OF_LEVELS+i], menu_y[NUMBER_OF_LEVELS+i], 999, yMulValue <= 1);
   }
 
 //  cp.Render(menu_x[0], menu_y[0], 0, yMulValue <= 1);
@@ -683,8 +703,8 @@ void Game::SelectLevel(float x, float y)
   int ix, iy, newLevel, back;
   if(portrait)
   {
-    iy = round((0.5-y/2)*(NUMBER_OF_LEVELS_Y<<1));
-    ix = round((0.5+x/2)*NUMBER_OF_LEVELS_X);
+    iy = floor((0.5-y/2)*(NUMBER_OF_LEVELS_Y<<1));
+    ix = floor((0.5+x/2)*NUMBER_OF_LEVELS_X);
     if(iy<NUMBER_OF_LEVELS_Y)
     {
       newLevel = iy*NUMBER_OF_LEVELS_X + ix;
@@ -698,8 +718,8 @@ void Game::SelectLevel(float x, float y)
   }
   else
   {
-    iy = round((0.5-y/2)*NUMBER_OF_LEVELS_Y);
-    ix = round((0.5+x/2)*(NUMBER_OF_LEVELS_X<<1));
+    iy = floor((0.5-y/2)*NUMBER_OF_LEVELS_Y);
+    ix = floor((0.5+x/2)*(NUMBER_OF_LEVELS_X<<1));
     if(ix<NUMBER_OF_LEVELS_X)
     {
       newLevel = iy*NUMBER_OF_LEVELS_X + ix;
@@ -712,11 +732,18 @@ void Game::SelectLevel(float x, float y)
     }
   }
 
-  if(!gameOver)
-    gameStarted=1;
+  int s = score ^ SCORE_XOR_CODE;
+  int newLevelScore = NEXT_LEVEL_SCORE * newLevel + back*NEXT_LEVEL_SCORE*NUMBER_OF_LEVELS;
+  if(s%(2*NEXT_LEVEL_SCORE*NUMBER_OF_LEVELS)==newLevelScore%(2*NEXT_LEVEL_SCORE*NUMBER_OF_LEVELS))
+    return;
 
-  score = (NEXT_LEVEL_SCORE * newLevel + back*NEXT_LEVEL_SCORE*NUMBER_OF_LEVELS) ^ SCORE_XOR_CODE;
+  int hs=highScore ^ SCORE_XOR_CODE;
+  if(hs%(2*NEXT_LEVEL_SCORE*NUMBER_OF_LEVELS)==newLevelScore%(2*NEXT_LEVEL_SCORE*NUMBER_OF_LEVELS))
+  {
+    selectedLevelScore = (-1) ^ SCORE_XOR_CODE;
+    return;
+  }
 
-  if(level != newLevel)
-    ChangeLevel();
+  gameOver = gameStarted = 0;
+  selectedLevelScore = newLevelScore ^ SCORE_XOR_CODE;
 }

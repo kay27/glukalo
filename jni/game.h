@@ -159,7 +159,7 @@
       void PrintScore();
       void Tap(float x, float y);
       void Render();
-      void RenderMenu();
+      void RenderMenu(float delta);
       void Resize(int w, int h);
       void Restart();
       void Resume();
@@ -177,6 +177,7 @@
       Icon levelIcon, soundIcon;
       Bonus b;
       Column * bonusColumn;
+      ColumnPreview cp;
       int bonus;
 
       int firstRun, gameStarted, gameOver, gameLooped, scoreRestarted, direction, verticalMenu;
@@ -190,7 +191,7 @@
 
       Column gaps[MAX_COLUMNS];
 
-      int impulse, pause, score, highScore, level, maxLevel, tapFire, showMenu;
+      int impulse, pause, score, highScore, level, maxLevel, tapFire, showMenu, selectedLevelScore;
 
       GLuint vb;
       GLint vPosition, vTextureCoordinate, vColor, vOffset, vEye, vRadius, vMul,

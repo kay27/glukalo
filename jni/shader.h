@@ -166,6 +166,8 @@
     "    gl_FragColor = vec4(0.7,0.7,0.7,1.0);\n"
     "  else if(vLevel<19.1)\n" // :
     "    gl_FragColor = vec4(fract(vp.x*11.39),fract(vp.x*12.37),fract(vp.x*13.44),1.0);\n"
+    "  else if(vLevel<1000.1)\n" // locked:
+    "    gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);\n"
     "}\n"
   ;
 

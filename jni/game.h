@@ -199,6 +199,8 @@
       MyAudio *audio;
 
       Missile m;
+
+      int codePass;
   };
 
 #endif // #ifndef H_GAME_GLUKALO

@@ -21,6 +21,8 @@ Game::Game()
   highScore = MyCallback::GetHighScore();
   if(highScore == -1) highScore = SCORE_XOR_CODE;
 
+  codePass = 0;
+
   Init();
 
   InitAudio();
@@ -681,9 +683,9 @@ void Game::RenderMenu(float delta)
   int hs=(highScore ^ SCORE_XOR_CODE) / NEXT_LEVEL_SCORE;
   for (i = 0; i < NUMBER_OF_LEVELS; i++)
   {
-    if(i<=hs) cp.Render(menu_x[i], menu_y[i], i, yMulValue <= 1);
+    if((i<=hs)||(codePass>=8)) cp.Render(menu_x[i], menu_y[i], i, yMulValue <= 1);
       else cp.Render(menu_x[i], menu_y[i], 999, yMulValue <= 1);
-    if(i+NUMBER_OF_LEVELS<=hs)
+    if((i+NUMBER_OF_LEVELS<=hs)||(codePass>=8))
       cp.Render(menu_x[NUMBER_OF_LEVELS+i], menu_y[NUMBER_OF_LEVELS+i], NUMBER_OF_LEVELS-i-1, yMulValue <= 1);
     else
       cp.Render(menu_x[NUMBER_OF_LEVELS+i], menu_y[NUMBER_OF_LEVELS+i], 999, yMulValue <= 1);
@@ -745,7 +747,15 @@ void Game::SelectLevel(float x, float y)
   int newLevelScore = NEXT_LEVEL_SCORE * newLevel + back*NEXT_LEVEL_SCORE*NUMBER_OF_LEVELS;
 
   if(newLevelScore>hs)
-    return;
+  {
+    if(codePass<8)
+    {
+      if((newLevel == 12-5*back) && ((codePass&1)==back)) codePass++;
+      else codePass = 0;
+      if(codePass==8) MyCallback::Toast(":)");
+      return;
+    }
+  }
 
   if(s%(2*NEXT_LEVEL_SCORE*NUMBER_OF_LEVELS)==newLevelScore%(2*NEXT_LEVEL_SCORE*NUMBER_OF_LEVELS))
   {

@@ -689,8 +689,6 @@ void Game::RenderMenu(float delta)
       cp.Render(menu_x[NUMBER_OF_LEVELS+i], menu_y[NUMBER_OF_LEVELS+i], 999, yMulValue <= 1);
   }
 
-//  cp.Render(menu_x[0], menu_y[0], 0, yMulValue <= 1);
-
   for (i = 0; i < NUMBER_OF_LEVELS; i++)
   {
     float x0=menu_x[i];
@@ -701,13 +699,9 @@ void Game::RenderMenu(float delta)
     PrintNumber(x0, menu_y[NUMBER_OF_LEVELS+i], 1, 1, 1, NUMBER_OF_LEVELS - i);
   }
 
-  for(float q=-0.95;q<0.99;q+=0.1)
-  {
-    if(yMulValue <= 1)
-    {}//  Missile::Render(q, 0);
-    else
+  if(!(yMulValue <= 1))
+    for(float q=-0.95;q<0.99;q+=0.1)
       Missile::Render(0, q);
-  }
 
 }
 
@@ -726,7 +720,6 @@ void Game::SelectLevel(float x, float y)
     }
     else
     {
-//      newLevel = NUMBER_OF_LEVELS - (iy-NUMBER_OF_LEVELS_Y)*NUMBER_OF_LEVELS_X - ix - 1;
       newLevel = (iy-NUMBER_OF_LEVELS_Y)*NUMBER_OF_LEVELS_X + ix;
       back = 1;
     }
@@ -742,7 +735,6 @@ void Game::SelectLevel(float x, float y)
     }
     else
     {
-//      newLevel = NUMBER_OF_LEVELS - iy*NUMBER_OF_LEVELS_X - (ix-NUMBER_OF_LEVELS_X) - 1;
       newLevel = iy*NUMBER_OF_LEVELS_X + (ix-NUMBER_OF_LEVELS_X);
       back = 1;
     }
@@ -761,9 +753,9 @@ void Game::SelectLevel(float x, float y)
     return;
   }
 
-    char msg[200];
-    sprintf(msg, "x%d y%d s%d hs%d nl%d b%d nls%d", ix, iy, s, hs, newLevel, back, newLevelScore);
-    MyCallback::Toast(msg);
+//    char msg[200];
+//    sprintf(msg, "x%d y%d s%d hs%d nl%d b%d nls%d", ix, iy, s, hs, newLevel, back, newLevelScore);
+//    MyCallback::Toast(msg);
 
   if(hs%(2*NEXT_LEVEL_SCORE*NUMBER_OF_LEVELS)==newLevelScore%(2*NEXT_LEVEL_SCORE*NUMBER_OF_LEVELS))
     selectedLevelScore = (-1) ^ SCORE_XOR_CODE;

@@ -17,14 +17,14 @@
   class Icon
   {
     public:
-      static void Init();
+      void Init(const char * vs, const char * fs, float x_, float y_, float state_);
+      void Init(const char * vs, const char * fs, float x_, float y_);
       void Render();
       static void Resize(float newMulValue);
-      static int Tap(float tx, float ty);
+      int Tap(float tx, float ty);
     private:
-      static float x1, x2, y;
-      static GLint progLevel, vPosLevel, vTCLevel, vOffsLevel;
-      static GLint progSound, vPosSound, vTCSound, vOffsSound, vState;
+      float x, y, state;
+      GLint prog, vPos, vTC, vOffs;
       static float vm;
   };
 
@@ -159,12 +159,13 @@
 
     protected:
 
-      Icon icon;
+      Icon levelIcon, soundIcon;
       Bonus b;
       Column * bonusColumn;
       int bonus;
 
-      int firstRun, gameStarted, gameOver, gameLooped, scoreRestarted, direction;
+      int firstRun, gameStarted, gameOver, gameLooped, scoreRestarted, direction, verticalMenu;
+      float menu_x[NUMBER_OF_LEVELS<<1], menu_y[NUMBER_OF_LEVELS<<1];
 
       struct timeval lastTime;
 

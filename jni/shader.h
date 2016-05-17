@@ -21,31 +21,31 @@
 
   static const MyVertex vertices[] =
   {
-    {{   -BIRD_RADIUS*2.0f,   -BIRD_RADIUS*1.5f,  0.0f }, {-2.0f,-1.5f}}, // bird
+    {{   -BIRD_RADIUS*2.0f,   -BIRD_RADIUS*1.5f,  0.0f }, {-2.0f,-1.5f}}, //  0 bird
     {{   -BIRD_RADIUS*2.0f,    BIRD_RADIUS*1.5f,  0.0f }, {-2.0f, 1.5f}},
     {{    BIRD_RADIUS*2.0f,   -BIRD_RADIUS*1.5f,  0.0f }, { 2.0f,-1.5f}},
     {{    BIRD_RADIUS*2.0f,    BIRD_RADIUS*1.5f,  0.0f }, { 2.0f, 1.5f}},
-    {{   -COLUMN_HALFWIDTH,                -1.0,  0.0f }, { 0.0f, 0.0f}}, // gap
+    {{   -COLUMN_HALFWIDTH,                -1.0,  0.0f }, { 0.0f, 0.0f}}, //  4 gap
     {{   -COLUMN_HALFWIDTH,                 1.0,  0.0f }, { 0.0f, 2.0f}},
     {{    COLUMN_HALFWIDTH,                -1.0,  0.0f }, { 2.0f, 0.0f}},
     {{    COLUMN_HALFWIDTH,                 1.0,  0.0f }, { 2.0f, 2.0f}},
-    {{                  -1,                -1.0,  0.0f }, { 0.0f, 0.0f}}, // floor
+    {{                  -1,                -1.0,  0.0f }, { 0.0f, 0.0f}}, //  8 floor
     {{                  -1,      FLOOR_HEIGHT-1,  0.0f }, { 0.0f, 2.0f}},
     {{                   1,                -1.0,  0.0f }, { 2.0f, 0.0f}},
     {{                   1,      FLOOR_HEIGHT-1,  0.0f }, { 2.0f, 2.0f}},
-    {{        -CHAR_HEIGHT,  -CHAR_HEIGHT*0.75f,  0.0f }, {-2.0f,-1.5f}}, // char
+    {{        -CHAR_HEIGHT,  -CHAR_HEIGHT*0.75f,  0.0f }, {-2.0f,-1.5f}}, // 12 char
     {{        -CHAR_HEIGHT,   CHAR_HEIGHT*0.75f,  0.0f }, {-2.0f, 1.5f}},
     {{         CHAR_HEIGHT,  -CHAR_HEIGHT*0.75f,  0.0f }, { 2.0f,-1.5f}},
     {{         CHAR_HEIGHT,   CHAR_HEIGHT*0.75f,  0.0f }, { 2.0f, 1.5f}},
-    {{-MISSILE_RADIUS*2.0f,-MISSILE_RADIUS*1.5f,  0.0f }, {-2.0f,-1.5f}}, // missile
+    {{-MISSILE_RADIUS*2.0f,-MISSILE_RADIUS*1.5f,  0.0f }, {-2.0f,-1.5f}}, // 16 missile
     {{-MISSILE_RADIUS*2.0f, MISSILE_RADIUS*1.5f,  0.0f }, {-2.0f, 1.5f}},
     {{ MISSILE_RADIUS*2.0f,-MISSILE_RADIUS*1.5f,  0.0f }, { 2.0f,-1.5f}},
     {{ MISSILE_RADIUS*2.0f, MISSILE_RADIUS*1.5f,  0.0f }, { 2.0f, 1.5f}},
-    {{  -BONUS_RADIUS*2.0f,  -BONUS_RADIUS*1.5f,  0.0f }, {-2.0f,-1.5f}}, // bonus
+    {{  -BONUS_RADIUS*2.0f,  -BONUS_RADIUS*1.5f,  0.0f }, {-2.0f,-1.5f}}, // 20 bonus
     {{  -BONUS_RADIUS*2.0f,   BONUS_RADIUS*1.5f,  0.0f }, {-2.0f, 1.5f}},
     {{   BONUS_RADIUS*2.0f,  -BONUS_RADIUS*1.5f,  0.0f }, { 2.0f,-1.5f}},
     {{   BONUS_RADIUS*2.0f,   BONUS_RADIUS*1.5f,  0.0f }, { 2.0f, 1.5f}},
-    {{          -ICON_SIZE,    -ICON_SIZE*0.75f,  0.0f }, {-2.0f,-1.5f}}, // icon
+    {{          -ICON_SIZE,    -ICON_SIZE*0.75f,  0.0f }, {-2.0f,-1.5f}}, // 24 icon
     {{          -ICON_SIZE,     ICON_SIZE*0.75f,  0.0f }, {-2.0f, 1.5f}},
     {{           ICON_SIZE,    -ICON_SIZE*0.75f,  0.0f }, { 2.0f,-1.5f}},
     {{           ICON_SIZE,     ICON_SIZE*0.75f,  0.0f }, { 2.0f, 1.5f}},
@@ -389,9 +389,11 @@
     "varying vec4 vp;\n"
     "varying vec2 tc;\n"
     "varying float vMul;\n"
+    "varying float vState;\n"
     "void main()\n"
     "{\n"
     "  vMul = vOffs.z;\n"
+    "  vState = vOffs.w;\n"
     "  gl_Position = vec4(vPos.xy + vOffs.xy, vPos.zw);\n"
     "  vp = vPos;\n"
     "  tc = vTC.xy;\n"
@@ -403,6 +405,7 @@
     "varying vec4 vp;\n"
     "varying vec2 tc;\n"
     "varying float vMul;\n"
+    "varying float vState;\n"
     "void main()\n"
     "{\n"
     "  vec2 p = vec2(tc.x*vMul, tc.y);\n"
@@ -433,10 +436,10 @@
 
   static const char * iconSoundFragmentShader =
     "precision mediump float;\n"
-    "uniform int vState;\n"
     "varying vec4 vp;\n"
     "varying vec2 tc;\n"
     "varying float vMul;\n"
+    "varying float vState;\n"
     "void main()\n"
     "{\n"
     "  vec2 p = vec2(tc.x*vMul, tc.y);\n"
@@ -446,7 +449,7 @@
     "  }\n"
     "  else if( (p.x>-0.2) && (p.x<0.6) && (abs(p.y)-0.75*p.x < 0.55) )\n"
     "  {\n"                                                              //diffuser
-    "    if(vState==1) gl_FragColor = vec4(0.7, abs(sin(tc.x*tc.y*4.9))*0.6, abs(sin(tc.x*tc.y*5.9))*0.6, 1.0);\n"
+    "    if(vState>0.5) gl_FragColor = vec4(0.7, abs(sin(tc.x*tc.y*4.9))*0.6, abs(sin(tc.x*tc.y*5.9))*0.6, 1.0);\n"
     "    else gl_FragColor = vec4(0.9, 0.6, 0.6, 0.7);\n"
     "  }\n"
     "  else if( (abs(p.x)>1.0) || (abs(p.y)>1.0) ) discard;\n"

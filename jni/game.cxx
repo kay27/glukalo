@@ -2,6 +2,8 @@
 
 Game::Game()
 {
+  verticalMenu = -1;
+
   firstRun = 1;
 
   yMulValue = 1;
@@ -68,7 +70,8 @@ void Game::Init()
   Column::Init();
   Missile::Init();
   Bonus::Init();
-  Icon::Init();
+  levelIcon.Init(iconVertexShader, iconLevelFragmentShader, -ICON_SIZE-ICON_SIZE/4, -1+ICON_SIZE/2);
+  soundIcon.Init(iconVertexShader, iconSoundFragmentShader,  0+ICON_SIZE/4, -1+ICON_SIZE/2, 1);
 
   floorProgram = MyShader::CreateProgram();
   MyShader::AttachVertexShader(floorProgram, floorVertexShader);
@@ -186,16 +189,16 @@ void Game::Tap(float x, float y)
 {
   if(showMenu) { showMenu = 0; return; }
 
-  if(int i = icon.Tap(x, y))
+  if(levelIcon.Tap(x, y))
   {
-    if(i == 1) showMenu = 1;
-    else if(i == 2) MyCallback::Toast("Mute sound");
+    showMenu = 1;
     return;
   }
-
-//  char msg[64];
-//  sprintf(msg, "x=%f, y=%f", x, y);
-//  MyCallback::Toast(msg);
+  else if(soundIcon.Tap(x, y))
+  {
+    MyCallback::Toast("Mute sound");
+    return;
+  }
 
   impulse = 1;
 
@@ -306,7 +309,8 @@ void Game::Render()
     glUniform4f(vFloorOffset, floorOffset, yMulValue, 0, 0);
   glDrawArrays(GL_TRIANGLE_STRIP, 8, 4);
 
-  icon.Render();
+  levelIcon.Render();
+  soundIcon.Render();
 
   PrintScore();
 
@@ -610,37 +614,39 @@ void Game::OnNewColumn(Column * c, float cx, int cScore, int cLevel)
 void Game::RenderMenu()
 {
   int i, vertical = vMul >= 1;
-  float x[NUMBER_OF_LEVELS<<1], y[NUMBER_OF_LEVELS<<1];
-  if(vertical) //fixme CACHE IT!!! (always check vertical)
+  if(vertical != verticalMenu)
   {
-    for (i = 0; i < NUMBER_OF_LEVELS; i++)
+    if(vertical)
     {
-      x[i] = ((i % (NUMBER_OF_LEVELS_X)) / NUMBER_OF_LEVELS_X + 0.5/NUMBER_OF_LEVELS_X - 0.5) * 2;
-      y[i] = - ((i / NUMBER_OF_LEVELS_X) / (NUMBER_OF_LEVELS_Y<<1) + 0.5/(NUMBER_OF_LEVELS_Y<<1) - 0.5) * 2;
+      for (i = 0; i < NUMBER_OF_LEVELS; i++)
+      {
+        menu_x[i] = (float((i % (NUMBER_OF_LEVELS_X)) / NUMBER_OF_LEVELS_X) + 0.5/NUMBER_OF_LEVELS_X - 0.5) * 2;
+        menu_y[i] = - (float((i / NUMBER_OF_LEVELS_X) / (NUMBER_OF_LEVELS_Y<<1)) + 0.5/(NUMBER_OF_LEVELS_Y<<1) - 0.5) * 2;
+      }
+      for (i = 0; i < NUMBER_OF_LEVELS; i++)
+      {
+        menu_x[i+NUMBER_OF_LEVELS] = menu_x[i];
+        menu_y[i+NUMBER_OF_LEVELS] = menu_y[i]+0.5;
+      }
     }
-    for (i = 0; i < NUMBER_OF_LEVELS; i++)
+    else
     {
-      x[i+NUMBER_OF_LEVELS] = x[i];
-      y[i+NUMBER_OF_LEVELS] = y[i]+0.5;
-    }
-  }
-  else
-  {
-    for (i = 0; i < NUMBER_OF_LEVELS; i++)
-    {
-      x[i] = ((i % (NUMBER_OF_LEVELS_X)) / (NUMBER_OF_LEVELS_X<<1) + 0.5/(NUMBER_OF_LEVELS_X<<1) - 0.5) * 2;
-      y[i] = - ((i / NUMBER_OF_LEVELS_X) / NUMBER_OF_LEVELS_Y + 0.5/NUMBER_OF_LEVELS_Y - 0.5) * 2;
-    }
-    for (i = 0; i < NUMBER_OF_LEVELS; i++)
-    {
-      x[i+NUMBER_OF_LEVELS] = x[i]+0.5;
-      y[i+NUMBER_OF_LEVELS] = y[i];
+      for (i = 0; i < NUMBER_OF_LEVELS; i++)
+      {
+        menu_x[i] = (float((i % (NUMBER_OF_LEVELS_X)) / (NUMBER_OF_LEVELS_X<<1)) + 0.5/(NUMBER_OF_LEVELS_X<<1) - 0.5) * 2;
+        menu_y[i] = - (float((i / NUMBER_OF_LEVELS_X) / NUMBER_OF_LEVELS_Y) + 0.5/NUMBER_OF_LEVELS_Y - 0.5) * 2;
+      }
+      for (i = 0; i < NUMBER_OF_LEVELS; i++)
+      {
+        menu_x[i+NUMBER_OF_LEVELS] = menu_x[i]+0.5;
+        menu_y[i+NUMBER_OF_LEVELS] = menu_y[i];
+      }
     }
   }
 
   for (i = 0; i < NUMBER_OF_LEVELS; i++)
   {
-    PrintNumber(x[i], y[i], 1, 1, 1, i + 1);
+    PrintNumber(menu_x[i], menu_y[i], 1, 1, 1, i + 1);
   }
 
 }

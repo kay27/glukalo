@@ -96,6 +96,17 @@
     "}\n"
   ;
 
+  static const char * gapBoxVertexShader =
+    "attribute vec4 vPosition;\n"
+    "uniform vec4 vOffs;\n"
+    "varying vec4 vp;\n"
+    "void main()\n"
+    "{\n"
+    "  gl_Position = vPosition + vOffs;\n"
+    "  vp = vPosition;\n"
+    "}\n"
+  ;
+
   static const char * gapFragmentShader =
     "precision mediump float;\n"
     "uniform float vGap;\n"

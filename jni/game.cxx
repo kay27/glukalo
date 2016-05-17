@@ -613,40 +613,45 @@ void Game::OnNewColumn(Column * c, float cx, int cScore, int cLevel)
 
 void Game::RenderMenu()
 {
-  int i, vertical = vMul >= 1;
-  if(vertical != verticalMenu)
+  int i;
+  if(yMulValue != verticalMenu)
   {
-    if(vertical)
+    if(yMulValue <= 1) //portrait
     {
       for (i = 0; i < NUMBER_OF_LEVELS; i++)
       {
-        menu_x[i] = (float((i % (NUMBER_OF_LEVELS_X)) / NUMBER_OF_LEVELS_X) + 0.5/NUMBER_OF_LEVELS_X - 0.5) * 2;
-        menu_y[i] = - (float((i / NUMBER_OF_LEVELS_X) / (NUMBER_OF_LEVELS_Y<<1)) + 0.5/(NUMBER_OF_LEVELS_Y<<1) - 0.5) * 2;
+
+        menu_x[i] =  ( ((float)(i % NUMBER_OF_LEVELS_X)) /  NUMBER_OF_LEVELS_X     + 0.5f/ NUMBER_OF_LEVELS_X     - 0.5f ) * 2.0f;
+        menu_y[i] = -( ((float)(i / NUMBER_OF_LEVELS_X)) / (NUMBER_OF_LEVELS_Y<<1) + 0.5f/(NUMBER_OF_LEVELS_Y<<1) - 0.5f ) * 2.0f;
       }
       for (i = 0; i < NUMBER_OF_LEVELS; i++)
       {
         menu_x[i+NUMBER_OF_LEVELS] = menu_x[i];
-        menu_y[i+NUMBER_OF_LEVELS] = menu_y[i]+0.5;
+        menu_y[i+NUMBER_OF_LEVELS] = menu_y[i] + 0.5;
       }
     }
-    else
+    else //landscape
     {
       for (i = 0; i < NUMBER_OF_LEVELS; i++)
       {
-        menu_x[i] = (float((i % (NUMBER_OF_LEVELS_X)) / (NUMBER_OF_LEVELS_X<<1)) + 0.5/(NUMBER_OF_LEVELS_X<<1) - 0.5) * 2;
-        menu_y[i] = - (float((i / NUMBER_OF_LEVELS_X) / NUMBER_OF_LEVELS_Y) + 0.5/NUMBER_OF_LEVELS_Y - 0.5) * 2;
+        menu_x[i] =  ( ((float)(i % NUMBER_OF_LEVELS_X)) / (NUMBER_OF_LEVELS_X<<1) + 0.5f/(NUMBER_OF_LEVELS_X<<1) - 0.5f ) * 2.0f;
+        menu_y[i] = -( ((float)(i / NUMBER_OF_LEVELS_X)) /  NUMBER_OF_LEVELS_Y     + 0.5f/ NUMBER_OF_LEVELS_Y     - 0.5f ) * 2.0f;
       }
       for (i = 0; i < NUMBER_OF_LEVELS; i++)
       {
-        menu_x[i+NUMBER_OF_LEVELS] = menu_x[i]+0.5;
+        menu_x[i+NUMBER_OF_LEVELS] = menu_x[i] + 0.5;
         menu_y[i+NUMBER_OF_LEVELS] = menu_y[i];
       }
     }
+    verticalMenu = yMulValue;
   }
 
+  Column c;
   for (i = 0; i < NUMBER_OF_LEVELS; i++)
   {
+    c.Restart(menu_x[i], menu_y[i], 1, 1, 1, i + 1);
     PrintNumber(menu_x[i], menu_y[i], 1, 1, 1, i + 1);
+    PrintNumber(menu_x[NUMBER_OF_LEVELS+i], menu_y[NUMBER_OF_LEVELS+i], 1, 1, 1, NUMBER_OF_LEVELS - i);
   }
 
 }

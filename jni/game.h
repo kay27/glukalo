@@ -95,6 +95,8 @@
 
       void Render();
 
+      void RenderBox();
+
       void Restart(float x_, int score_);
 
       void Restart(float x_, int score_, int level_);

@@ -146,6 +146,16 @@ void Column::Render()
   glDrawArrays(GL_TRIANGLE_STRIP, 4, 4);
 }
 
+void Column::RenderBox()
+{
+  glUseProgram(gapProgram);
+  glUniform1f(vLevel, level);
+  glUniform1f(vOffsetX, x);
+  glUniform1f(vGap, y);
+  glUniform1f(vHalfSize, halfSize);
+  glDrawArrays(GL_TRIANGLE_STRIP, 24, 4);
+}
+
 void Column::Init()
 {
   gapProgram = MyShader::CreateProgram();

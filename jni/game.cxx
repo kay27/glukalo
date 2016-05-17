@@ -4,6 +4,8 @@ int Game::blockMode = 0;
 
 Game::Game()
 {
+  blockMode = 0;
+
   verticalMenu = -1;
 
   firstRun = 1;
@@ -228,13 +230,13 @@ inline void Game::Untap()
 
 void Game::Render()
 {
-  if(blockMode == 2) Restart();
+  if(blockMode == 2) { blockMode = 3; Restart(); }
   if(blockMode != 1) return;
 
   if(pause) return;
 
   float delta = GetTimeInterval();
-  bool cpu_overload = delta > 50000;
+  bool cpu_overload = delta > 100000;
 
   if(showMenu || (!cpu_overload))
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -759,18 +761,15 @@ void Game::SelectLevel(float x, float y)
     return;
   }
 
-//    char msg[200];
-//    sprintf(msg, "x%d y%d s%d hs%d nl%d b%d nls%d", ix, iy, s, hs, newLevel, back, newLevelScore);
-//    MyCallback::Toast(msg);
+    char msg[200];
+    sprintf(msg, "x%d y%d s%d hs%d nl%d b%d nls%d", ix, iy, s, hs, newLevel, back, newLevelScore);
+    MyCallback::Toast(msg);
 
   if(hs%(2*NEXT_LEVEL_SCORE*NUMBER_OF_LEVELS)==newLevelScore%(2*NEXT_LEVEL_SCORE*NUMBER_OF_LEVELS))
-  {
     selectedLevelScore = (-1) ^ SCORE_XOR_CODE;
-    showMenu=0;
-    return;
-  }
+  else
+    selectedLevelScore = newLevelScore ^ SCORE_XOR_CODE;
 
-  selectedLevelScore = newLevelScore ^ SCORE_XOR_CODE;
   blockMode = 2;
   showMenu=0;
 }

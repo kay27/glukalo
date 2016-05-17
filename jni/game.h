@@ -174,6 +174,8 @@
 
     protected:
 
+      static int blockMode;
+
       Icon levelIcon, soundIcon;
       Bonus b;
       Column * bonusColumn;

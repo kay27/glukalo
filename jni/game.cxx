@@ -1,5 +1,7 @@
 #include "game.h"
 
+int Game::blockMode = 0;
+
 Game::Game()
 {
   verticalMenu = -1;
@@ -108,7 +110,7 @@ void Game::Init()
 
   glClearColor(0.0, 0.0, 0.0, 1.0);
 
-  Restart();
+  blockMode = 2;
 }
 
 void Game::Restart()
@@ -162,6 +164,8 @@ void Game::Restart()
   glUseProgram(0);
 
   gettimeofday(&lastTime, NULL);
+
+  blockMode = 1;
 }
 
 void Game::Pause()
@@ -198,7 +202,7 @@ void Game::Resize(int w, int h)
 
 void Game::Tap(float x, float y)
 {
-  if(showMenu) { showMenu=0; SelectLevel(x, y); return; }
+  if(showMenu) { SelectLevel(x, y); return; }
 
   if(levelIcon.Tap(x, y))
   {
@@ -224,10 +228,15 @@ inline void Game::Untap()
 
 void Game::Render()
 {
+  if(blockMode == 2) Restart();
+  if(blockMode != 1) return;
+
   if(pause) return;
 
-  float delta = GetTimeInterval(); if(delta>50000) return; // CPU overload
+  float delta = GetTimeInterval();
+  bool cpu_overload = delta > 50000;
 
+  if(showMenu || (!cpu_overload))
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   if(showMenu)
@@ -236,6 +245,8 @@ void Game::Render()
     PlayAudio();
     return;
   }
+
+  if(cpu_overload) return;
 
   float deltaX = delta*H_SPEED*direction;
 
@@ -305,7 +316,7 @@ void Game::Render()
     {
       glClearColor(0.0, 0.0, 0.0, 1.0);
       deltaGameOver = 1.0;
-      Restart();
+      blockMode = 2;
     }
     else glClearColor((1.0-deltaGameOver)/1.2, 0.0, 0.0, 1.0);
     glUniform1f(vRadius,deltaGameOver);
@@ -631,6 +642,7 @@ void Game::OnNewColumn(Column * c, float cx, int cScore, int cLevel)
 
 void Game::RenderMenu(float delta)
 {
+  glClearColor(0.0, 0.0, 0.0, 1.0);
   int i;
   if(yMulValue != verticalMenu)
   {
@@ -669,7 +681,7 @@ void Game::RenderMenu(float delta)
   {
     if(i<=hs) cp.Render(menu_x[i], menu_y[i], i, yMulValue <= 1);
       else cp.Render(menu_x[i], menu_y[i], 999, yMulValue <= 1);
-    if(i<=NUMBER_OF_LEVELS+hs)
+    if(i+NUMBER_OF_LEVELS<=hs)
       cp.Render(menu_x[NUMBER_OF_LEVELS+i], menu_y[NUMBER_OF_LEVELS+i], NUMBER_OF_LEVELS-i-1, yMulValue <= 1);
     else
       cp.Render(menu_x[NUMBER_OF_LEVELS+i], menu_y[NUMBER_OF_LEVELS+i], 999, yMulValue <= 1);
@@ -712,7 +724,8 @@ void Game::SelectLevel(float x, float y)
     }
     else
     {
-      newLevel = NUMBER_OF_LEVELS - (iy-NUMBER_OF_LEVELS_Y)*NUMBER_OF_LEVELS_X - ix - 1;
+//      newLevel = NUMBER_OF_LEVELS - (iy-NUMBER_OF_LEVELS_Y)*NUMBER_OF_LEVELS_X - ix - 1;
+      newLevel = (iy-NUMBER_OF_LEVELS_Y)*NUMBER_OF_LEVELS_X + ix;
       back = 1;
     }
   }
@@ -727,23 +740,37 @@ void Game::SelectLevel(float x, float y)
     }
     else
     {
-      newLevel = NUMBER_OF_LEVELS - iy*NUMBER_OF_LEVELS_X - (ix-NUMBER_OF_LEVELS_X) - 1;
+//      newLevel = NUMBER_OF_LEVELS - iy*NUMBER_OF_LEVELS_X - (ix-NUMBER_OF_LEVELS_X) - 1;
+      newLevel = iy*NUMBER_OF_LEVELS_X + (ix-NUMBER_OF_LEVELS_X);
       back = 1;
     }
   }
 
-  int s = score ^ SCORE_XOR_CODE;
+  int s  = score ^ SCORE_XOR_CODE;
+  int hs = highScore ^ SCORE_XOR_CODE;
   int newLevelScore = NEXT_LEVEL_SCORE * newLevel + back*NEXT_LEVEL_SCORE*NUMBER_OF_LEVELS;
-  if(s%(2*NEXT_LEVEL_SCORE*NUMBER_OF_LEVELS)==newLevelScore%(2*NEXT_LEVEL_SCORE*NUMBER_OF_LEVELS))
+
+  if(newLevelScore>hs)
     return;
 
-  int hs=highScore ^ SCORE_XOR_CODE;
-  if(hs%(2*NEXT_LEVEL_SCORE*NUMBER_OF_LEVELS)==newLevelScore%(2*NEXT_LEVEL_SCORE*NUMBER_OF_LEVELS))
+  if(s%(2*NEXT_LEVEL_SCORE*NUMBER_OF_LEVELS)==newLevelScore%(2*NEXT_LEVEL_SCORE*NUMBER_OF_LEVELS))
   {
-    selectedLevelScore = (-1) ^ SCORE_XOR_CODE;
+    showMenu=0;
     return;
   }
 
-  gameOver = gameStarted = 0;
+//    char msg[200];
+//    sprintf(msg, "x%d y%d s%d hs%d nl%d b%d nls%d", ix, iy, s, hs, newLevel, back, newLevelScore);
+//    MyCallback::Toast(msg);
+
+  if(hs%(2*NEXT_LEVEL_SCORE*NUMBER_OF_LEVELS)==newLevelScore%(2*NEXT_LEVEL_SCORE*NUMBER_OF_LEVELS))
+  {
+    selectedLevelScore = (-1) ^ SCORE_XOR_CODE;
+    showMenu=0;
+    return;
+  }
+
   selectedLevelScore = newLevelScore ^ SCORE_XOR_CODE;
+  blockMode = 2;
+  showMenu=0;
 }

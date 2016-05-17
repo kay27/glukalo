@@ -14,6 +14,17 @@
 # include "sound.h"
 # include "system.h"
 
+  class ColumnPreview
+  {
+    public:
+      static void Init();
+
+      void Render(float x, float y, int level, bool portrait);
+
+    private:
+      static GLint gapProgram, vGapPosition, vGapTextureCoordinate, vGap, vOffs, vHalfSize, vLevel;
+  };
+
   class Icon
   {
     public:

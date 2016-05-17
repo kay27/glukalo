@@ -21,34 +21,42 @@
 
   static const MyVertex vertices[] =
   {
-    {{   -BIRD_RADIUS*2.0f,   -BIRD_RADIUS*1.5f,  0.0f }, {-2.0f,-1.5f}}, //  0 bird
-    {{   -BIRD_RADIUS*2.0f,    BIRD_RADIUS*1.5f,  0.0f }, {-2.0f, 1.5f}},
-    {{    BIRD_RADIUS*2.0f,   -BIRD_RADIUS*1.5f,  0.0f }, { 2.0f,-1.5f}},
-    {{    BIRD_RADIUS*2.0f,    BIRD_RADIUS*1.5f,  0.0f }, { 2.0f, 1.5f}},
-    {{   -COLUMN_HALFWIDTH,                -1.0,  0.0f }, { 0.0f, 0.0f}}, //  4 gap
-    {{   -COLUMN_HALFWIDTH,                 1.0,  0.0f }, { 0.0f, 2.0f}},
-    {{    COLUMN_HALFWIDTH,                -1.0,  0.0f }, { 2.0f, 0.0f}},
-    {{    COLUMN_HALFWIDTH,                 1.0,  0.0f }, { 2.0f, 2.0f}},
-    {{                  -1,                -1.0,  0.0f }, { 0.0f, 0.0f}}, //  8 floor
-    {{                  -1,      FLOOR_HEIGHT-1,  0.0f }, { 0.0f, 2.0f}},
-    {{                   1,                -1.0,  0.0f }, { 2.0f, 0.0f}},
-    {{                   1,      FLOOR_HEIGHT-1,  0.0f }, { 2.0f, 2.0f}},
-    {{        -CHAR_HEIGHT,  -CHAR_HEIGHT*0.75f,  0.0f }, {-2.0f,-1.5f}}, // 12 char
-    {{        -CHAR_HEIGHT,   CHAR_HEIGHT*0.75f,  0.0f }, {-2.0f, 1.5f}},
-    {{         CHAR_HEIGHT,  -CHAR_HEIGHT*0.75f,  0.0f }, { 2.0f,-1.5f}},
-    {{         CHAR_HEIGHT,   CHAR_HEIGHT*0.75f,  0.0f }, { 2.0f, 1.5f}},
-    {{-MISSILE_RADIUS*2.0f,-MISSILE_RADIUS*1.5f,  0.0f }, {-2.0f,-1.5f}}, // 16 missile
-    {{-MISSILE_RADIUS*2.0f, MISSILE_RADIUS*1.5f,  0.0f }, {-2.0f, 1.5f}},
-    {{ MISSILE_RADIUS*2.0f,-MISSILE_RADIUS*1.5f,  0.0f }, { 2.0f,-1.5f}},
-    {{ MISSILE_RADIUS*2.0f, MISSILE_RADIUS*1.5f,  0.0f }, { 2.0f, 1.5f}},
-    {{  -BONUS_RADIUS*2.0f,  -BONUS_RADIUS*1.5f,  0.0f }, {-2.0f,-1.5f}}, // 20 bonus
-    {{  -BONUS_RADIUS*2.0f,   BONUS_RADIUS*1.5f,  0.0f }, {-2.0f, 1.5f}},
-    {{   BONUS_RADIUS*2.0f,  -BONUS_RADIUS*1.5f,  0.0f }, { 2.0f,-1.5f}},
-    {{   BONUS_RADIUS*2.0f,   BONUS_RADIUS*1.5f,  0.0f }, { 2.0f, 1.5f}},
-    {{          -ICON_SIZE,    -ICON_SIZE*0.75f,  0.0f }, {-2.0f,-1.5f}}, // 24 icon
-    {{          -ICON_SIZE,     ICON_SIZE*0.75f,  0.0f }, {-2.0f, 1.5f}},
-    {{           ICON_SIZE,    -ICON_SIZE*0.75f,  0.0f }, { 2.0f,-1.5f}},
-    {{           ICON_SIZE,     ICON_SIZE*0.75f,  0.0f }, { 2.0f, 1.5f}},
+    {{   -BIRD_RADIUS*2.0f,   -BIRD_RADIUS*1.5f,  0.0f   }, {-2.0f,-1.5f}}, //  0 bird
+    {{   -BIRD_RADIUS*2.0f,    BIRD_RADIUS*1.5f,  0.0f   }, {-2.0f, 1.5f}},
+    {{    BIRD_RADIUS*2.0f,   -BIRD_RADIUS*1.5f,  0.0f   }, { 2.0f,-1.5f}},
+    {{    BIRD_RADIUS*2.0f,    BIRD_RADIUS*1.5f,  0.0f   }, { 2.0f, 1.5f}},
+    {{   -COLUMN_HALFWIDTH,                -1.0,  0.0f   }, { 0.0f, 0.0f}}, //  4 gap
+    {{   -COLUMN_HALFWIDTH,                 1.0,  0.0f   }, { 0.0f, 2.0f}},
+    {{    COLUMN_HALFWIDTH,                -1.0,  0.0f   }, { 2.0f, 0.0f}},
+    {{    COLUMN_HALFWIDTH,                 1.0,  0.0f   }, { 2.0f, 2.0f}},
+    {{                  -1,                -1.0,  0.0f   }, { 0.0f, 0.0f}}, //  8 floor
+    {{                  -1,      FLOOR_HEIGHT-1,  0.0f   }, { 0.0f, 2.0f}},
+    {{                   1,                -1.0,  0.0f   }, { 2.0f, 0.0f}},
+    {{                   1,      FLOOR_HEIGHT-1,  0.0f   }, { 2.0f, 2.0f}},
+    {{        -CHAR_HEIGHT,  -CHAR_HEIGHT*0.75f,  0.0f   }, {-2.0f,-1.5f}}, // 12 char
+    {{        -CHAR_HEIGHT,   CHAR_HEIGHT*0.75f,  0.0f   }, {-2.0f, 1.5f}},
+    {{         CHAR_HEIGHT,  -CHAR_HEIGHT*0.75f,  0.0f   }, { 2.0f,-1.5f}},
+    {{         CHAR_HEIGHT,   CHAR_HEIGHT*0.75f,  0.0f   }, { 2.0f, 1.5f}},
+    {{-MISSILE_RADIUS*2.0f,-MISSILE_RADIUS*1.5f,  0.0f   }, {-2.0f,-1.5f}}, // 16 missile
+    {{-MISSILE_RADIUS*2.0f, MISSILE_RADIUS*1.5f,  0.0f   }, {-2.0f, 1.5f}},
+    {{ MISSILE_RADIUS*2.0f,-MISSILE_RADIUS*1.5f,  0.0f   }, { 2.0f,-1.5f}},
+    {{ MISSILE_RADIUS*2.0f, MISSILE_RADIUS*1.5f,  0.0f   }, { 2.0f, 1.5f}},
+    {{  -BONUS_RADIUS*2.0f,  -BONUS_RADIUS*1.5f,  0.0f   }, {-2.0f,-1.5f}}, // 20 bonus
+    {{  -BONUS_RADIUS*2.0f,   BONUS_RADIUS*1.5f,  0.0f   }, {-2.0f, 1.5f}},
+    {{   BONUS_RADIUS*2.0f,  -BONUS_RADIUS*1.5f,  0.0f   }, { 2.0f,-1.5f}},
+    {{   BONUS_RADIUS*2.0f,   BONUS_RADIUS*1.5f,  0.0f   }, { 2.0f, 1.5f}},
+    {{          -ICON_SIZE,    -ICON_SIZE*0.75f,  0.0f   }, {-2.0f,-1.5f}}, // 24 icon
+    {{          -ICON_SIZE,     ICON_SIZE*0.75f,  0.0f   }, {-2.0f, 1.5f}},
+    {{           ICON_SIZE,    -ICON_SIZE*0.75f,  0.0f   }, { 2.0f,-1.5f}},
+    {{           ICON_SIZE,     ICON_SIZE*0.75f,  0.0f   }, { 2.0f, 1.5f}},
+    {{-1.0/NUMBER_OF_LEVELS_X,-0.5/NUMBER_OF_LEVELS_Y,0.0f},{-1.0f,-1.0f}}, // 28 portrait level selection
+    {{-1.0/NUMBER_OF_LEVELS_X, 0.5/NUMBER_OF_LEVELS_Y,0.0f},{-1.0f, 1.0f}},
+    {{ 1.0/NUMBER_OF_LEVELS_X,-0.5/NUMBER_OF_LEVELS_Y,0.0f},{ 1.0f,-1.0f}},
+    {{ 1.0/NUMBER_OF_LEVELS_X, 0.5/NUMBER_OF_LEVELS_Y,0.0f},{ 1.0f, 1.0f}},
+    {{-0.5/NUMBER_OF_LEVELS_X,-1.0/NUMBER_OF_LEVELS_Y,0.0f},{-1.0f,-1.0f}}, // 32 landscape level selection
+    {{-0.5/NUMBER_OF_LEVELS_X, 1.0/NUMBER_OF_LEVELS_Y,0.0f},{-1.0f, 1.0f}},
+    {{ 0.5/NUMBER_OF_LEVELS_X,-1.0/NUMBER_OF_LEVELS_Y,0.0f},{ 1.0f,-1.0f}},
+    {{ 0.5/NUMBER_OF_LEVELS_X, 1.0/NUMBER_OF_LEVELS_Y,0.0f},{ 1.0f, 1.0f}},
   };
 
   static const char * birdVertexShader =
@@ -178,11 +186,6 @@
     "void main()\n"
     "{\n"
     "  float x=vp.x+vOM.x;\n"
-//    "  gl_FragColor = vec4(fract(x*vOM.y+vp.y*11.3)*0.9, fract(x*vOM.y*4.0+vp.y*11.9)*0.6, fract(x*2.0*vOM.y+vp.y*12.19)*0.2, 1.0);\n"
-//    "  gl_FragColor = vec4(fract(x*vOM.y+vp.y*11.3+sin(x*4.0*vOM.y*2.0*3.14159265))*0.9, 0.0, fract(x*2.0*vOM.y+vp.y*12.19)*0.2, 1.0);\n"
-//    "  gl_FragColor = vec4(fract(vp.y*11.3+sin(x*4.0*vOM.y*2.0*3.14159265))*0.9, 0.0, fract(x*2.0*vOM.y+vp.y*12.19)*0.2, 1.0);\n"
-//    "  if(vOM.z < 0.9) gl_FragColor = vec4(fract(vp.y*11.3+sin(x*4.0*vOM.y*2.0*3.14159265))*0.9, 0.0, 0.0, 1.0);\n"
-//    "  else gl_FragColor = vec4(fract(vp.y*11.3+sin(x*4.0*vOM.y*2.0*3.14159265))*0.6, 0.0, fract(sin(x*32.0*vOM.y*2.0*3.14159265)*29.1)*0.8, 1.0);\n"
     "  float q = fract(vp.y*11.3+sin(x*4.0*vOM.y*2.0*3.14159265));\n"
     "  if(vOM.z < 0.9) gl_FragColor = vec4(q*0.8, q*0.2, q*0.19, 1.0);\n"
     "  else gl_FragColor = vec4((1.0-q)*0.2, q*0.2, q*fract(sin(x*32.0*vOM.y*2.0*3.14159265)*29.1), 1.0);\n"

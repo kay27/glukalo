@@ -7,6 +7,7 @@ LOCAL_MODULE := glukalo
 LOCAL_SRC_FILES := \
   bonus.cxx \
   column.cxx \
+  column_preview.cxx \
   game.cxx \
   game_audio.cxx \
   icon.cxx \

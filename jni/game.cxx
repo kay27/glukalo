@@ -70,6 +70,7 @@ void Game::Init()
   Column::Init();
   Missile::Init();
   Bonus::Init();
+  ColumnPreview::Init();
   levelIcon.Init(iconVertexShader, iconLevelFragmentShader, -ICON_SIZE-ICON_SIZE/4, -1+ICON_SIZE/2);
   soundIcon.Init(iconVertexShader, iconSoundFragmentShader,  0+ICON_SIZE/4, -1+ICON_SIZE/2, 1);
 
@@ -627,7 +628,7 @@ void Game::RenderMenu()
       for (i = 0; i < NUMBER_OF_LEVELS; i++)
       {
         menu_x[i+NUMBER_OF_LEVELS] = menu_x[i];
-        menu_y[i+NUMBER_OF_LEVELS] = menu_y[i] + 0.5;
+        menu_y[i+NUMBER_OF_LEVELS] = menu_y[i] + 1;
       }
     }
     else //landscape
@@ -639,17 +640,25 @@ void Game::RenderMenu()
       }
       for (i = 0; i < NUMBER_OF_LEVELS; i++)
       {
-        menu_x[i+NUMBER_OF_LEVELS] = menu_x[i] + 0.5;
+        menu_x[i+NUMBER_OF_LEVELS] = menu_x[i] + 1;
         menu_y[i+NUMBER_OF_LEVELS] = menu_y[i];
       }
     }
     verticalMenu = yMulValue;
   }
 
-  Column c;
+  ColumnPreview cp;
+/*
   for (i = 0; i < NUMBER_OF_LEVELS; i++)
   {
-    c.Restart(menu_x[i], menu_y[i], 1, 1, 1, i + 1);
+    cp.Render(menu_x[i], menu_y[i], i, yMulValue <= 1);
+    cp.Render(menu_x[NUMBER_OF_LEVELS+i], menu_y[NUMBER_OF_LEVELS+i], NUMBER_OF_LEVELS-i, yMulValue <= 1);
+  }
+*/
+  cp.Render(menu_x[0], menu_y[0], 0, yMulValue <= 1);
+
+  for (i = 0; i < NUMBER_OF_LEVELS; i++)
+  {
     PrintNumber(menu_x[i], menu_y[i], 1, 1, 1, i + 1);
     PrintNumber(menu_x[NUMBER_OF_LEVELS+i], menu_y[NUMBER_OF_LEVELS+i], 1, 1, 1, NUMBER_OF_LEVELS - i);
   }

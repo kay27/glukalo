@@ -41,5 +41,5 @@ void Icon::Resize(float newMulValue)
 
 int Icon::Tap(float tx, float ty)
 {
-  return (tx>=x-ICON_SIZE) && (tx<=x+ICON_SIZE) && (ty>=y-ICON_SIZE) && (ty<=y+ICON_SIZE);
+  return (tx>=x-ICON_SIZE/vm/2) && (tx<=x+ICON_SIZE/vm/2) && (ty>=y-ICON_SIZE/2) && (ty<=y+ICON_SIZE/2);
 }

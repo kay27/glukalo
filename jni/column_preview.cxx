@@ -13,8 +13,8 @@ void ColumnPreview::Render(float x, float y, int level, bool portrait)
   glUseProgram(gapProgram);
   glUniform1f(vLevel, level);
   glUniform4f(vOffs, x, y, 0, 0);
-  glUniform1f(vGap, RandFloat());
-  glUniform1f(vHalfSize, 0.2);
+  glUniform1f(vGap, sin(x*y*13)*0.1);
+  glUniform1f(vHalfSize, 0.03+0.02*sin(x*3.03+2));
   if(portrait)
     glDrawArrays(GL_TRIANGLE_STRIP, 28, 4);
   else

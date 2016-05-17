@@ -628,7 +628,7 @@ void Game::RenderMenu()
       for (i = 0; i < NUMBER_OF_LEVELS; i++)
       {
         menu_x[i+NUMBER_OF_LEVELS] = menu_x[i];
-        menu_y[i+NUMBER_OF_LEVELS] = menu_y[i] + 1;
+        menu_y[i+NUMBER_OF_LEVELS] = menu_y[i] - 1;
       }
     }
     else //landscape
@@ -648,19 +648,23 @@ void Game::RenderMenu()
   }
 
   ColumnPreview cp;
-/*
-  for (i = 0; i < NUMBER_OF_LEVELS; i++)
-  {
-    cp.Render(menu_x[i], menu_y[i], i, yMulValue <= 1);
-    cp.Render(menu_x[NUMBER_OF_LEVELS+i], menu_y[NUMBER_OF_LEVELS+i], NUMBER_OF_LEVELS-i, yMulValue <= 1);
-  }
-*/
-  cp.Render(menu_x[0], menu_y[0], 0, yMulValue <= 1);
 
   for (i = 0; i < NUMBER_OF_LEVELS; i++)
   {
-    PrintNumber(menu_x[i], menu_y[i], 1, 1, 1, i + 1);
-    PrintNumber(menu_x[NUMBER_OF_LEVELS+i], menu_y[NUMBER_OF_LEVELS+i], 1, 1, 1, NUMBER_OF_LEVELS - i);
+    cp.Render(menu_x[i], menu_y[i], i, yMulValue <= 1);
+    cp.Render(menu_x[NUMBER_OF_LEVELS+i], menu_y[NUMBER_OF_LEVELS+i], NUMBER_OF_LEVELS-i-1, yMulValue <= 1);
+  }
+
+//  cp.Render(menu_x[0], menu_y[0], 0, yMulValue <= 1);
+
+  for (i = 0; i < NUMBER_OF_LEVELS; i++)
+  {
+    float x0=menu_x[i];
+    if(i+1>9) x0-=CHAR_HEIGHT/2/yMulValue;
+    PrintNumber(x0, menu_y[i], 1, 1, 1, i + 1);
+    x0=menu_x[NUMBER_OF_LEVELS + i];
+    if(NUMBER_OF_LEVELS - i > 9) x0-=CHAR_HEIGHT/2/yMulValue;
+    PrintNumber(x0, menu_y[NUMBER_OF_LEVELS+i], 1, 1, 1, NUMBER_OF_LEVELS - i);
   }
 
 }

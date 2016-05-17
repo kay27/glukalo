@@ -49,14 +49,14 @@
     {{          -ICON_SIZE,     ICON_SIZE*0.75f,  0.0f   }, {-2.0f, 1.5f}},
     {{           ICON_SIZE,    -ICON_SIZE*0.75f,  0.0f   }, { 2.0f,-1.5f}},
     {{           ICON_SIZE,     ICON_SIZE*0.75f,  0.0f   }, { 2.0f, 1.5f}},
-    {{-1.0/NUMBER_OF_LEVELS_X,-0.5/NUMBER_OF_LEVELS_Y,0.0f},{-1.0f,-1.0f}}, // 28 portrait level selection
-    {{-1.0/NUMBER_OF_LEVELS_X, 0.5/NUMBER_OF_LEVELS_Y,0.0f},{-1.0f, 1.0f}},
-    {{ 1.0/NUMBER_OF_LEVELS_X,-0.5/NUMBER_OF_LEVELS_Y,0.0f},{ 1.0f,-1.0f}},
-    {{ 1.0/NUMBER_OF_LEVELS_X, 0.5/NUMBER_OF_LEVELS_Y,0.0f},{ 1.0f, 1.0f}},
-    {{-0.5/NUMBER_OF_LEVELS_X,-1.0/NUMBER_OF_LEVELS_Y,0.0f},{-1.0f,-1.0f}}, // 32 landscape level selection
-    {{-0.5/NUMBER_OF_LEVELS_X, 1.0/NUMBER_OF_LEVELS_Y,0.0f},{-1.0f, 1.0f}},
-    {{ 0.5/NUMBER_OF_LEVELS_X,-1.0/NUMBER_OF_LEVELS_Y,0.0f},{ 1.0f,-1.0f}},
-    {{ 0.5/NUMBER_OF_LEVELS_X, 1.0/NUMBER_OF_LEVELS_Y,0.0f},{ 1.0f, 1.0f}},
+    {{-0.8/NUMBER_OF_LEVELS_X,-0.4/NUMBER_OF_LEVELS_Y,0.0f},{-1.0f,-1.0f}}, // 28 portrait level selection
+    {{-0.8/NUMBER_OF_LEVELS_X, 0.4/NUMBER_OF_LEVELS_Y,0.0f},{-1.0f, 1.0f}},
+    {{ 0.8/NUMBER_OF_LEVELS_X,-0.4/NUMBER_OF_LEVELS_Y,0.0f},{ 1.0f,-1.0f}},
+    {{ 0.8/NUMBER_OF_LEVELS_X, 0.4/NUMBER_OF_LEVELS_Y,0.0f},{ 1.0f, 1.0f}},
+    {{-0.4/NUMBER_OF_LEVELS_X,-0.8/NUMBER_OF_LEVELS_Y,0.0f},{-1.0f,-1.0f}}, // 32 landscape level selection
+    {{-0.4/NUMBER_OF_LEVELS_X, 0.8/NUMBER_OF_LEVELS_Y,0.0f},{-1.0f, 1.0f}},
+    {{ 0.4/NUMBER_OF_LEVELS_X,-0.8/NUMBER_OF_LEVELS_Y,0.0f},{ 1.0f,-1.0f}},
+    {{ 0.4/NUMBER_OF_LEVELS_X, 0.8/NUMBER_OF_LEVELS_Y,0.0f},{ 1.0f, 1.0f}},
   };
 
   static const char * birdVertexShader =
@@ -336,10 +336,11 @@
     "varying float vMul;\n"
     "void main()\n"
     "{\n"
-    "  if(phase > 1.999) { gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0); return; }\n"
+    "  if((phase > 1.999)&&(phase < 2.01)) { gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0); return; }\n"
     "  float dfc = distance(vec2(vp.x*vMul, vp.y), vec2(tc.x*vMul,tc.y));\n"
     "  if(dfc > 1.0) discard;\n"
-    "  gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0) * fract(vp.x*sin(vp.y)+tc.x*1.117);\n"
+    "  if(phase > 32.999) gl_FragColor = vec4(0.0,0.0,0.0,1.0);\n"
+    "  else gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0) * fract(vp.x*sin(vp.y)+tc.x*1.117);\n"
     "}\n"
   ;
 

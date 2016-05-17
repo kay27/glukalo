@@ -188,7 +188,7 @@ void Game::Resize(int w, int h)
 
 void Game::Tap(float x, float y)
 {
-  if(showMenu) { showMenu = 0; return; }
+  if(showMenu) { showMenu=0; SelectLevel(x, y); return; }
 
   if(levelIcon.Tap(x, y))
   {
@@ -667,4 +667,56 @@ void Game::RenderMenu()
     PrintNumber(x0, menu_y[NUMBER_OF_LEVELS+i], 1, 1, 1, NUMBER_OF_LEVELS - i);
   }
 
+  for(float q=-0.95;q<0.99;q+=0.1)
+  {
+    if(yMulValue <= 1)
+    {}//  Missile::Render(q, 0);
+    else
+      Missile::Render(0, q);
+  }
+
+}
+
+void Game::SelectLevel(float x, float y)
+{
+  bool portrait = yMulValue<=1;
+  int ix, iy, newLevel, back;
+  if(portrait)
+  {
+    iy = round((0.5-y/2)*(NUMBER_OF_LEVELS_Y<<1));
+    ix = round((0.5+x/2)*NUMBER_OF_LEVELS_X);
+    if(iy<NUMBER_OF_LEVELS_Y)
+    {
+      newLevel = iy*NUMBER_OF_LEVELS_X + ix;
+      back = 0;
+    }
+    else
+    {
+      newLevel = NUMBER_OF_LEVELS - (iy-NUMBER_OF_LEVELS_Y)*NUMBER_OF_LEVELS_X - ix - 1;
+      back = 1;
+    }
+  }
+  else
+  {
+    iy = round((0.5-y/2)*NUMBER_OF_LEVELS_Y);
+    ix = round((0.5+x/2)*(NUMBER_OF_LEVELS_X<<1));
+    if(ix<NUMBER_OF_LEVELS_X)
+    {
+      newLevel = iy*NUMBER_OF_LEVELS_X + ix;
+      back = 0;
+    }
+    else
+    {
+      newLevel = NUMBER_OF_LEVELS - iy*NUMBER_OF_LEVELS_X - (ix-NUMBER_OF_LEVELS_X) - 1;
+      back = 1;
+    }
+  }
+
+  if(!gameOver)
+    gameStarted=1;
+
+  score = (NEXT_LEVEL_SCORE * newLevel + back*NEXT_LEVEL_SCORE*NUMBER_OF_LEVELS) ^ SCORE_XOR_CODE;
+
+  if(level != newLevel)
+    ChangeLevel();
 }

@@ -72,6 +72,7 @@
       static void Init();
       void Move(float delta, int antiGravity, int direction);
       void Render();
+      static void Render(float x, float y);
       static void Resize(float newMulValue);
       void Start(float x_, float y_);
     private:
@@ -162,6 +163,7 @@
       void Resize(int w, int h);
       void Restart();
       void Resume();
+      void SelectLevel(float x, float y);
       void Untap();
       void UpdateHighScore();
 

@@ -68,6 +68,12 @@ void Missile::Render()
   glDrawArrays(GL_TRIANGLE_STRIP, 16, 4);
 }
 
+void Missile::Render(float x, float y)
+{
+  glUseProgram(program);
+  glUniform4f(vOffs, x, y, vm, 33);
+  glDrawArrays(GL_TRIANGLE_STRIP, 16, 4);
+}
 
 void Missile::Start(float x_, float y_)
 {

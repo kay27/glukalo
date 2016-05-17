@@ -1,5 +1,8 @@
 @set name=glukalo
 @set myandroiddir=c:\Android
+@if not exist %myandroiddir% set myandroiddir=d:\Android
+@if not exist %myandroiddir% set myandroiddir=g:\Android
+@if not exist %myandroiddir% echo Android directory not found. Set "myandroiddir" variable && exit /b 1
 @set target=release
 @set platform=android-15
 @set ndkbuild=%myandroiddir%\android-ndk-r10e\ndk-build.cmd

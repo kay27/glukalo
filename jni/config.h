@@ -4,6 +4,8 @@
 # include <SLES/OpenSLES.h>
 
   const int NUMBER_OF_LEVELS = 20;
+  const int NUMBER_OF_LEVELS_X = 5;
+  const int NUMBER_OF_LEVELS_Y = 4;
 
   const float GAP_MAX_OFFSET = 0.7f; // from mid point
 
@@ -22,6 +24,8 @@
   const float MISSILE_RADIUS = 0.04f;
 
   const float BONUS_RADIUS = 0.07f;
+
+  const float ICON_SIZE = 0.17f;
 
   const float EXPLODE_TIMEOUT = 111111;
 

@@ -14,6 +14,31 @@
 # include "sound.h"
 # include "system.h"
 
+  class ColumnPreview
+  {
+    public:
+      static void Init();
+
+      void Render(float x, float y, int level, bool portrait);
+
+    private:
+      static GLint gapProgram, vGapPosition, vGapTextureCoordinate, vGap, vOffs, vHalfSize, vLevel;
+  };
+
+  class Icon
+  {
+    public:
+      void Init(const char * vs, const char * fs, float x_, float y_, float state_);
+      void Init(const char * vs, const char * fs, float x_, float y_);
+      void Render();
+      static void Resize(float newMulValue);
+      int Tap(float tx, float ty);
+    private:
+      float x, y, state;
+      GLint prog, vPos, vTC, vOffs;
+      static float vm;
+  };
+
   enum BonusType { MUSHROOM_MISSILE, SLOWDOWN, SPEEDUP };
 
   class Bonus
@@ -47,6 +72,7 @@
       static void Init();
       void Move(float delta, int antiGravity, int direction);
       void Render();
+      static void Render(float x, float y);
       static void Resize(float newMulValue);
       void Start(float x_, float y_);
     private:
@@ -80,6 +106,8 @@
       void OnCreate();
 
       void Render();
+
+      void RenderBox();
 
       void Restart(float x_, int score_);
 
@@ -129,11 +157,13 @@
       void Pause();
       void PrintNumber(float xcrd, float ycrd, float r, float g, float b, int number);
       void PrintScore();
-      void Tap();
+      void Tap(float x, float y);
       void Render();
+      void RenderMenu(float delta);
       void Resize(int w, int h);
       void Restart();
       void Resume();
+      void SelectLevel(float x, float y);
       void Untap();
       void UpdateHighScore();
 
@@ -144,11 +174,16 @@
 
     protected:
 
+      static int blockMode;
+
+      Icon levelIcon, soundIcon;
       Bonus b;
       Column * bonusColumn;
+      ColumnPreview cp;
       int bonus;
 
-      int firstRun, gameStarted, gameOver, gameLooped, scoreRestarted, direction;
+      int firstRun, gameStarted, gameOver, gameLooped, scoreRestarted, direction, verticalMenu;
+      float menu_x[NUMBER_OF_LEVELS<<1], menu_y[NUMBER_OF_LEVELS<<1];
 
       struct timeval lastTime;
 
@@ -158,7 +193,7 @@
 
       Column gaps[MAX_COLUMNS];
 
-      int impulse, pause, score, highScore, level, maxLevel, tapFire;
+      int impulse, pause, score, highScore, level, maxLevel, tapFire, showMenu, selectedLevelScore;
 
       GLuint vb;
       GLint vPosition, vTextureCoordinate, vColor, vOffset, vEye, vRadius, vMul,

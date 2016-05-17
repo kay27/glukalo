@@ -21,30 +21,42 @@
 
   static const MyVertex vertices[] =
   {
-    {{   -BIRD_RADIUS*2.0f,   -BIRD_RADIUS*1.5f,  0.0f }, {-2.0f,-1.5f}}, // bird
-    {{   -BIRD_RADIUS*2.0f,    BIRD_RADIUS*1.5f,  0.0f }, {-2.0f, 1.5f}},
-    {{    BIRD_RADIUS*2.0f,   -BIRD_RADIUS*1.5f,  0.0f }, { 2.0f,-1.5f}},
-    {{    BIRD_RADIUS*2.0f,    BIRD_RADIUS*1.5f,  0.0f }, { 2.0f, 1.5f}},
-    {{   -COLUMN_HALFWIDTH,                -1.0,  0.0f }, { 0.0f, 0.0f}}, // gap
-    {{   -COLUMN_HALFWIDTH,                 1.0,  0.0f }, { 0.0f, 2.0f}},
-    {{    COLUMN_HALFWIDTH,                -1.0,  0.0f }, { 2.0f, 0.0f}},
-    {{    COLUMN_HALFWIDTH,                 1.0,  0.0f }, { 2.0f, 2.0f}},
-    {{                  -1,                -1.0,  0.0f }, { 0.0f, 0.0f}}, // floor
-    {{                  -1,      FLOOR_HEIGHT-1,  0.0f }, { 0.0f, 2.0f}},
-    {{                   1,                -1.0,  0.0f }, { 2.0f, 0.0f}},
-    {{                   1,      FLOOR_HEIGHT-1,  0.0f }, { 2.0f, 2.0f}},
-    {{        -CHAR_HEIGHT,  -CHAR_HEIGHT*0.75f,  0.0f }, {-2.0f,-1.5f}}, // char
-    {{        -CHAR_HEIGHT,   CHAR_HEIGHT*0.75f,  0.0f }, {-2.0f, 1.5f}},
-    {{         CHAR_HEIGHT,  -CHAR_HEIGHT*0.75f,  0.0f }, { 2.0f,-1.5f}},
-    {{         CHAR_HEIGHT,   CHAR_HEIGHT*0.75f,  0.0f }, { 2.0f, 1.5f}},
-    {{-MISSILE_RADIUS*2.0f,-MISSILE_RADIUS*1.5f,  0.0f }, {-2.0f,-1.5f}}, // missile
-    {{-MISSILE_RADIUS*2.0f, MISSILE_RADIUS*1.5f,  0.0f }, {-2.0f, 1.5f}},
-    {{ MISSILE_RADIUS*2.0f,-MISSILE_RADIUS*1.5f,  0.0f }, { 2.0f,-1.5f}},
-    {{ MISSILE_RADIUS*2.0f, MISSILE_RADIUS*1.5f,  0.0f }, { 2.0f, 1.5f}},
-    {{  -BONUS_RADIUS*2.0f,  -BONUS_RADIUS*1.5f,  0.0f }, {-2.0f,-1.5f}}, // bonus
-    {{  -BONUS_RADIUS*2.0f,   BONUS_RADIUS*1.5f,  0.0f }, {-2.0f, 1.5f}},
-    {{   BONUS_RADIUS*2.0f,  -BONUS_RADIUS*1.5f,  0.0f }, { 2.0f,-1.5f}},
-    {{   BONUS_RADIUS*2.0f,   BONUS_RADIUS*1.5f,  0.0f }, { 2.0f, 1.5f}},
+    {{   -BIRD_RADIUS*2.0f,   -BIRD_RADIUS*1.5f,  0.0f   }, {-2.0f,-1.5f}}, //  0 bird
+    {{   -BIRD_RADIUS*2.0f,    BIRD_RADIUS*1.5f,  0.0f   }, {-2.0f, 1.5f}},
+    {{    BIRD_RADIUS*2.0f,   -BIRD_RADIUS*1.5f,  0.0f   }, { 2.0f,-1.5f}},
+    {{    BIRD_RADIUS*2.0f,    BIRD_RADIUS*1.5f,  0.0f   }, { 2.0f, 1.5f}},
+    {{   -COLUMN_HALFWIDTH,                -1.0,  0.0f   }, { 0.0f, 0.0f}}, //  4 gap
+    {{   -COLUMN_HALFWIDTH,                 1.0,  0.0f   }, { 0.0f, 2.0f}},
+    {{    COLUMN_HALFWIDTH,                -1.0,  0.0f   }, { 2.0f, 0.0f}},
+    {{    COLUMN_HALFWIDTH,                 1.0,  0.0f   }, { 2.0f, 2.0f}},
+    {{                  -1,                -1.0,  0.0f   }, { 0.0f, 0.0f}}, //  8 floor
+    {{                  -1,      FLOOR_HEIGHT-1,  0.0f   }, { 0.0f, 2.0f}},
+    {{                   1,                -1.0,  0.0f   }, { 2.0f, 0.0f}},
+    {{                   1,      FLOOR_HEIGHT-1,  0.0f   }, { 2.0f, 2.0f}},
+    {{        -CHAR_HEIGHT,  -CHAR_HEIGHT*0.75f,  0.0f   }, {-2.0f,-1.5f}}, // 12 char
+    {{        -CHAR_HEIGHT,   CHAR_HEIGHT*0.75f,  0.0f   }, {-2.0f, 1.5f}},
+    {{         CHAR_HEIGHT,  -CHAR_HEIGHT*0.75f,  0.0f   }, { 2.0f,-1.5f}},
+    {{         CHAR_HEIGHT,   CHAR_HEIGHT*0.75f,  0.0f   }, { 2.0f, 1.5f}},
+    {{-MISSILE_RADIUS*2.0f,-MISSILE_RADIUS*1.5f,  0.0f   }, {-2.0f,-1.5f}}, // 16 missile
+    {{-MISSILE_RADIUS*2.0f, MISSILE_RADIUS*1.5f,  0.0f   }, {-2.0f, 1.5f}},
+    {{ MISSILE_RADIUS*2.0f,-MISSILE_RADIUS*1.5f,  0.0f   }, { 2.0f,-1.5f}},
+    {{ MISSILE_RADIUS*2.0f, MISSILE_RADIUS*1.5f,  0.0f   }, { 2.0f, 1.5f}},
+    {{  -BONUS_RADIUS*2.0f,  -BONUS_RADIUS*1.5f,  0.0f   }, {-2.0f,-1.5f}}, // 20 bonus
+    {{  -BONUS_RADIUS*2.0f,   BONUS_RADIUS*1.5f,  0.0f   }, {-2.0f, 1.5f}},
+    {{   BONUS_RADIUS*2.0f,  -BONUS_RADIUS*1.5f,  0.0f   }, { 2.0f,-1.5f}},
+    {{   BONUS_RADIUS*2.0f,   BONUS_RADIUS*1.5f,  0.0f   }, { 2.0f, 1.5f}},
+    {{          -ICON_SIZE,    -ICON_SIZE*0.75f,  0.0f   }, {-2.0f,-1.5f}}, // 24 icon
+    {{          -ICON_SIZE,     ICON_SIZE*0.75f,  0.0f   }, {-2.0f, 1.5f}},
+    {{           ICON_SIZE,    -ICON_SIZE*0.75f,  0.0f   }, { 2.0f,-1.5f}},
+    {{           ICON_SIZE,     ICON_SIZE*0.75f,  0.0f   }, { 2.0f, 1.5f}},
+    {{-0.8/NUMBER_OF_LEVELS_X,-0.4/NUMBER_OF_LEVELS_Y,0.0f},{-1.0f,-1.0f}}, // 28 portrait level selection
+    {{-0.8/NUMBER_OF_LEVELS_X, 0.4/NUMBER_OF_LEVELS_Y,0.0f},{-1.0f, 1.0f}},
+    {{ 0.8/NUMBER_OF_LEVELS_X,-0.4/NUMBER_OF_LEVELS_Y,0.0f},{ 1.0f,-1.0f}},
+    {{ 0.8/NUMBER_OF_LEVELS_X, 0.4/NUMBER_OF_LEVELS_Y,0.0f},{ 1.0f, 1.0f}},
+    {{-0.4/NUMBER_OF_LEVELS_X,-0.8/NUMBER_OF_LEVELS_Y,0.0f},{-1.0f,-1.0f}}, // 32 landscape level selection
+    {{-0.4/NUMBER_OF_LEVELS_X, 0.8/NUMBER_OF_LEVELS_Y,0.0f},{-1.0f, 1.0f}},
+    {{ 0.4/NUMBER_OF_LEVELS_X,-0.8/NUMBER_OF_LEVELS_Y,0.0f},{ 1.0f,-1.0f}},
+    {{ 0.4/NUMBER_OF_LEVELS_X, 0.8/NUMBER_OF_LEVELS_Y,0.0f},{ 1.0f, 1.0f}},
   };
 
   static const char * birdVertexShader =
@@ -88,6 +100,17 @@
     "void main()\n"
     "{\n"
     "  gl_Position = vec4(vPosition.x+vOffsetX,vPosition.yzw);\n"
+    "  vp = vPosition;\n"
+    "}\n"
+  ;
+
+  static const char * gapBoxVertexShader =
+    "attribute vec4 vPosition;\n"
+    "uniform vec4 vOffs;\n"
+    "varying vec4 vp;\n"
+    "void main()\n"
+    "{\n"
+    "  gl_Position = vPosition + vOffs;\n"
     "  vp = vPosition;\n"
     "}\n"
   ;
@@ -143,6 +166,8 @@
     "    gl_FragColor = vec4(0.7,0.7,0.7,1.0);\n"
     "  else if(vLevel<19.1)\n" // :
     "    gl_FragColor = vec4(fract(vp.x*11.39),fract(vp.x*12.37),fract(vp.x*13.44),1.0);\n"
+    "  else if(vLevel<1000.1)\n" // locked:
+    "    gl_FragColor = vec4(0.0, 0.0, 0.0, 1.0);\n"
     "}\n"
   ;
 
@@ -163,11 +188,6 @@
     "void main()\n"
     "{\n"
     "  float x=vp.x+vOM.x;\n"
-//    "  gl_FragColor = vec4(fract(x*vOM.y+vp.y*11.3)*0.9, fract(x*vOM.y*4.0+vp.y*11.9)*0.6, fract(x*2.0*vOM.y+vp.y*12.19)*0.2, 1.0);\n"
-//    "  gl_FragColor = vec4(fract(x*vOM.y+vp.y*11.3+sin(x*4.0*vOM.y*2.0*3.14159265))*0.9, 0.0, fract(x*2.0*vOM.y+vp.y*12.19)*0.2, 1.0);\n"
-//    "  gl_FragColor = vec4(fract(vp.y*11.3+sin(x*4.0*vOM.y*2.0*3.14159265))*0.9, 0.0, fract(x*2.0*vOM.y+vp.y*12.19)*0.2, 1.0);\n"
-//    "  if(vOM.z < 0.9) gl_FragColor = vec4(fract(vp.y*11.3+sin(x*4.0*vOM.y*2.0*3.14159265))*0.9, 0.0, 0.0, 1.0);\n"
-//    "  else gl_FragColor = vec4(fract(vp.y*11.3+sin(x*4.0*vOM.y*2.0*3.14159265))*0.6, 0.0, fract(sin(x*32.0*vOM.y*2.0*3.14159265)*29.1)*0.8, 1.0);\n"
     "  float q = fract(vp.y*11.3+sin(x*4.0*vOM.y*2.0*3.14159265));\n"
     "  if(vOM.z < 0.9) gl_FragColor = vec4(q*0.8, q*0.2, q*0.19, 1.0);\n"
     "  else gl_FragColor = vec4((1.0-q)*0.2, q*0.2, q*fract(sin(x*32.0*vOM.y*2.0*3.14159265)*29.1), 1.0);\n"
@@ -318,10 +338,11 @@
     "varying float vMul;\n"
     "void main()\n"
     "{\n"
-    "  if(phase > 1.999) { gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0); return; }\n"
+    "  if((phase > 1.999)&&(phase < 2.01)) { gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0); return; }\n"
     "  float dfc = distance(vec2(vp.x*vMul, vp.y), vec2(tc.x*vMul,tc.y));\n"
     "  if(dfc > 1.0) discard;\n"
-    "  gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0) * fract(vp.x*sin(vp.y)+tc.x*1.117);\n"
+    "  if(phase > 32.999) gl_FragColor = vec4(0.0,0.0,0.0,1.0);\n"
+    "  else gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0) * fract(vp.x*sin(vp.y)+tc.x*1.117);\n"
     "}\n"
   ;
 
@@ -375,6 +396,85 @@
     "    gl_FragColor = vec4(fract(tc.y*11.1), fract(tc.y*11.11+0.01), 1.0 - fract(tc.y*11.12+0.02), 1.0);\n"
     "  else\n"
     "    gl_FragColor = vec4(0.8, 0.5, 0.9, 1.0);\n"
+    "}\n"
+  ;
+
+  static const char * iconVertexShader =
+    "attribute vec4 vPos;\n"
+    "attribute vec4 vTC;\n"
+    "uniform vec4 vOffs;\n"
+    "varying vec4 vp;\n"
+    "varying vec2 tc;\n"
+    "varying float vMul;\n"
+    "varying float vState;\n"
+    "void main()\n"
+    "{\n"
+    "  vMul = vOffs.z;\n"
+    "  vState = vOffs.w;\n"
+    "  gl_Position = vec4(vPos.xy + vOffs.xy, vPos.zw);\n"
+    "  vp = vPos;\n"
+    "  tc = vTC.xy;\n"
+    "}\n"
+  ;
+
+  static const char * iconLevelFragmentShader =
+    "precision mediump float;\n"
+    "varying vec4 vp;\n"
+    "varying vec2 tc;\n"
+    "varying float vMul;\n"
+    "varying float vState;\n"
+    "void main()\n"
+    "{\n"
+    "  vec2 p = vec2(tc.x*vMul, tc.y);\n"
+    "  vec2 a = abs(p);\n"
+    "  if( (a.x>0.8)||(a.y>0.8)||((a.x>0.2)&&(a.x<0.4))||((a.y>0.2)&&(a.y<0.4)) )\n"
+    "  {\n"
+    "    if( (a.x>1.0) || (a.y>1.0) ) discard;\n"
+    "    else\n"
+    "    {\n"
+//    "      gl_FragColor = vec4(0.0, 1.0, 0.0, 0.3);\n" //hash
+    "      if(distance(vec2(vp.x*vMul, vp.y), vec2(tc.x*vMul,tc.y)) > 1.05) discard;\n" //hash
+    "      else if(fract(tc.x*tc.y*333.71)<0.71) discard; else gl_FragColor = vec4(0.0, abs(sin(tc.x*tc.y*27.1))*0.3, abs(cos(tc.x*tc.y+33.1+0.5))*0.3, 1.0);\n"
+    "    }\n"
+    "  }\n"
+    "  else\n"
+    "  {\n"
+    "    if( (p.y>0.2)||((p.y>-0.2)&&(p.x<-0.2)) )\n" //completed levels
+    "    {\n"
+    "      gl_FragColor = vec4(abs(sin(tc.y*tc.x*3.3)), abs(sin(tc.y*tc.x*4.5)), abs(sin(tc.y*tc.x*5.8)), 1.0);\n"
+    "    }\n"
+    "    else\n"
+    "    {\n"
+    "      gl_FragColor = vec4(0.3, 0.3, 0.3, 1.0);\n"
+    "    }\n"
+    "  }\n"
+    "}\n"
+  ;
+
+  static const char * iconSoundFragmentShader =
+    "precision mediump float;\n"
+    "varying vec4 vp;\n"
+    "varying vec2 tc;\n"
+    "varying float vMul;\n"
+    "varying float vState;\n"
+    "void main()\n"
+    "{\n"
+    "  vec2 p = vec2(tc.x*vMul, tc.y);\n"
+    "  if( (abs(p.y)<0.4)&&(p.x>-0.6)&&(p.x<-0.2) )\n"
+    "  {\n"
+    "    gl_FragColor = vec4(abs(sin(tc.x*tc.y*4.9)), 0.3, 0.3, 1.0);\n" //magnet
+    "  }\n"
+    "  else if( (p.x>-0.2) && (p.x<0.6) && (abs(p.y)-0.75*p.x < 0.55) )\n"
+    "  {\n"                                                              //diffuser
+    "    if(vState>0.5) gl_FragColor = vec4(0.7, abs(sin(tc.x*tc.y*4.9))*0.6, abs(sin(tc.x*tc.y*5.9))*0.6, 1.0);\n"
+    "    else gl_FragColor = vec4(0.9, 0.6, 0.6, 0.7);\n"
+    "  }\n"
+    "  else if( (abs(p.x)>1.0) || (abs(p.y)>1.0) ) discard;\n"
+    "  else\n"
+    "  {\n"
+    "    if(distance(vec2(vp.x*vMul, vp.y), vec2(tc.x*vMul,tc.y)) > 1.05) discard;\n" //frame
+    "    else if(fract(tc.x*tc.y*333.71)<0.71) discard; else gl_FragColor = vec4(0.0, abs(sin(tc.x*tc.y*27.1))*0.3, abs(cos(tc.x*tc.y+33.1+0.5))*0.3, 1.0);\n"
+    "  }\n"
     "}\n"
   ;
 

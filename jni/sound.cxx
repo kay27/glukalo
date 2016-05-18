@@ -1,6 +1,14 @@
 #include "sound.h"
 
-void bqPlayerCallback(SLAndroidSimpleBufferQueueItf bq, void *context)
+/*
+SLObjectItf SLAudio::engine = nullptr;
+SLObjectItf SLAudio::mix = nullptr;
+SLObjectItf SLAudio::player = nullptr;
+SLObjectItf SLAudio::globalsoundbuffer = &soundbuffer;
+SLObjectItf SLAudio::paused = false;
+*/
+
+void SLAudio::bqPlayerCallback(SLAndroidSimpleBufferQueueItf bq, void *context)
 {
   (*bq)->Enqueue(bq, globalsoundbuffer, MY_AUDIO_BUFFER_FRAMES*sizeof(short));
 }
@@ -8,8 +16,10 @@ void bqPlayerCallback(SLAndroidSimpleBufferQueueItf bq, void *context)
 
 bool SLAudio::CreateEngine()
 {
-  const SLInterfaceID ids[1] = {SL_IID_ENVIRONMENTALREVERB};
-  const SLboolean     req[1] = {SL_BOOLEAN_FALSE};
+  globalsoundbuffer = &soundbuffer;
+  paused = false;
+  ids[1] = {SL_IID_ENVIRONMENTALREVERB};
+  req[1] = {SL_BOOLEAN_FALSE};
 
   result = slCreateEngine(&engine, 0, NULL, 0, NULL, NULL);
   if(result != SL_RESULT_SUCCESS) return false;
@@ -101,19 +111,9 @@ void SLAudio::DestroyPlayer()
   volume = nullptr;
 }
 
-SLAudio::SLAudio()
-{
-  globalsoundbuffer = &soundbuffer;
-  paused = false;
-}
-
 void SLAudio::Clear()
 {
   for(auto i=0; i<MY_AUDIO_BUFFER_FRAMES; i++) soundbuffer[i]=0;
-}
-
-SLAudio::~SLAudio()
-{
 }
 
 void SLAudio::Pause(bool pause)
@@ -139,7 +139,7 @@ MyAudio::MyAudio()
 
 void MyAudio::MakeNoise(unsigned freq)
 {
-  Noise((short*)globalsoundbuffer, MY_AUDIO_BUFFER_FRAMES, freq);
+  Noise((short*)a->globalsoundbuffer, MY_AUDIO_BUFFER_FRAMES, freq);
 }
 
 MyAudio::~MyAudio()

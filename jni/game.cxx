@@ -752,7 +752,7 @@ void Game::SelectLevel(float x, float y)
     {
       if((newLevel == 12-5*back) && ((codePass&1)==back)) codePass++;
       else codePass = 0;
-      if(codePass==8) MyCallback::Toast(":)");
+//      if(codePass==8) MyCallback::Toast(":)");
       return;
     }
   }

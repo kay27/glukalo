@@ -9,33 +9,39 @@
 
 # include "config.h"
 
-  static void* globalsoundbuffer;
-
   class SLAudio
   {
     public:
-      SLAudio();
-      ~SLAudio();
-      void Clear();
-      void Pause(bool pause);
-      void Start();
-      bool CreateEngine();
-      bool CreatePlayer();
-      void DestroyEngine();
-      void DestroyPlayer();
-      inline SLAndroidSimpleBufferQueueItf & GetBQ() { return bq; }
+//      static SLAudio();
+//      static ~SLAudio();
+      static void Clear();
+      static void Pause(bool pause);
+      static void Start();
+      static bool CreateEngine();
+      static bool CreatePlayer();
+      static void DestroyEngine();
+      static void DestroyPlayer();
+      static inline SLAndroidSimpleBufferQueueItf & GetBQ() { return bq; }
+      static void bqPlayerCallback(SLAndroidSimpleBufferQueueItf bq, void *context);
 
+      static void* globalsoundbuffer;
     protected:
-      short soundbuffer[MY_AUDIO_BUFFER_FRAMES];
-      SLAndroidSimpleBufferQueueItf bq;
-      SLObjectItf engine, mix, player;
-      SLEngineItf itf;
-      SLPlayItf play;
-      SLEnvironmentalReverbItf reverb;
-      SLEffectSendItf effect;
-      SLVolumeItf volume;
-      SLresult result;
-      bool paused;
+      static SLInterfaceID ids[1];
+      static SLboolean     req[1];
+//      static SLInterfaceID ids[1] = {SL_IID_ENVIRONMENTALREVERB};
+//      static SLboolean     req[1] = {SL_BOOLEAN_FALSE};
+
+
+      static short soundbuffer[MY_AUDIO_BUFFER_FRAMES];
+      static SLAndroidSimpleBufferQueueItf bq;
+      static SLObjectItf engine, mix, player;
+      static SLEngineItf itf;
+      static SLPlayItf play;
+      static SLEnvironmentalReverbItf reverb;
+      static SLEffectSendItf effect;
+      static SLVolumeItf volume;
+      static SLresult result;
+      static bool paused;
   };
 
   class MyAudio

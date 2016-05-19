@@ -13,9 +13,9 @@
       static void Pause();
       static void Resume();
       static void Play(short * buffer, int count);
-      static void PlayMiss();
+      static void PlayMiss(int tune);
     protected:
-      static short buffer[MISS_SAMPLE_LENGTH];
+      static short buffer[NEXT_LEVEL_SCORE*MISS_SAMPLE_LENGTH];
   };
 
 

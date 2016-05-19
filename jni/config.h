@@ -59,7 +59,9 @@
 # define ACTIVITY_NAME "com.kay27.Glukalo.MainActivity"
 
   const int   SAMPLE_RATE = 44100;
-  const int   MISS_SAMPLE_LENGTH = SAMPLE_RATE * 4 / 10; //0.4 s
+  const int   MISS_SAMPLE_LENGTH = SAMPLE_RATE * 36 / 100; //0.36 s
+  const float PI = 3.14159265358;
+  const int MISS_BASE_FREQ = 300;
 //  const int   BUFFER_FRAMES = 441;
 //  const SLEnvironmentalReverbSettings REVERB_SETTINGS = SL_I3DL2_ENVIRONMENT_PRESET_STONECORRIDOR;
 

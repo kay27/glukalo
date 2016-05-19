@@ -484,7 +484,7 @@ void Game::MoveColumnsCheckPass(float deltaX)
     if(gaps[i].Pass(direction))
     {
       AddScore();
-      SoundPlayer::PlayMiss();
+      SoundPlayer::PlayMiss((score^SCORE_XOR_CODE)%NEXT_LEVEL_SCORE);
     }
 
     if(direction == 1)

@@ -11,8 +11,8 @@
 # include "config.h"
 # include "shader.h"
 # include "jni2game.h"
-# include "sound.h"
 # include "system.h"
+# include "SoundPlayer.h"
 
   class ColumnPreview
   {
@@ -161,11 +161,6 @@
       void Untap();
       void UpdateHighScore();
 
-      void InitAudio();
-      void PauseAudio();
-      void PlayAudio();
-      void ResumeAudio();
-
     protected:
 
       static int blockMode;
@@ -195,8 +190,6 @@
         vFontColor, vCharMul, vFontLineSize, vCharOffset;
      
       GLuint birdProgram, floorProgram, fontProgram;
-
-      MyAudio *audio;
 
       Missile m;
 

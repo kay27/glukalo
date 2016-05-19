@@ -1,20 +1,20 @@
-#ifndef H_SOUND_GLUKALO
-# define H_SOUND_GLUKALO
+#ifndef H_SOUND
+# define H_SOUND
 
   // for native audio
 # include <SLES/OpenSLES.h>
 # include <SLES/OpenSLES_Android.h>
 
   // engine interfaces
-  static SLObjectItf engineObject = NULL;
+  static SLObjectItf engineObject = nullptr;
   static SLEngineItf engineEngine;
 
   // output mix interfaces
-  static SLObjectItf outputMixObject = NULL;
-  static SLEnvironmentalReverbItf outputMixEnvironmentalReverb = NULL;
+  static SLObjectItf outputMixObject = nullptr;
+  static SLEnvironmentalReverbItf outputMixEnvironmentalReverb = nullptr;
 
   // buffer queue player interfaces
-  static SLObjectItf bqPlayerObject = NULL;
+  static SLObjectItf bqPlayerObject = nullptr;
   static SLPlayItf bqPlayerPlay;
   static SLAndroidSimpleBufferQueueItf bqPlayerBufferQueue;
   static SLEffectSendItf bqPlayerEffectSend;
@@ -31,10 +31,10 @@
   static int nextCount;
 
   // this callback handler is called every time a buffer finishes playing
-  void bqPlayerCallback(SLAndroidSimpleBufferQueueItf bq, void *context)
+  static void bqPlayerCallback(SLAndroidSimpleBufferQueueItf bq, void *context)
   {
       // for streaming playback, replace this test by logic to find and fill the next buffer
-      if (--nextCount > 0 && NULL != nextBuffer && 0 != nextSize) {
+      if (--nextCount > 0 && nullptr != nextBuffer && 0 != nextSize) {
           SLresult result;
           // enqueue another buffer
           result = (*bqPlayerBufferQueue)->Enqueue(bqPlayerBufferQueue, nextBuffer, nextSize);
@@ -45,12 +45,12 @@
   }
 
   // create the engine and output mix objects
-  void createEngine()
+  static void createEngine()
   {
       SLresult result;
 
       // create engine
-      result = slCreateEngine(&engineObject, 0, NULL, 0, NULL, NULL);
+      result = slCreateEngine(&engineObject, 0, nullptr, 0, nullptr, nullptr);
       (void)result;
 
       // realize the engine
@@ -88,7 +88,7 @@
 
 
   // create buffer queue audio player
-  void createBufferQueueAudioPlayer()
+  static void createBufferQueueAudioPlayer()
   {
       SLresult result;
 
@@ -101,7 +101,7 @@
 
       // configure audio sink
       SLDataLocator_OutputMix loc_outmix = {SL_DATALOCATOR_OUTPUTMIX, outputMixObject};
-      SLDataSink audioSnk = {&loc_outmix, NULL};
+      SLDataSink audioSnk = {&loc_outmix, nullptr};
 
       // create audio player
       const SLInterfaceID ids[3] = {SL_IID_BUFFERQUEUE, SL_IID_EFFECTSEND,
@@ -126,7 +126,7 @@
       (void)result;
 
       // register callback on the buffer queue
-      result = (*bqPlayerBufferQueue)->RegisterCallback(bqPlayerBufferQueue, bqPlayerCallback, NULL);
+      result = (*bqPlayerBufferQueue)->RegisterCallback(bqPlayerBufferQueue, bqPlayerCallback, nullptr);
       (void)result;
 
       // get the effect send interface
@@ -159,64 +159,30 @@
   }
 
   // enable reverb on the buffer queue player
-  bool enableReverb(bool enabled)
+  static bool enableReverb(bool enabled)
   {
       SLresult result;
 
       // we might not have been able to add environmental reverb to the output mix
-      if (NULL == outputMixEnvironmentalReverb) {
-          return JNI_FALSE;
+      if (nullptr == outputMixEnvironmentalReverb) {
+          return false;
       }
 
       result = (*bqPlayerEffectSend)->EnableEffectSend(bqPlayerEffectSend,
               outputMixEnvironmentalReverb, (SLboolean) enabled, (SLmillibel) 0);
       // and even if environmental reverb was present, it might no longer be available
       if (SL_RESULT_SUCCESS != result) {
-          return JNI_FALSE;
+          return false;
       }
 
-      return JNI_TRUE;
+      return true;
   }
 
 
   // select the desired clip and play count, and enqueue the first buffer if idle
-  bool selectClip(int which, int count)
+  static bool selectClip(short * clip, int count)
   {
-      switch (which) {
-      case 0:     // CLIP_NONE
-          nextBuffer = (short *) NULL;
-          nextSize = 0;
-          break;
-      case 1:     // CLIP_HELLO
-          nextBuffer = (short *) hello;
-          nextSize = sizeof(hello);
-          break;
-      case 2:     // CLIP_ANDROID
-          nextBuffer = (short *) android;
-          nextSize = sizeof(android);
-          break;
-      case 3:     // CLIP_SAWTOOTH
-          nextBuffer = sawtoothBuffer;
-          nextSize = sizeof(sawtoothBuffer);
-          break;
-      case 4:     // CLIP_PLAYBACK
-          // we recorded at 16 kHz, but are playing buffers at 8 Khz, so do a primitive down-sample
-          if (recorderSR == SL_SAMPLINGRATE_16) {
-              unsigned i;
-              for (i = 0; i < recorderSize; i += 2 * sizeof(short)) {
-                  recorderBuffer[i >> 2] = recorderBuffer[i >> 1];
-              }
-              recorderSR = SL_SAMPLINGRATE_8;
-              recorderSize >>= 1;
-          }
-          nextBuffer = recorderBuffer;
-          nextSize = recorderSize;
-          break;
-      default:
-          nextBuffer = NULL;
-          nextSize = 0;
-          break;
-      }
+      nextBuffer = clip;
       nextCount = count;
       if (nextSize > 0) {
           // here we only enqueue one buffer because it is a long clip,
@@ -224,42 +190,42 @@
           SLresult result;
           result = (*bqPlayerBufferQueue)->Enqueue(bqPlayerBufferQueue, nextBuffer, nextSize);
           if (SL_RESULT_SUCCESS != result) {
-              return JNI_FALSE;
+              return false;
           }
       }
 
-      return JNI_TRUE;
+      return true;
   }
 
   // shut down the native audio system
-  void shutdown()
+  static void shutdown()
   {
 
       // destroy buffer queue audio player object, and invalidate all associated interfaces
-      if (bqPlayerObject != NULL) {
+      if (bqPlayerObject != nullptr) {
           (*bqPlayerObject)->Destroy(bqPlayerObject);
-          bqPlayerObject = NULL;
-          bqPlayerPlay = NULL;
-          bqPlayerBufferQueue = NULL;
-          bqPlayerEffectSend = NULL;
-          bqPlayerMuteSolo = NULL;
-          bqPlayerVolume = NULL;
+          bqPlayerObject = nullptr;
+          bqPlayerPlay = nullptr;
+          bqPlayerBufferQueue = nullptr;
+          bqPlayerEffectSend = nullptr;
+          bqPlayerMuteSolo = nullptr;
+          bqPlayerVolume = nullptr;
       }
 
       // destroy output mix object, and invalidate all associated interfaces
-      if (outputMixObject != NULL) {
+      if (outputMixObject != nullptr) {
           (*outputMixObject)->Destroy(outputMixObject);
-          outputMixObject = NULL;
-          outputMixEnvironmentalReverb = NULL;
+          outputMixObject = nullptr;
+          outputMixEnvironmentalReverb = nullptr;
       }
 
       // destroy engine object, and invalidate all associated interfaces
-      if (engineObject != NULL) {
+      if (engineObject != nullptr) {
           (*engineObject)->Destroy(engineObject);
-          engineObject = NULL;
-          engineEngine = NULL;
+          engineObject = nullptr;
+          engineEngine = nullptr;
       }
 
   }
 
-#endif // #ifndef H_SOUND_GLUKALO
+#endif // #ifndef H_SOUND

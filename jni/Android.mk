@@ -9,11 +9,11 @@ LOCAL_SRC_FILES := \
   column.cxx \
   column_preview.cxx \
   game.cxx \
-  game_audio.cxx \
   icon.cxx \
   jni2game.cxx \
   missile.cxx \
   shader.cxx \
+  soundplayer.cxx \
   system.cxx \
 
 LOCAL_CPPFLAGS := -std=c++11

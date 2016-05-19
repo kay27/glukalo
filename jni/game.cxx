@@ -25,17 +25,12 @@ Game::Game()
 
   Init();
 
-  InitAudio();
+  SoundPlayer::Init();
 }
 
 Game::~Game()
 {
-  if(audio != nullptr)
-  {
-    audio->Stop();
-    delete audio;
-    audio = nullptr;
-  }
+  SoundPlayer::Destroy();
 }
 
 void Game::Init()
@@ -174,13 +169,13 @@ void Game::Restart()
 
 void Game::Pause()
 {
-  PauseAudio();
+  SoundPlayer::Pause();
   pause = 1;
 }
 
 void Game::Resume()
 {
-  ResumeAudio();
+  SoundPlayer::Resume();
   Untap();
   gettimeofday(&lastTime, NULL);
   pause = 0;
@@ -246,7 +241,6 @@ void Game::Render()
   if(showMenu)
   {
     RenderMenu(delta);
-    PlayAudio();
     return;
   }
 
@@ -344,12 +338,7 @@ void Game::Render()
 
   PrintScore();
 
-//  Bonus * q = new Bonus();
-  if(bonus)
-    b.Render();
-//  delete q;
-
-  PlayAudio();
+  if(bonus) b.Render();
 }
 
 void Game::PrintScore()
@@ -492,7 +481,11 @@ void Game::MoveColumnsCheckPass(float deltaX)
   {
     float xNew = gaps[i].Move(deltaX);
 
-    if(gaps[i].Pass(direction)) AddScore();
+    if(gaps[i].Pass(direction))
+    {
+      AddScore();
+      SoundPlayer::PlayMiss();
+    }
 
     if(direction == 1)
     {

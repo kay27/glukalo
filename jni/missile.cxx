@@ -10,6 +10,7 @@ float Missile::vm = 1;
 void Missile::Explode()
 {
   if(phase != 1) return;
+  SoundPlayer::PlayD();
   phase = 2;
 }
 

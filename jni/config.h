@@ -60,6 +60,7 @@
 
   const int   SAMPLE_RATE = 44100;
   const int   MISS_SAMPLE_LENGTH = SAMPLE_RATE * 36 / 100; //0.36 s
+  const int   D_SAMPLE_LENGTH = SAMPLE_RATE * 4 / 100; //0.004 s
   const float PI = 3.14159265358;
   const int MISS_BASE_FREQ = 300;
 //  const int   BUFFER_FRAMES = 441;

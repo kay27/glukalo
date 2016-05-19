@@ -8,7 +8,7 @@ void SoundPlayer::Init()
   createBufferQueueAudioPlayer();
 
   for(int j=0; j<MISS_SAMPLE_LENGTH; j++)
-    buffer[j] = 32767*(MISS_SAMPLE_LENGTH-j)/MISS_SAMPLE_LENGTH*sin(2.0*3.14159*float(j)/SAMPLE_RATE*400);
+    buffer[j] = 32767*(MISS_SAMPLE_LENGTH-j)/MISS_SAMPLE_LENGTH*sin(2.0*3.14159*400*float(j)/SAMPLE_RATE);
 /*
   float freq = 200;
   for(int i=0; i<NEXT_LEVEL_SCORE; i++)

@@ -1,6 +1,8 @@
 #ifndef H_SOUND
 # define H_SOUND
 
+#include "jni2game.h" //tmp
+
   // for native audio
 # include <SLES/OpenSLES.h>
 # include <SLES/OpenSLES_Android.h>
@@ -94,7 +96,7 @@
 
       // configure audio source
       SLDataLocator_AndroidSimpleBufferQueue loc_bufq = {SL_DATALOCATOR_ANDROIDSIMPLEBUFFERQUEUE, 2};
-      SLDataFormat_PCM format_pcm = {SL_DATAFORMAT_PCM, 1, SL_SAMPLINGRATE_8,
+      SLDataFormat_PCM format_pcm = {SL_DATAFORMAT_PCM, 1, SL_SAMPLINGRATE_44_1,
           SL_PCMSAMPLEFORMAT_FIXED_16, SL_PCMSAMPLEFORMAT_FIXED_16,
           SL_SPEAKER_FRONT_CENTER, SL_BYTEORDER_LITTLEENDIAN};
       SLDataSource audioSrc = {&loc_bufq, &format_pcm};
@@ -183,7 +185,8 @@
   static bool selectClip(short * clip, int count)
   {
       nextBuffer = clip;
-      nextCount = count;
+      nextSize = count;
+      nextCount = 1;
       if (nextSize > 0) {
           // here we only enqueue one buffer because it is a long clip,
           // but for streaming playback we would typically enqueue at least 2 buffers to start

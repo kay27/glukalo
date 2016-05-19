@@ -14,7 +14,6 @@ LOCAL_SRC_FILES := \
   jni2game.cxx \
   missile.cxx \
   shader.cxx \
-  sound.cxx \
   system.cxx \
 
 LOCAL_CPPFLAGS := -std=c++11

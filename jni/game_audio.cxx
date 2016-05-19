@@ -1,7 +1,9 @@
 #include "game.h"
+#include "sound.h"
 
 void Game::InitAudio()
 {
+  
 /*
   audio = new MyAudio();
 

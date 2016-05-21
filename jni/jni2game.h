@@ -22,6 +22,8 @@
       static void Quit(const char *message) { Call("ErrorCallback", message); }
       static void SetHighScore(const int hs) { Call("CBSetHighScore", hs); }
       static int GetHighScore() { return Call("CBGetHighScore"); }
+      static void SetMuteState(const int ms) { Call("CBSetMuteState", ms); }
+      static int GetMuteState() { return Call("CBGetMuteState"); }
 
     protected:
       static void Call(const char *javaStaticMethod, const char *message);

@@ -2,6 +2,7 @@
 
 short SoundPlayer::buffer[NEXT_LEVEL_SCORE*MISS_SAMPLE_LENGTH];
 short SoundPlayer::bufferd[D_SAMPLE_LENGTH];
+int SoundPlayer::mute = 0;
 
 void SoundPlayer::Init()
 {
@@ -61,19 +62,19 @@ void SoundPlayer::Resume()
 
 void SoundPlayer::Play(short * buffer, int count)
 {
+  if(mute) return;
   selectClip(buffer, count);
 }
 
-//#include "jni2game.h"
 void SoundPlayer::PlayMiss(int tune)
 {
+  if(mute) return;
   tune = (tune + NEXT_LEVEL_SCORE - 1) % NEXT_LEVEL_SCORE;
   selectClip((short*)&buffer[tune*MISS_SAMPLE_LENGTH], MISS_SAMPLE_LENGTH*sizeof(short));
-//  MyCallback::Toast("PLAY");
 }
 
 void SoundPlayer::PlayD()
 {
+  if(mute) return;
   selectClip(bufferd, D_SAMPLE_LENGTH*sizeof(short));
-//  MyCallback::Toast("PLAY");
 }

@@ -462,12 +462,15 @@
     "  vec2 p = vec2(tc.x*vMul, tc.y);\n"
     "  if( (abs(p.y)<0.4)&&(p.x>-0.6)&&(p.x<-0.2) )\n"
     "  {\n"
-    "    gl_FragColor = vec4(abs(sin(tc.x*tc.y*4.9)), 0.3, 0.3, 1.0);\n" //magnet
+    "    if(vState>0.5)\n" //mute
+    "      gl_FragColor = vec4(0.0, 0.3, 0.3, 1.0);\n" //magnet
+    "    else gl_FragColor = vec4(abs(sin(tc.x*tc.y*4.9)), 0.3, 0.3, 1.0);\n" //magnet
     "  }\n"
     "  else if( (p.x>-0.2) && (p.x<0.6) && (abs(p.y)-0.75*p.x < 0.55) )\n"
     "  {\n"                                                              //diffuser
-    "    if(vState>0.5) gl_FragColor = vec4(0.7, abs(sin(tc.x*tc.y*4.9))*0.6, abs(sin(tc.x*tc.y*5.9))*0.6, 1.0);\n"
-    "    else gl_FragColor = vec4(0.9, 0.6, 0.6, 0.7);\n"
+    "    if(vState>0.5) gl_FragColor = vec4(0.2, 0.33, 0.33, 1.0);\n" //mute
+//    "    else gl_FragColor = vec4(0.7, abs(sin(tc.x*tc.y*4.9))*0.6, abs(sin(tc.x*tc.y*5.9))*0.6, 1.0);\n"
+    "    else gl_FragColor = vec4(0.5, 0.51-abs(sin(tc.x*tc.y*8.9))*0.51, 0.49-abs(sin(tc.x*tc.y*8.91))*0.49, 1.0);\n"
     "  }\n"
     "  else if( (abs(p.x)>1.0) || (abs(p.y)>1.0) ) discard;\n"
     "  else\n"

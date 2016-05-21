@@ -33,6 +33,7 @@
       void Render();
       static void Resize(float newMulValue);
       int Tap(float tx, float ty);
+      void SetState(const float _state){state=_state;}
     private:
       float x, y, state;
       GLint prog, vPos, vTC, vOffs;
@@ -171,7 +172,7 @@
       ColumnPreview cp;
       int bonus;
 
-      int firstRun, gameStarted, gameOver, gameLooped, scoreRestarted, direction, verticalMenu;
+      int firstRun, gameStarted, gameOver, gameLooped, scoreRestarted, direction, verticalMenu, muteState;
       float menu_x[NUMBER_OF_LEVELS<<1], menu_y[NUMBER_OF_LEVELS<<1];
 
       struct timeval lastTime;

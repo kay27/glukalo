@@ -97,6 +97,16 @@ public class MainActivity extends Activity
       return -1;
     return activity.getSharedPreferences(PREFS_ID, MODE_PRIVATE).getInt("hs", -1);
   }
+  public static void CBSetMuteState(final int ms)
+  {
+    SharedPreferences.Editor editor = activity.getSharedPreferences(PREFS_ID, MODE_PRIVATE).edit();
+    editor.putInt("ms", ms);
+    editor.commit();
+  }
+  public static int CBGetMuteState()
+  {
+    return activity.getSharedPreferences(PREFS_ID, MODE_PRIVATE).getInt("ms", -1);
+  }
 
   private MyGLSurfaceView mGLView;
 

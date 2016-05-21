@@ -19,7 +19,10 @@ Game::Game()
   selectedLevelScore = (-1) ^ SCORE_XOR_CODE;
 
   highScore = MyCallback::GetHighScore();
+  muteState = MyCallback::GetMuteState();
   if(highScore == -1) highScore = SCORE_XOR_CODE;
+  if(muteState != 1) muteState = 0;
+  if(muteState) SoundPlayer::Mute();
 
   codePass = 0;
 
@@ -31,6 +34,7 @@ Game::Game()
 Game::~Game()
 {
   SoundPlayer::Destroy();
+  MyCallback::SetMuteState(muteState);
 }
 
 void Game::Init()
@@ -75,7 +79,7 @@ void Game::Init()
   Bonus::Init();
   ColumnPreview::Init();
   levelIcon.Init(iconVertexShader, iconLevelFragmentShader, -ICON_SIZE/2-ICON_SIZE/4, -1+ICON_SIZE/2);
-  soundIcon.Init(iconVertexShader, iconSoundFragmentShader,  ICON_SIZE/2+ICON_SIZE/4, -1+ICON_SIZE/2, 1);
+  soundIcon.Init(iconVertexShader, iconSoundFragmentShader,  ICON_SIZE/2+ICON_SIZE/4, -1+ICON_SIZE/2, muteState);
 
   floorProgram = MyShader::CreateProgram();
   MyShader::AttachVertexShader(floorProgram, floorVertexShader);
@@ -210,7 +214,9 @@ void Game::Tap(float x, float y)
   }
   else if(soundIcon.Tap(x, y))
   {
-    MyCallback::Toast("Mute sound");
+    muteState = !muteState;
+    if(muteState) SoundPlayer::Mute(); else SoundPlayer::Unmute();
+    soundIcon.SetState(muteState);
     return;
   }
 

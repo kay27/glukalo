@@ -641,6 +641,13 @@ void Game::OnNewColumn(Column * c, float cx, int cScore, int cLevel)
 
   else if ( (!loop) && (level == 4) && (tail % (NEXT_LEVEL_SCORE/3) == 0) )
     c->MakeSolid();
+
+  else if ( (!loop) && (level == 3) && (tail == 10) )
+  {
+    bonus = 2;
+    bonusColumn = c;
+    b.Set(cx, c->GetY(), MUSHROOM_MISSILE);
+  }
 }
 
 void Game::RenderMenu(float delta)
@@ -751,7 +758,6 @@ void Game::SelectLevel(float x, float y)
     {
       if((newLevel == 12-5*back) && ((codePass&1)==back)) codePass++;
       else codePass = 0;
-//      if(codePass==8) MyCallback::Toast(":)");
       return;
     }
   }
@@ -761,10 +767,6 @@ void Game::SelectLevel(float x, float y)
     showMenu=0;
     return;
   }
-
-//    char msg[200];
-//    sprintf(msg, "x%d y%d s%d hs%d nl%d b%d nls%d", ix, iy, s, hs, newLevel, back, newLevelScore);
-//    MyCallback::Toast(msg);
 
   if(hs%(2*NEXT_LEVEL_SCORE*NUMBER_OF_LEVELS)==newLevelScore%(2*NEXT_LEVEL_SCORE*NUMBER_OF_LEVELS))
     selectedLevelScore = (-1) ^ SCORE_XOR_CODE;

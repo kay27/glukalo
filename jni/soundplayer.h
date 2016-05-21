@@ -4,6 +4,7 @@
 # include <math.h>
 # include "config.h"
 # include "sound.h"
+# include "system.h"
 
   class SoundPlayer
   {

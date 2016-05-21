@@ -9,50 +9,39 @@ void SoundPlayer::Init()
   createBufferQueueAudioPlayer();
 
   {
-    float r = (float(rand()) / float(RAND_MAX)-0.5) * 2.0;
+    float r = RandFloatN();
     for(int j=0; j<D_SAMPLE_LENGTH; j++)
     {
-//    bufferd[j]=((rand()-(RAND_MAX/2)) * 2) % (32768 * (D_SAMPLE_LENGTH-j) / D_SAMPLE_LENGTH);
-
-      float a = (float(D_SAMPLE_LENGTH)-float(j)-1.0) / float(D_SAMPLE_LENGTH);
-//      float mult = (exp(a)-1)*19000.0;
-      float mult = (exp(a)-1)*8000.0;
+      float a = BackNormalize(j, D_SAMPLE_LENGTH);
+      float mult = (exp(a)-1)*5777.77;
 
       bufferd[j] = r*mult;
 
-      if(j % (8 + j * 29 / D_SAMPLE_LENGTH) == 4)
-        r = (float(rand()) / float(RAND_MAX)-0.5) * 2.0;
+      if(j % (120 + j * 199 / D_SAMPLE_LENGTH) == 99)
+        r = RandFloatN();
     }
   }
 
   for(int i=0; i<NEXT_LEVEL_SCORE; i++)
+  {
+    float tune = pow(1.01,i);
+    float twice = 1;
     for(int j=0; j<MISS_SAMPLE_LENGTH; j++)
     {
-      float twice = 1;
-//      if(j>=MISS_SAMPLE_LENGTH>>2) twice=2;
+      float a = BackNormalize(j, MISS_SAMPLE_LENGTH);
 
-      float a = (float(MISS_SAMPLE_LENGTH)-float(j)-1.0) / float(MISS_SAMPLE_LENGTH);
-
+      if(a<=0.5) if(twice<2.0) twice += 0.00001;
+      if(twice>2.0) twice = 2.0;
+      float mult = (exp(a)-1)*19000.0;
       float slide = 0.999 + 0.001 * a;
 
-//      float tune = pow(1.0594630943592952645618252949463,i);
-//      float tune = pow(1.0293022366434920287823718007739,i);
-      float tune = pow(1.01,i);
       float step = (float)(j) / float(SAMPLE_RATE);
 
       float sine = sin(2.0 * PI * MISS_BASE_FREQ * tune * step * twice * slide);
-//      float mult = 32767.0*(MISS_SAMPLE_LENGTH-j)/MISS_SAMPLE_LENGTH;
-
-//      float a = (float(MISS_SAMPLE_LENGTH)-float(j)-1.0) * 22025.0 / float(MISS_SAMPLE_LENGTH) + 1;
-//      float mult = 3276.7 * log(a);
-
-//      float a = (float(MISS_SAMPLE_LENGTH)-float(j)-1.0) / float(MISS_SAMPLE_LENGTH) + 1;
-//      float mult = 47272 * log(a);
-
-      float mult = (exp(a)-1)*19000.0;
  
       buffer[i*MISS_SAMPLE_LENGTH + j] = (short)(sine * mult);
     }
+  }
 }
 
 void SoundPlayer::Destroy()

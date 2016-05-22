@@ -251,61 +251,7 @@ void Game::Render()
 
   if(cpu_overload) return;
 
-  float deltaX = delta*H_SPEED*direction;
-
-  int antiGravity = ((level + 1) & 3) == 3;
-
-  if(impulse)
-  {
-    impulse = 0;
-    speed = -TAP_IMPULSE;
-
-    if(tapFire) if(!gameOver) if(gameStarted) m.Start(x, y);
-  }
-
-  if(gameStarted)
-  {
-    speed += delta * ACCELERATION;
-
-    if(!gameOver)
-    {
-      FlyAway(deltaX);
-      MoveColumnsCheckPass(deltaX);
-      b.Move(delta, antiGravity, direction);
-    }
-  }
-
-  m.Move(delta, antiGravity, direction);
-
-  MoveBonus();
-
-  if(!gameOver)
-  {
-    floorOffset = fmod(floorOffset + deltaX, 1/yMulValue);
-
-    if(antiGravity) y += delta/GRAVITY_TUNE*speed;
-      else y -= delta/GRAVITY_TUNE*speed;
-  }
-
-  if(!(gameStarted||gameOver))
-    DemoAnimation(delta);
-
-  if(y > 1+BIRD_RADIUS*0.9)
-  {
-    y = 1+BIRD_RADIUS*0.9;
-    if(antiGravity) speed = -TAP_IMPULSE / 1.5;
-    else speed=0;
-  }
-
-  if(y < BIRD_RADIUS+FLOOR_HEIGHT-1)
-  {
-    y = BIRD_RADIUS+FLOOR_HEIGHT-1;
-    GameOver();
-  }
-
-  CheckMissiles();
-  CheckColumns();
-  CheckBonus();
+  Logic(delta);
 
   m.Render();
 
@@ -778,4 +724,113 @@ void Game::SelectLevel(float x, float y)
 
   blockMode = 2;
   showMenu=0;
+}
+
+void Game::Logic(const float delta)
+{
+  float deltaX = delta * H_SPEED * direction;
+
+  antiGravity = ((level + 1) & 3) == 3;
+
+  if(gameStarted)
+  {
+    speed += delta * ACCELERATION;
+
+    if(!gameOver)
+    {
+      if(impulse)
+      {
+        impulse = 0;
+        speed = -TAP_IMPULSE;
+        if(tapFire) m.Start(x, y);
+      }
+
+      FlyAway(deltaX);
+      MoveColumnsCheckPass(deltaX);
+      b.Move(delta, antiGravity, direction);
+    }
+  }
+
+  m.Move(delta, antiGravity, direction);
+
+  MoveBonus();
+
+  if(!gameOver)
+  {
+    floorOffset = fmod(floorOffset + deltaX, 1/yMulValue);
+
+    if(autoPilot) AutoPilot();
+    else if(antiGravity) y += delta/GRAVITY_TUNE*speed;
+    else y -= delta/GRAVITY_TUNE*speed;
+  }
+
+  if(!(gameStarted||gameOver))
+    DemoAnimation(delta);
+
+  if(y > 1+BIRD_RADIUS*0.9)
+  {
+    y = 1+BIRD_RADIUS*0.9;
+    if(antiGravity) speed = -TAP_IMPULSE / 1.5;
+    else speed=0;
+  }
+
+  if(y < BIRD_RADIUS+FLOOR_HEIGHT-1)
+  {
+    y = BIRD_RADIUS+FLOOR_HEIGHT-1;
+    GameOver();
+  }
+
+  CheckMissiles();
+  CheckColumns();
+  CheckBonus();
+}
+
+void Game::AutoPilot()
+{
+  float d1=100.0, d2=100.0, y1=y, y2=y, x1=x, x2=x;
+  for(int i=0; i<MAX_COLUMNS; i++)
+  {
+    float x0 = gaps[i].GetX();
+    float d = abs(x0 - x);
+
+    if(gaps[i].GetPassed()) //set previous gap
+    {
+      if(d<=d1) 
+      {
+        d1 = d;
+        x1 = x0;
+        if(gaps[i].GetSolid()) y1 = 0;
+        else y1 = gaps[i].GetY();
+      }
+    }
+    else //set next gap
+    {
+      if(d<=d2) 
+      {
+        d2 = d;
+        x2 = x0;
+        if(gaps[i].GetSolid()) y2 = 0;
+        else y2 = gaps[i].GetY();
+      }
+    }
+
+  }
+
+  if((d1>99)||(d2>99))
+  {
+    char msg[160];
+    sprintf(msg, "d1 or d2 fail: d1=%f, d2=%f, x=%f, y=%f, x1=%f, x2=%f, y1=%f, y2=%f.", d1, d2, x, y, x1, x2, y1, y2);
+    MyCallback::Toast(msg);
+//    MyCallback::Toast("d1 > 100 or d2 > 100");
+  }
+
+  float dx0 = abs(x - x1);
+  float dx = abs(x2 - x1);
+  float dy = y2 - y1;
+
+  if(dx >= 0.000000001)
+//    y = y1 + dy * (dx0 / dx);
+    y = y2 - dy * ((dx-dx0) / dx);
+
+  speed = 0;
 }

@@ -94,6 +94,8 @@
 
       inline void Freeze(float y_, float halfSize_){  y = y_; halfSize = halfSize_; freeze = 1; solid = 0; }
 
+      inline int GetPassed(){ return passed; }
+
       inline const float GetX(){ return x; }
 
       inline const float GetY(){ return y; }
@@ -146,6 +148,7 @@
       float GetTimeInterval();
       void FlyAway(float deltaX);
       void Init();
+      void Logic(const float delta);
       void MoveBonus();
       void MoveColumnsCheckPass(float deltaX);
       void OnNewColumn(Column * c, float cx, int cScore, int cLevel);
@@ -161,6 +164,7 @@
       void SelectLevel(float x, float y);
       void Untap();
       void UpdateHighScore();
+      void AutoPilot();
 
     protected:
 
@@ -173,7 +177,7 @@
       BonusType bonus;
 
       int firstRun, gameStarted, gameOver, gameLooped, scoreRestarted, direction, verticalMenu, muteState;
-      int autoPilot;
+      int antiGravity, autoPilot;
       float menu_x[NUMBER_OF_LEVELS<<1], menu_y[NUMBER_OF_LEVELS<<1];
 
       struct timeval lastTime;

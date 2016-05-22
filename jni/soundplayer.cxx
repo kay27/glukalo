@@ -2,6 +2,8 @@
 
 short SoundPlayer::buffer[NEXT_LEVEL_SCORE*MISS_SAMPLE_LENGTH];
 short SoundPlayer::bufferd[D_SAMPLE_LENGTH];
+short SoundPlayer::bonusBuffer[BONUS_SAMPLE_LENGTH];
+short SoundPlayer::gameOverBuffer[GAMEOVER_SAMPLE_LENGTH];
 int SoundPlayer::mute = 0;
 
 void SoundPlayer::Init()
@@ -25,24 +27,46 @@ void SoundPlayer::Init()
 
   for(int i=0; i<NEXT_LEVEL_SCORE; i++)
   {
-    float tune = pow(1.01,i);
-    float twice = 1;
+    float tune = pow(1.02,i);
+    float freq = MISS_BASE_FREQ * tune;
+    freq = Clamp(freq, 20, 8000);
     for(int j=0; j<MISS_SAMPLE_LENGTH; j++)
     {
-      float a = BackNormalize(j, MISS_SAMPLE_LENGTH);
-
-      if(a<=0.5) if(twice<2.0) twice += 0.00001;
-      if(twice>2.0) twice = 2.0;
-      float mult = (exp(a)-1)*19000.0;
-      float slide = 0.999 + 0.001 * a;
-
+      float volume = (8020-freq) / 8000;
+      float pos = BackNormalize(j, MISS_SAMPLE_LENGTH); //0...1-
+      float fade = (exp(pos) - 1) * 19000.0;
       float step = (float)(j) / float(SAMPLE_RATE);
-
-      float sine = sin(2.0 * PI * MISS_BASE_FREQ * tune * step * twice * slide);
- 
-      buffer[i*MISS_SAMPLE_LENGTH + j] = (short)(sine * mult);
+      float vibr = sin(2.0 * PI * pos * 2) * 0.01 + 1;
+      float sine = sin(2.0 * PI * freq * step * vibr);
+      buffer[i*MISS_SAMPLE_LENGTH + j] = (short)(sine * volume * fade);
     }
   }
+
+  {
+    float freq = 300;
+    for(int j=0; j<BONUS_SAMPLE_LENGTH; j++)
+    {
+      float pos = BackNormalize(j, BONUS_SAMPLE_LENGTH); //0...1-
+      float fade = (exp(pos) - 1) * 19000.0;
+      float step = (float)(j) / float(SAMPLE_RATE);
+      float vibr = sin(2.0 * PI * pos * 8) * 0.07 + 1;
+      float sine = sin(2.0 * PI * freq * step * vibr);
+      bonusBuffer[j] = (short)(sine * fade);
+    }
+  }
+
+  {
+    for(int j=0; j<GAMEOVER_SAMPLE_LENGTH; j++)
+    {
+      float pos = BackNormalize(j, GAMEOVER_SAMPLE_LENGTH); //0...1-
+//      float fade = (exp(pos) - 1) * 9500.0;
+      float fade = (exp(pos) - 1) * 1992.7;
+      float step = (float)(j) / float(SAMPLE_RATE);
+      float sine = sin(2.0 * PI * 2992.7 * step * (1.0-pos/33));
+      gameOverBuffer[j] = (short)(fade * (RandFloatN()*0.2 + sine*0.8));
+    }
+  }
+
 }
 
 void SoundPlayer::Destroy()
@@ -77,4 +101,16 @@ void SoundPlayer::PlayD()
 {
   if(mute) return;
   selectClip(bufferd, D_SAMPLE_LENGTH*sizeof(short));
+}
+
+void SoundPlayer::PlayBonus()
+{
+  if(mute) return;
+  selectClip(bonusBuffer, BONUS_SAMPLE_LENGTH*sizeof(short));
+}
+
+void SoundPlayer::PlayGameOver()
+{
+  if(mute) return;
+  selectClip(gameOverBuffer, GAMEOVER_SAMPLE_LENGTH*sizeof(short));
 }

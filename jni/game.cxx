@@ -111,7 +111,7 @@ void Game::Init()
   glUniform1f(vFontLineSize, CHAR_LINE_SIZE);
   glUseProgram(0);
 
-  glClearColor(0.0, 0.0, 0.0, 1.0);
+//  glClearColor(0.0, 0.0, 0.0, 1.0);
 
   blockMode = 2;
 }
@@ -168,6 +168,8 @@ void Game::Restart()
   glUseProgram(0);
 
   gettimeofday(&lastTime, NULL);
+
+  glClearColor(0.0, 0.0, 0.0, 1.0);
 
   blockMode = 1;
 }
@@ -392,6 +394,7 @@ void Game::PrintNumber(float xcrd, float ycrd, float r, float g, float b, int nu
 
 void Game::GameOver()
 {
+  SoundPlayer::PlayGameOver();
   gameOverTime = 0;
   gameOver=1;
   UpdateHighScore();
@@ -596,6 +599,7 @@ void Game::CheckBonus()
       autoPilot = AUTOPILOT_TIME_US;
       break;
   }
+  SoundPlayer::PlayBonus();
   bonus = NO_BONUS;
 }
 

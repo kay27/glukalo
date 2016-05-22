@@ -1,7 +1,7 @@
 # Glukalo &copy; kay27, 2016
 > Remake of old good Flappy Bird by .GEARS
 
- 0 level  1 left-to-right flight
+ 0 level  1 left-to-right flight, 10+ autopilot
  1 level  2 moving blocks
  2 level  3 anti-gravity
  3 level  4

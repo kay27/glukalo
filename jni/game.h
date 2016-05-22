@@ -40,7 +40,7 @@
       static float vm;
   };
 
-  enum BonusType { MUSHROOM_MISSILE, SLOWDOWN, SPEEDUP };
+  enum BonusType { NO_BONUS, MUSHROOM_MISSILE, AUTOPILOT, SLOWDOWN, SPEEDUP };
 
   class Bonus
   {
@@ -170,9 +170,10 @@
       Bonus b;
       Column * bonusColumn;
       ColumnPreview cp;
-      int bonus;
+      BonusType bonus;
 
       int firstRun, gameStarted, gameOver, gameLooped, scoreRestarted, direction, verticalMenu, muteState;
+      int autoPilot;
       float menu_x[NUMBER_OF_LEVELS<<1], menu_y[NUMBER_OF_LEVELS<<1];
 
       struct timeval lastTime;

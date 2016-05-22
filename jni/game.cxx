@@ -130,7 +130,8 @@ void Game::Restart()
   floorOffset    =  0;
   direction      =  1;
   tapFire        =  0;
-  bonus          =  0;
+  bonus          =  NO_BONUS;
+  autoPilot      =  0;
 
   {
     int hs0 = highScore ^ SCORE_XOR_CODE;
@@ -244,11 +245,7 @@ void Game::Render()
   if(showMenu || (!cpu_overload))
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-  if(showMenu)
-  {
-    RenderMenu(delta);
-    return;
-  }
+  if(showMenu) return RenderMenu(delta);
 
   if(cpu_overload) return;
 
@@ -268,10 +265,9 @@ void Game::Render()
   {
     speed += delta * ACCELERATION;
 
-    FlyAway(deltaX);
-
     if(!gameOver)
     {
+      FlyAway(deltaX);
       MoveColumnsCheckPass(deltaX);
       b.Move(delta, antiGravity, direction);
     }
@@ -344,7 +340,7 @@ void Game::Render()
 
   PrintScore();
 
-  if(bonus) b.Render();
+  if(bonus!=NO_BONUS) b.Render();
 }
 
 void Game::PrintScore()
@@ -591,12 +587,16 @@ void Game::CheckBonus()
 {
   if(!bonus) return;
   if(!b.Collision(x, y)) return;
-  if(bonus==1)
+  switch(bonus)
   {
-    tapFire = 1;
-    bonus = 0;
-    return;
+    case MUSHROOM_MISSILE:
+      tapFire = 1;
+      break;
+    case AUTOPILOT:
+      autoPilot = AUTOPILOT_TIME_US;
+      break;
   }
+  bonus = NO_BONUS;
 }
 
 void Game::FlyAway(float deltaX)
@@ -631,9 +631,9 @@ void Game::OnNewColumn(Column * c, float cx, int cScore, int cLevel)
 
   if ( (!loop) && (level == 3) && (tail == NEXT_LEVEL_SCORE - 2) )
   { // end of level 4 - get missiles
-    bonus = 1;
+    bonus = MUSHROOM_MISSILE;
     bonusColumn = c;
-    b.Set(cx, c->GetY(), MUSHROOM_MISSILE);
+    b.Set(cx, c->GetY(), bonus);
   }
 
   else if ( (!loop) && (level == 3) && (tail == NEXT_LEVEL_SCORE - 1) )
@@ -642,11 +642,10 @@ void Game::OnNewColumn(Column * c, float cx, int cScore, int cLevel)
   else if ( (!loop) && (level == 4) && (tail % (NEXT_LEVEL_SCORE/3) == 0) )
     c->MakeSolid();
 
-  else if ( (!loop) && (level == 3) && (tail == 10) )
+  else if ( (!loop) && (level == 0) && (tail == 10) )
   {
-    bonus = 2;
-    bonusColumn = c;
-    b.Set(cx, c->GetY(), MUSHROOM_MISSILE);
+    bonus = AUTOPILOT;
+    b.Set(cx + SEGMENT/2, RandFloat()/2, bonus);
   }
 }
 

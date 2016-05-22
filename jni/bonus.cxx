@@ -46,7 +46,7 @@ void Bonus::Render()
 {
   glUseProgram(program);
   glUniform4f(vOffs, x, y, vm, angle);
-  glUniform1i(vType, 1);
+  glUniform1i(vType, type);
   glDrawArrays(GL_TRIANGLE_STRIP, 20, 4);
 }
 

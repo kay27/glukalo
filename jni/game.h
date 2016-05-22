@@ -164,7 +164,7 @@
       void SelectLevel(float x, float y);
       void Untap();
       void UpdateHighScore();
-      void AutoPilot();
+      void AutoPilot(const float delta);
 
     protected:
 

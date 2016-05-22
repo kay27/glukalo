@@ -759,7 +759,7 @@ void Game::Logic(const float delta)
   {
     floorOffset = fmod(floorOffset + deltaX, 1/yMulValue);
 
-    if(autoPilot) AutoPilot();
+    if(autoPilot) AutoPilot(delta);
     else if(antiGravity) y += delta/GRAVITY_TUNE*speed;
     else y -= delta/GRAVITY_TUNE*speed;
   }
@@ -785,52 +785,47 @@ void Game::Logic(const float delta)
   CheckBonus();
 }
 
-void Game::AutoPilot()
+void Game::AutoPilot(const float delta)
 {
   float d1=100.0, d2=100.0, y1=y, y2=y, x1=x, x2=x;
   for(int i=0; i<MAX_COLUMNS; i++)
   {
-    float x0 = gaps[i].GetX();
-    float d = abs(x0 - x);
+    Column & g = gaps[i];
+    float x0 = g.GetX();
+    if( g.GetPassed() )
+      x0 += direction * COLUMN_HALFWIDTH;
+    else
+      x0 -= direction * COLUMN_HALFWIDTH;
+    float d = fabs(x0 - x);
 
-    if(gaps[i].GetPassed()) //set previous gap
+    if( g.GetPassed() )
     {
       if(d<=d1) 
       {
-        d1 = d;
-        x1 = x0;
-        if(gaps[i].GetSolid()) y1 = 0;
-        else y1 = gaps[i].GetY();
+        d1 = d; x1 = x0;
+        if(g.GetSolid()) y1 = 0; else y1 = g.GetY();
       }
     }
     else //set next gap
     {
       if(d<=d2) 
       {
-        d2 = d;
-        x2 = x0;
-        if(gaps[i].GetSolid()) y2 = 0;
-        else y2 = gaps[i].GetY();
+        d2 = d; x2 = x0;
+        if(g.GetSolid()) y2 = 0; else y2 = g.GetY();
       }
     }
 
   }
 
-  if((d1>99)||(d2>99))
-  {
-    char msg[160];
-    sprintf(msg, "d1 or d2 fail: d1=%f, d2=%f, x=%f, y=%f, x1=%f, x2=%f, y1=%f, y2=%f.", d1, d2, x, y, x1, x2, y1, y2);
-    MyCallback::Toast(msg);
-//    MyCallback::Toast("d1 > 100 or d2 > 100");
-  }
-
-  float dx0 = abs(x - x1);
-  float dx = abs(x2 - x1);
+  float dx0 = fabs(x - x1);
+  float dx = fabs(x2 - x1);
   float dy = y2 - y1;
 
-  if(dx >= 0.000000001)
-//    y = y1 + dy * (dx0 / dx);
-    y = y2 - dy * ((dx-dx0) / dx);
+  if(dx > 0.00000001)
+    y = y1 + dy * (dx0 / dx);
 
   speed = 0;
+
+//  autoPilot = max(autoPilot-delta, 0);
+  if(delta > autoPilot) autoPilot = 0; else autoPilot -= delta;
 }

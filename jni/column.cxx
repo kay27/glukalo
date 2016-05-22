@@ -118,7 +118,7 @@ float Column::Move(float dx)
 {
   x -= dx;
 
-  float delta = abs(dx / H_SPEED);
+  float delta = fabs(dx / H_SPEED);
   if(freeze)
     delta /= 2.7;
 

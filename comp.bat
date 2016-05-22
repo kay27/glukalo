@@ -29,7 +29,11 @@ if %step% leq 1 (
   if "%only%" equ "only" exit /b 0
 )
 if %step% leq 2 (
-  set ccmd=%ndkbuild%
+  if "%target%"=="release" (
+    set ccmd=%ndkbuild% NDK_DEBUG=0
+  ) else (
+    set ccmd=%ndkbuild%
+  )
   call:callandlog "Step 2: NDK Build" ndkbuild.log
   if errorlevel 1 exit /b %errorlevel%
   if "%only%" equ "only" exit /b 0

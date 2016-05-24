@@ -795,7 +795,7 @@ void Game::AutoPilot(const float delta)
   {
     Column & g = gaps[i];
     float x0 = g.GetX();
-    if((x>=x0-COLUMN_HALFWIDTH*direction) && (x<=x0+COLUMN_HALFWIDTH*direction))
+    if((x >= x0-COLUMN_HALFWIDTH) && (x <= x0+COLUMN_HALFWIDTH))
     {
       y = g.GetY();
       return;

@@ -787,11 +787,20 @@ void Game::Logic(const float delta)
 
 void Game::AutoPilot(const float delta)
 {
+//  autoPilot = max(autoPilot-delta, 0);
+  if(delta > autoPilot) autoPilot = 0; else autoPilot -= delta;
+
   float d1=100.0, d2=100.0, y1=y, y2=y, x1=x, x2=x;
   for(int i=0; i<MAX_COLUMNS; i++)
   {
     Column & g = gaps[i];
     float x0 = g.GetX();
+    if((x>=x0-COLUMN_HALFWIDTH*direction) && (x<=x0+COLUMN_HALFWIDTH*direction))
+    {
+      y = g.GetY();
+      return;
+    }
+
     if( g.GetPassed() )
       x0 += direction * COLUMN_HALFWIDTH;
     else
@@ -825,7 +834,4 @@ void Game::AutoPilot(const float delta)
     y = y1 + dy * (dx0 / dx);
 
   speed = 0;
-
-//  autoPilot = max(autoPilot-delta, 0);
-  if(delta > autoPilot) autoPilot = 0; else autoPilot -= delta;
 }

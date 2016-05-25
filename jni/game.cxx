@@ -795,16 +795,16 @@ void Game::AutoPilot(const float delta)
   {
     Column & g = gaps[i];
     float x0 = g.GetX();
-    if((x >= x0-COLUMN_HALFWIDTH) && (x <= x0+COLUMN_HALFWIDTH))
+    if((x >= x0-COLUMN_HALFWIDTH-BIRD_RADIUS) && (x <= x0+COLUMN_HALFWIDTH+BIRD_RADIUS))
     {
       y = g.GetY();
       return;
     }
 
     if( g.GetPassed() )
-      x0 += direction * COLUMN_HALFWIDTH;
+      x0 += direction * (COLUMN_HALFWIDTH + BIRD_RADIUS);
     else
-      x0 -= direction * COLUMN_HALFWIDTH;
+      x0 -= direction * (COLUMN_HALFWIDTH + BIRD_RADIUS);
     float d = fabs(x0 - x);
 
     if( g.GetPassed() )
@@ -812,7 +812,7 @@ void Game::AutoPilot(const float delta)
       if(d<=d1) 
       {
         d1 = d; x1 = x0;
-        if(g.GetSolid()) y1 = 0; else y1 = g.GetY();
+        if(g.GetSolid()) y1 = y; else y1 = g.GetY();
       }
     }
     else //set next gap
@@ -820,18 +820,20 @@ void Game::AutoPilot(const float delta)
       if(d<=d2) 
       {
         d2 = d; x2 = x0;
-        if(g.GetSolid()) y2 = 0; else y2 = g.GetY();
+        if(g.GetSolid()) y2 = y; else y2 = g.GetY();
       }
     }
 
   }
 
-  float dx0 = fabs(x - x1);
+//  float dx0 = fabs(x - x1);
+  float dx0 = fabs(x2 - x);
   float dx = fabs(x2 - x1);
   float dy = y2 - y1;
 
   if(dx > 0.00000001)
-    y = y1 + dy * (dx0 / dx);
+//    y = y1 + dy * (dx0 / dx);
+    y = y1 + dy * ((dx-dx0) / dx);
 
   speed = 0;
 }

@@ -191,7 +191,7 @@
       int impulse, pause, score, highScore, level, maxLevel, tapFire, showMenu, selectedLevelScore;
 
       GLuint vb;
-      GLint vPosition, vTextureCoordinate, vColor, vOffset, vEye, vRadius, vMul,
+      GLint vPosition, vTextureCoordinate, vColor, vOffset, vState, vRadius, vMul,
         vFloorPosition, vFloorOffset, vFontPosition, vFontOffset, vFontCharCode,
         vFontColor, vCharMul, vFontLineSize, vCharOffset;
      

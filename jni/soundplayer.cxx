@@ -4,6 +4,7 @@ short SoundPlayer::buffer[NEXT_LEVEL_SCORE*MISS_SAMPLE_LENGTH];
 short SoundPlayer::bufferd[D_SAMPLE_LENGTH];
 short SoundPlayer::bonusBuffer[BONUS_SAMPLE_LENGTH];
 short SoundPlayer::gameOverBuffer[GAMEOVER_SAMPLE_LENGTH];
+short SoundPlayer::endOfautoPilotBuffer[ENDOFAUTOPILOT_SAMPLE_LENGTH];
 int SoundPlayer::mute = 0;
 
 void SoundPlayer::Init()
@@ -67,6 +68,13 @@ void SoundPlayer::Init()
     }
   }
 
+  {
+    for(int j=0; j<ENDOFAUTOPILOT_SAMPLE_LENGTH; j++)
+    {
+      endOfautoPilotBuffer[j] = (short)((j<<(j&7))&65535);
+    }
+  }
+
 }
 
 void SoundPlayer::Destroy()
@@ -113,4 +121,10 @@ void SoundPlayer::PlayGameOver()
 {
   if(mute) return;
   selectClip(gameOverBuffer, GAMEOVER_SAMPLE_LENGTH*sizeof(short));
+}
+
+void SoundPlayer::PlayEndOfAutoPilot()
+{
+  if(mute) return;
+  selectClip(endOfautoPilotBuffer, ENDOFAUTOPILOT_SAMPLE_LENGTH*sizeof(short));
 }

@@ -64,7 +64,7 @@ void Game::Init()
   vOffset = glGetUniformLocation(birdProgram, "vOffset");
   vRadius = glGetUniformLocation(birdProgram, "vRadius");
   vMul    = glGetUniformLocation(birdProgram, "vMul");
-  vEye    = glGetUniformLocation(birdProgram, "vEye");
+  vState  = glGetUniformLocation(birdProgram, "vState");
 
   glEnableVertexAttribArray(vPosition);
   glEnableVertexAttribArray(vTextureCoordinate);
@@ -165,6 +165,7 @@ void Game::Restart()
 
   glUseProgram(birdProgram);
   glUniform1f(vRadius, (float)1.0);
+  glUniform4f(vColor, 0, 0.6, 1, 1);
   glUseProgram(0);
 
   gettimeofday(&lastTime, NULL);
@@ -270,7 +271,7 @@ void Game::Render()
     glUniform1f(vRadius,deltaGameOver);
   }
   glUniform4f(vOffset, x, y, 0.0, 0.0);
-  glUniform2f(vEye, ((float)direction)/2.0, 0.5 - antiGravity);
+  glUniform4f(vState, ((float)direction)/2.0, 0.5 - antiGravity, autoPilot>0, float(autoPilot)/float(AUTOPILOT_TIME_US));
   glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
   for(int i=0; i<MAX_COLUMNS; i++)
@@ -365,7 +366,11 @@ void Game::ChangeLevel()
 
   if(s >= 4 * NEXT_LEVEL_SCORE)
     if(tapFire == 0)
+    {
+      glUseProgram(birdProgram);
+      glUniform4f(vColor, 0.6, 0.4, 0.8, 1);
       tapFire = 1;
+    }
 
   if(s == 2 * NUMBER_OF_LEVELS * NEXT_LEVEL_SCORE)
   {
@@ -539,6 +544,8 @@ void Game::CheckBonus()
   switch(bonus)
   {
     case MUSHROOM_MISSILE:
+      glUseProgram(birdProgram);
+      glUniform4f(vColor, 0.6, 0.4, 0.8, 1);
       tapFire = 1;
       break;
     case AUTOPILOT:
@@ -789,6 +796,8 @@ void Game::AutoPilot(const float delta)
 {
 //  autoPilot = max(autoPilot-delta, 0);
   if(delta > autoPilot) autoPilot = 0; else autoPilot -= delta;
+  if(autoPilot==0)
+     SoundPlayer::PlayEndOfAutoPilot();
 
   float d1=100.0, d2=100.0, y1=y, y2=y, x1=x, x2=x;
   for(int i=0; i<MAX_COLUMNS; i++)

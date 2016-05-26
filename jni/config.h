@@ -66,6 +66,7 @@
   const int   BONUS_SAMPLE_LENGTH = SAMPLE_RATE * 4 / 10; //0.4 s
   const int   GAMEOVER_SAMPLE_LENGTH = SAMPLE_RATE * 1 / 1; //1.0 s
   const int   D_SAMPLE_LENGTH = SAMPLE_RATE * 4 / 100; //0.04 s
+  const int   ENDOFAUTOPILOT_SAMPLE_LENGTH = SAMPLE_RATE * 2 / 100; //0.02 s
   const float PI = 3.14159265358;
   const int MISS_BASE_FREQ = 300;
 //  const int   BUFFER_FRAMES = 441;

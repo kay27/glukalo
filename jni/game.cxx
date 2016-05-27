@@ -111,8 +111,6 @@ void Game::Init()
   glUniform1f(vFontLineSize, CHAR_LINE_SIZE);
   glUseProgram(0);
 
-//  glClearColor(0.0, 0.0, 0.0, 1.0);
-
   blockMode = 2;
 }
 
@@ -165,7 +163,6 @@ void Game::Restart()
 
   glUseProgram(birdProgram);
   glUniform1f(vRadius, (float)1.0);
-  glUniform4f(vColor, 0, 0.6, 1, 1);
   glUseProgram(0);
 
   gettimeofday(&lastTime, NULL);
@@ -271,7 +268,8 @@ void Game::Render()
     glUniform1f(vRadius,deltaGameOver);
   }
   glUniform4f(vOffset, x, y, 0.0, 0.0);
-  glUniform4f(vState, ((float)direction)/2.0, 0.5 - antiGravity, autoPilot>0, float(autoPilot)/float(AUTOPILOT_TIME_US));
+  glUniform4f(vState, ((float)direction)/2.0, 0.5 - antiGravity, 
+    (autoPilot>0) + ((tapFire>0)<<1), float(autoPilot)/float(AUTOPILOT_TIME_US));
   glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
   for(int i=0; i<MAX_COLUMNS; i++)
@@ -366,11 +364,7 @@ void Game::ChangeLevel()
 
   if(s >= 4 * NEXT_LEVEL_SCORE)
     if(tapFire == 0)
-    {
-      glUseProgram(birdProgram);
-      glUniform4f(vColor, 0.6, 0.4, 0.8, 1);
       tapFire = 1;
-    }
 
   if(s == 2 * NUMBER_OF_LEVELS * NEXT_LEVEL_SCORE)
   {
@@ -544,8 +538,6 @@ void Game::CheckBonus()
   switch(bonus)
   {
     case MUSHROOM_MISSILE:
-      glUseProgram(birdProgram);
-      glUniform4f(vColor, 0.6, 0.4, 0.8, 1);
       tapFire = 1;
       break;
     case AUTOPILOT:
@@ -599,11 +591,11 @@ void Game::OnNewColumn(Column * c, float cx, int cScore, int cLevel)
   else if ( (!loop) && (level == 4) && (tail % (NEXT_LEVEL_SCORE/3) == 0) )
     c->MakeSolid();
 
-  else if ( (!loop) && (level == 0) && (tail == 10) )
-  {
-    bonus = AUTOPILOT;
-    b.Set(cx + SEGMENT/2, RandFloat()/2, bonus);
-  }
+  else if ( (!loop) && (level == 0) && (tail == NEXT_LEVEL_SCORE/5) )
+  { bonus = AUTOPILOT; b.Set(cx + SEGMENT/2, RandFloat()/2, bonus); }
+
+  else if ( (loop || (level != 0)) && (tail == NEXT_LEVEL_SCORE/2) )
+  { bonus = AUTOPILOT; b.Set(cx + direction * SEGMENT/2, RandFloat()/2, bonus); }
 }
 
 void Game::RenderMenu(float delta)
@@ -794,6 +786,8 @@ void Game::Logic(const float delta)
 
 void Game::AutoPilot(const float delta)
 {
+  speed = 0;
+
 //  autoPilot = max(autoPilot-delta, 0);
   if(delta > autoPilot) autoPilot = 0; else autoPilot -= delta;
   if(autoPilot==0)
@@ -835,14 +829,10 @@ void Game::AutoPilot(const float delta)
 
   }
 
-//  float dx0 = fabs(x - x1);
   float dx0 = fabs(x2 - x);
   float dx = fabs(x2 - x1);
   float dy = y2 - y1;
 
   if(dx > 0.00000001)
-//    y = y1 + dy * (dx0 / dx);
     y = y1 + dy * ((dx-dx0) / dx);
-
-  speed = 0;
 }

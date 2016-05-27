@@ -30,9 +30,9 @@ if %step% leq 1 (
 )
 if %step% leq 2 (
   if "%target%"=="release" (
-    set ccmd=%ndkbuild% NDK_DEBUG=0
+    set ccmd=%ndkbuild% -j4 NDK_DEBUG=0
   ) else (
-    set ccmd=%ndkbuild%
+    set ccmd=%ndkbuild% -j4
   )
   call:callandlog "Step 2: NDK Build" ndkbuild.log
   if errorlevel 1 exit /b %errorlevel%

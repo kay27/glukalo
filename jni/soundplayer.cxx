@@ -69,9 +69,11 @@ void SoundPlayer::Init()
   }
 
   {
-    for(int j=0; j<ENDOFAUTOPILOT_SAMPLE_LENGTH; j++)
+    for(int j=0, i=64; j<ENDOFAUTOPILOT_SAMPLE_LENGTH; j++,j^=192)
     {
-      endOfautoPilotBuffer[j] = (short)((j<<(j&7))&65535);
+//      endOfautoPilotBuffer[j] = (short)((j<<(j&7))&65535);
+      endOfautoPilotBuffer[j] = (short)((j&i)<<7) - 4096;
+//      i=i^192;
     }
   }
 

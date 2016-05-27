@@ -83,7 +83,6 @@
     "uniform vec4 vState;\n" //xy = eye crds, z = type, w = progress
     "void main()\n"
     "{\n" // based on http://stackoverflow.com/a/11457353/5920627
-//    "  float distanceFromCenter = distance(vec2(vp.x*vMul, vp.y), vec2(tc.x*vMul,tc.y));\n"
     "  float dFC = length(vec2(tc.x*vMul,tc.y));\n"
     "  float dFY = distance(vState.xy*vRadius, vec2(tc.x*vMul,tc.y));\n"
     "  if((dFC > 1.0*vRadius)&&(dFY > 0.32*vRadius)) discard;\n"
@@ -92,12 +91,10 @@
     "  else if(dFY < 0.32*vRadius) gl_FragColor=vec4(0.0,0.0,0.0,1.0);\n"
     "  else if((dFC > 0.9*vRadius) && (vState.z>0.1))\n"
     "  {\n"
-//    "    float a=acos(length(vec2(tc.x*vMul,tc.y))/vRadius)/3.14159;\n"
-    "    float a=acos(tc.x*vMul/vRadius)/6.2831853;\n"
+    "    float a=acos(tc.x*vMul/dFC)/6.2831853;\n"
     "    if(tc.y>0.0) a=1.0-a;\n"
     "    if(a>vState.w)gl_FragColor = vColor * (1.0-dFC/3.0);\n"
-//    "    else gl_FragColor=vec4(1.0, 1.0, 0.0, 1.0)*vState.w + vColor*(1.0-dFC/3.0)*(1.0-vState.w);\n"
-    "    else if(fract(a*10.0)>=0.5) gl_FragColor=vec4(1.0,0.0,0.0,1.0); else gl_FragColor=vec4(0.0, 1.0, 0.0, 1.0);\n"
+    "    else if(fract(a*8.0+0.1) <= 0.2) gl_FragColor=vec4(0.0,1.0,1.0,1.0); else gl_FragColor=vec4(0.0, 1.0, 0.0, 1.0);\n"
     "  }\n"
     "  else gl_FragColor = vColor * (1.0-dFC/3.0);\n"
     "}\n"

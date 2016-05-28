@@ -151,6 +151,7 @@
       void Logic(const float delta);
       void MoveBonus();
       void MoveColumnsCheckPass(float deltaX);
+      int OnBackPressed();
       void OnNewColumn(Column * c, float cx, int cScore, int cLevel);
       void Pause();
       void PrintNumber(float xcrd, float ycrd, float r, float g, float b, int number);

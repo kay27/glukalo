@@ -69,6 +69,13 @@ public class MainActivity extends Activity
     mGLView.Resize(size.x, size.y);
   }
 
+  @Override
+  public void onBackPressed()
+  {
+    if(nativeOnBackPressed() == 0)
+      activity.finish();
+  }
+
   public static void ErrorCallback(final String message)
   {
     activity.runOnUiThread(new Runnable() {
@@ -112,6 +119,7 @@ public class MainActivity extends Activity
 
   static { System.loadLibrary("glukalo"); }
 
+  private static native int nativeOnBackPressed();
 }
 
 class MyGLSurfaceView extends GLSurfaceView

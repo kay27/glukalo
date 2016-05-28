@@ -836,3 +836,11 @@ void Game::AutoPilot(const float delta)
   if(dx > 0.00000001)
     y = y1 + dy * ((dx-dx0) / dx);
 }
+
+int Game::OnBackPressed()
+{
+  if(!showMenu) return 0;
+
+  showMenu = 0;
+  return 1;
+}

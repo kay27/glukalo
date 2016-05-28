@@ -29,6 +29,12 @@ int MyCallback::Call(const char *javaStaticMethod)
 extern "C"
 {
 
+  JNIEXPORT int Java_com_kay27_Glukalo_MainActivity_nativeOnBackPressed(JNIEnv* env)
+  {
+    if(!game) return 0;
+    return game->OnBackPressed();
+  }
+
   JNIEXPORT void Java_com_kay27_Glukalo_MyGLSurfaceView_nativeKeyPress(JNIEnv* env, jobject thiz, float x, float y)
   {
     if(game)

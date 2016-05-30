@@ -49,7 +49,7 @@
       Bonus() : angle(0) {}
       bool Collision(float x0, float y0);
       static void Init();
-      void Move(float delta, int antiGravity, int direction);
+      void Move(float delta, int antiGravity, int direction, float deltaX);
       void Set(float y_);
       void Set(float x_, float y_);
       void Set(float x_, float y_, BonusType type_);
@@ -72,7 +72,7 @@
       inline float GetX(){ return x; }
       inline float GetY(){ return y; }
       static void Init();
-      void Move(float delta, int antiGravity, int direction);
+      void Move(float delta, int antiGravity, int direction, float deltaX);
       void Render();
       static void Render(float x, float y);
       static void Resize(float newMulValue);

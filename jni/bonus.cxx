@@ -30,9 +30,9 @@ void Bonus::Init()
   glVertexAttribPointer(vTC,  2, GL_FLOAT, false, sizeof(MyVertex), (void*)offsetof(MyVertex,txtcrds));
 }
 
-void Bonus::Move(float delta, int antiGravity, int direction)
+void Bonus::Move(float delta, int antiGravity, int direction, float deltaX)
 {
-  x -= delta * H_SPEED * direction;
+  x -= deltaX;
   angle += delta / 1000000;
   if(angle > 4) angle -= 2*3.1415926;
 }

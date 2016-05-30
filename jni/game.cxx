@@ -776,11 +776,11 @@ void Game::Logic(const float delta)
 
       FlyAway(deltaX);
       MoveColumnsCheckPass(deltaX);
-      b.Move(delta, antiGravity, direction);
+      b.Move(delta, antiGravity, direction, deltaX);
     }
   }
 
-  m.Move(delta, antiGravity, direction);
+  m.Move(delta, antiGravity, direction, deltaX);
 
   MoveBonus();
 

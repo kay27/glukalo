@@ -32,12 +32,12 @@ void Missile::Init()
 
 void Missile::Move(float delta, int antiGravity, int direction)
 {
-  if(antiGravity) y += delta/GRAVITY_TUNE*a*0.9;
-    else y -= delta/GRAVITY_TUNE*a*0.9;
-  a += delta*ACCELERATION;
-
   if(phase == 2)
   {
+    if(antiGravity) y += delta/GRAVITY_TUNE*a*0.4;
+      else y -= delta/GRAVITY_TUNE*a*0.4;
+    a += delta*ACCELERATION;
+
     x -= delta * H_SPEED * direction;
     ec += delta;
     if(ec >= EXPLODE_TIMEOUT)
@@ -47,7 +47,14 @@ void Missile::Move(float delta, int antiGravity, int direction)
       return;
     }
   }
-  else if(phase == 1) x += delta * H_MISSILE_SPEED * direction;
+  else
+  {
+    if(antiGravity) y += delta/GRAVITY_TUNE*a*0.9;
+      else y -= delta/GRAVITY_TUNE*a*0.9;
+    a += delta*ACCELERATION;
+
+    if(phase == 1) x += delta * H_MISSILE_SPEED * direction;
+  }
 
   if((x > 1 + MISSILE_RADIUS) || (x < -1 - MISSILE_RADIUS) || (y < -1 - MISSILE_RADIUS))
   {

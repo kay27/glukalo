@@ -27,6 +27,12 @@ void Icon::Init(const char * vs, const char * fs, float x_, float y_)
   Init(vs, fs, x_, y_, 0);
 }
 
+void Icon::Move(float x_, float y_)
+{
+  x = x_;
+  y = y_;
+}
+
 void Icon::Render()
 {
   glUseProgram(prog);

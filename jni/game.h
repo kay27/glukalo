@@ -30,6 +30,7 @@
     public:
       void Init(const char * vs, const char * fs, float x_, float y_, float state_);
       void Init(const char * vs, const char * fs, float x_, float y_);
+      void Move(float x_, float y_);
       void Render();
       static void Resize(float newMulValue);
       int Tap(float tx, float ty);
@@ -153,6 +154,7 @@
       void MoveColumnsCheckPass(float deltaX);
       int OnBackPressed();
       void OnNewColumn(Column * c, float cx, int cScore, int cLevel);
+      void OnDirectionChange();
       void Pause();
       void PrintNumber(float xcrd, float ycrd, float r, float g, float b, int number);
       void PrintScore();

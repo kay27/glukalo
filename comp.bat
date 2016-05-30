@@ -16,6 +16,10 @@ if "%step%" equ "" set step=0
 if "%step:~-1%"==" " set step=%step:~0,-1%
 set only=%2
 
+set cores=%NUMBER_OF_PROCESSORS%
+if "%cores%" == "" set cores=1
+set /a gccthreads=cores*3/2+1
+
 if %step% leq 0 (
   set ccmd=clear
   call:callandlog "Step 0: Clear" nul
@@ -32,7 +36,7 @@ if %step% leq 2 (
   if "%target%"=="release" (
     set ccmd=%ndkbuild% -j4 NDK_DEBUG=0
   ) else (
-    set ccmd=%ndkbuild% -j4
+    set ccmd=%ndkbuild% -j%gccthreads%
   )
   call:callandlog "Step 2: NDK Build" ndkbuild.log
   if errorlevel 1 exit /b %errorlevel%

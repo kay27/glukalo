@@ -78,8 +78,10 @@ void Game::Init()
   Missile::Init();
   Bonus::Init();
   ColumnPreview::Init();
-  levelIcon.Init(iconVertexShader, iconLevelFragmentShader, -ICON_SIZE/2-ICON_SIZE/4, -1+ICON_SIZE/2);
-  soundIcon.Init(iconVertexShader, iconSoundFragmentShader,  ICON_SIZE/2+ICON_SIZE/4, -1+ICON_SIZE/2, muteState);
+//  levelIcon.Init(iconVertexShader, iconLevelFragmentShader, -ICON_SIZE/2-ICON_SIZE/4, -1+ICON_SIZE/2);
+//  soundIcon.Init(iconVertexShader, iconSoundFragmentShader,  ICON_SIZE/2+ICON_SIZE/4, -1+ICON_SIZE/2, muteState);
+  levelIcon.Init(iconVertexShader, iconLevelFragmentShader, -1+ICON_SIZE/2, 1-ICON_SIZE/2);
+  soundIcon.Init(iconVertexShader, iconSoundFragmentShader,  1-ICON_SIZE/2, 1-ICON_SIZE/2, muteState);
 
   floorProgram = MyShader::CreateProgram();
   MyShader::AttachVertexShader(floorProgram, floorVertexShader);
@@ -196,6 +198,8 @@ void Game::Resize(int w, int h)
     m.Resize(yMulValue);
     Bonus::Resize(yMulValue);
     Icon::Resize(yMulValue);
+    levelIcon.Move(-1+ICON_SIZE/2/yMulValue, 1-ICON_SIZE/2);
+    soundIcon.Move(1-ICON_SIZE/2/yMulValue, 1-ICON_SIZE/2);
     glUseProgram(birdProgram);
     glUniform1f(vMul, yMulValue);
     glUseProgram(fontProgram);
@@ -300,15 +304,15 @@ void Game::PrintScore()
 
   if(s>hs)
   {
-    PrintNumber(-1.0+charWidth*0.5, 1-CHAR_HALFHEIGHT, q*0.5+0.5, 0.7-q*0.3, 0.7-q*0.3, s);
+    PrintNumber(-1.0+charWidth*0.5+ICON_SIZE/yMulValue, 1-CHAR_HALFHEIGHT, q*0.5+0.5, 0.7-q*0.3, 0.7-q*0.3, s);
     return;
   }
 
   if(hs > 0)
-    PrintNumber(1-charWidth*(GetNumberLength(hs)-0.5), 1-CHAR_HALFHEIGHT, 1, 0.2, 0.2, hs);
+    PrintNumber(1-charWidth*(GetNumberLength(hs)-0.5)-ICON_SIZE/yMulValue, 1-CHAR_HALFHEIGHT, 1, 0.2, 0.2, hs);
 
   if(s>0)
-    PrintNumber(-1.0+charWidth*0.5, 1-CHAR_HALFHEIGHT, q*0.3+0.5, q*0.3+0.5, 1.0, s);
+    PrintNumber(-1.0+charWidth*0.5+ICON_SIZE/yMulValue, 1-CHAR_HALFHEIGHT, q*0.3+0.5, q*0.3+0.5, 1.0, s);
 
 }
 
@@ -357,9 +361,12 @@ void Game::ChangeLevel()
   {
     int s0 = s % (2 * NUMBER_OF_LEVELS * NEXT_LEVEL_SCORE);
 
+    int oldDirection = direction;
     if(s0 < NUMBER_OF_LEVELS * NEXT_LEVEL_SCORE)
       direction = 1;
     else direction = -1;
+    if(oldDirection != direction)
+      OnDirectionChange();
   }
 
   if(s >= 4 * NEXT_LEVEL_SCORE)
@@ -596,6 +603,12 @@ void Game::OnNewColumn(Column * c, float cx, int cScore, int cLevel)
 
   else if ( (loop || (level != 0)) && (tail == NEXT_LEVEL_SCORE/2) )
   { bonus = AUTOPILOT; b.Set(cx + direction * SEGMENT/2, RandFloat()/2, bonus); }
+}
+
+void Game::OnDirectionChange()
+{
+  if(m.GetPhase())
+    m.Explode();
 }
 
 void Game::RenderMenu(float delta)

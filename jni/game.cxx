@@ -132,6 +132,7 @@ void Game::Restart()
   tapFire        =  0;
   bonus          =  NO_BONUS;
   autoPilot      =  0;
+  randomTime     =  0;
 
   {
     int hs0 = highScore ^ SCORE_XOR_CODE;
@@ -271,9 +272,9 @@ void Game::Render()
     else glClearColor((1.0-deltaGameOver)/1.2, 0.0, 0.0, 1.0);
     glUniform1f(vRadius,deltaGameOver);
   }
-  glUniform4f(vOffset, x, y, 0.0, 0.0);
+  glUniform4f(vOffset, x, y, changeSpeed, float(randomTime)/float(RANDOM_BONUS_US));
   glUniform4f(vState, ((float)direction)/2.0, 0.5 - antiGravity, 
-    (autoPilot>0) + ((tapFire>0)<<1), float(autoPilot)/float(AUTOPILOT_TIME_US));
+    (autoPilot>0) + ((tapFire>0)<<1) + ((randomTime>0)<<2), float(autoPilot)/float(AUTOPILOT_TIME_US));
   glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
   for(int i=0; i<MAX_COLUMNS; i++)
@@ -550,6 +551,10 @@ void Game::CheckBonus()
     case AUTOPILOT:
       autoPilot = AUTOPILOT_TIME_US;
       break;
+    case RANDOM_BONUS:
+      randomTime = RANDOM_BONUS_US;
+      if(rand()%2 == 0) changeSpeed = 2; else changeSpeed = 0.5;
+      break;
   }
   SoundPlayer::PlayBonus();
   bonus = NO_BONUS;
@@ -603,6 +608,10 @@ void Game::OnNewColumn(Column * c, float cx, int cScore, int cLevel)
 
   else if ( (loop || (level != 0)) && (tail == NEXT_LEVEL_SCORE/2) )
   { bonus = AUTOPILOT; b.Set(cx + direction * SEGMENT/2, RandFloat()/2, bonus); }
+
+  else if(  ( (!loop) && (tail == (NEXT_LEVEL_SCORE/4) - 1) )
+    || ( (loop) && (tail == NEXT_LEVEL_SCORE - (NEXT_LEVEL_SCORE/4)) )  )
+  { bonus = RANDOM_BONUS; b.Set(cx + direction * SEGMENT/2, RandFloat()/2, bonus); }
 }
 
 void Game::OnDirectionChange()
@@ -741,6 +750,14 @@ void Game::SelectLevel(float x, float y)
 void Game::Logic(const float delta)
 {
   float deltaX = delta * H_SPEED * direction;
+  if(randomTime)
+  {
+    deltaX *= changeSpeed;
+    if(randomTime > delta) randomTime -= delta;
+      else randomTime=0;
+    if(randomTime == 0)
+      SoundPlayer::PlayEndOfAutoPilot();
+  }
 
   antiGravity = ((level + 1) & 3) == 3;
 

@@ -34,6 +34,7 @@
   const int MAX_MISSILES = 3;
 
   const int AUTOPILOT_TIME_US = 137 * 100 * 1000; // 10s
+  const int RANDOM_BONUS_US = 137 * 100 * 1000; // 10s
 
   const float GRAVITY_TUNE = 27000;
 

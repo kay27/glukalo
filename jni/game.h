@@ -41,7 +41,7 @@
       static float vm;
   };
 
-  enum BonusType { NO_BONUS, MUSHROOM_MISSILE, AUTOPILOT, SLOWDOWN, SPEEDUP };
+  enum BonusType { NO_BONUS, MUSHROOM_MISSILE, AUTOPILOT, RANDOM_BONUS };
 
   class Bonus
   {
@@ -180,12 +180,12 @@
       BonusType bonus;
 
       int firstRun, gameStarted, gameOver, gameLooped, scoreRestarted, direction, verticalMenu, muteState;
-      int antiGravity, autoPilot;
+      int antiGravity, autoPilot, randomTime;
       float menu_x[NUMBER_OF_LEVELS<<1], menu_y[NUMBER_OF_LEVELS<<1];
 
       struct timeval lastTime;
 
-      float gameOverTime;
+      float gameOverTime, changeSpeed;
 
       GLfloat speed, x, y, speedVect, yMulValue, floorOffset, charWidth;
 

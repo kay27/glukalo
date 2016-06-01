@@ -11,27 +11,9 @@ GLint Column::lastSwingVector       = -1;
 int   Column::gapCount              =  0;
 int   Column::lastLevel             = -1;
 
-bool Column::Collision(float x0, float y0, float yMulValue)
-{
-  float closestX = Clamp(x0, x - COLUMN_HALFWIDTH, x + COLUMN_HALFWIDTH);
-  float distanceX = x0 - closestX;
-
-  if(distanceX < BIRD_RADIUS/yMulValue) distanceX *= yMulValue;
-
-  float dx2 = distanceX * distanceX;
-
-  float closestY = Clamp(y0, -2, y - halfSize);
-  float distanceY = y0 - closestY;
-  if (dx2 + distanceY*distanceY < BIRD_RADIUS*BIRD_RADIUS)
-    return true;
-
-  closestY = Clamp(y0, y + halfSize, 2);
-  distanceY = y0 - closestY;
-  return dx2 + distanceY*distanceY < BIRD_RADIUS*BIRD_RADIUS;
-}
-
 int Column::Collision(float x0, float y0, float r0, float yMulValue)
 {
+  const float r2 = r0 * r0;
   float closestX = Clamp(x0, x - COLUMN_HALFWIDTH, x + COLUMN_HALFWIDTH);
   float distanceX = x0 - closestX;
 
@@ -41,12 +23,12 @@ int Column::Collision(float x0, float y0, float r0, float yMulValue)
 
   float closestY = Clamp(y0, -2, y - halfSize);
   float distanceY = y0 - closestY;
-  if (dx2 + distanceY*distanceY < r0*r0)
+  if (dx2 + distanceY*distanceY < r2)
     return -1;
 
   closestY = Clamp(y0, y + halfSize, 2);
   distanceY = y0 - closestY;
-  if(dx2 + distanceY*distanceY < r0*r0)
+  if(dx2 + distanceY*distanceY < r2)
     return 1;
 
   return 0;

@@ -73,12 +73,12 @@
       inline float GetY(){ return y; }
       static void Init();
       void Move(float delta, int antiGravity, int direction, float deltaX);
-      void Render();
+      void Render(float radius);
       static void Render(float x, float y);
       static void Resize(float newMulValue);
       void Start(float x_, float y_);
     private:
-      static GLint program, vPos, vTC, vOffs/*, vMul*/;
+      static GLint program, vPos, vTC, vOffs, vRadius;
       int phase;
       float a, x, y, ec;
       static float vm;
@@ -88,8 +88,6 @@
   {
     public:
       static void Init();
-
-      bool Collision(float x0, float y0, float yMulValue);
 
       int Collision(float x0, float y0, float r0, float yMulValue);
 
@@ -180,12 +178,12 @@
       BonusType bonus;
 
       int firstRun, gameStarted, gameOver, gameLooped, scoreRestarted, direction, verticalMenu, muteState;
-      int antiGravity, autoPilot, randomTime;
+      int antiGravity, autoPilot, randomTime, changeRadius;
       float menu_x[NUMBER_OF_LEVELS<<1], menu_y[NUMBER_OF_LEVELS<<1];
 
       struct timeval lastTime;
 
-      float gameOverTime, changeSpeed;
+      float gameOverTime, changeSpeed, addToRadius;
 
       GLfloat speed, x, y, speedVect, yMulValue, floorOffset, charWidth;
 
@@ -202,7 +200,7 @@
 
       Missile m;
 
-      int codePass;
+      int codePass, codePass2, codePass3;
   };
 
 #endif // #ifndef H_GAME_GLUKALO

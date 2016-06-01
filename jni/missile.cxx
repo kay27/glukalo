@@ -2,10 +2,10 @@
 
 GLint Missile::program = 0;
 GLint Missile::vPos = 0;
+GLint Missile::vRadius = 0;
 GLint Missile::vTC = 0;
 GLint Missile::vOffs = 0;
 float Missile::vm = 1;
-//GLint Missile::vMul = 0;
 
 void Missile::Explode()
 {
@@ -21,9 +21,10 @@ void Missile::Init()
   MyShader::AttachFragmentShader(program, missileFragmentShader);
   MyShader::LinkProgram(program);
   glUseProgram(program);
-  vPos  = glGetAttribLocation (program, "vPos");
-  vTC   = glGetAttribLocation (program, "vTC");
-  vOffs = glGetUniformLocation(program, "vOffs");
+  vPos    = glGetAttribLocation (program, "vPos");
+  vTC     = glGetAttribLocation (program, "vTC");
+  vOffs   = glGetUniformLocation(program, "vOffs");
+  vRadius = glGetUniformLocation (program, "vRadius");
   glEnableVertexAttribArray(vPos);
   glEnableVertexAttribArray(vTC);
   glVertexAttribPointer(vPos, 3, GL_FLOAT, false, sizeof(MyVertex), (void*)offsetof(MyVertex,pos));
@@ -68,11 +69,12 @@ void Missile::Resize(float newMulValue)
   vm = newMulValue;
 }
 
-void Missile::Render()
+void Missile::Render(float radius)
 {
   if(!phase) return;
   glUseProgram(program);
   glUniform4f(vOffs, x, y, vm, phase);
+  glUniform1f(vRadius, radius);
   glDrawArrays(GL_TRIANGLE_STRIP, 16, 4);
 }
 
@@ -80,6 +82,7 @@ void Missile::Render(float x, float y)
 {
   glUseProgram(program);
   glUniform4f(vOffs, x, y, vm, 33);
+  glUniform1f(vRadius, 1.0);
   glDrawArrays(GL_TRIANGLE_STRIP, 16, 4);
 }
 

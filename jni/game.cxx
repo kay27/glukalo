@@ -25,6 +25,8 @@ Game::Game()
   if(muteState) SoundPlayer::Mute();
 
   codePass = 0;
+  codePass2 = 0;
+  codePass3 = 0;
 
   Init();
 
@@ -133,6 +135,8 @@ void Game::Restart()
   bonus          =  NO_BONUS;
   autoPilot      =  0;
   randomTime     =  0;
+  changeRadius   =  0;
+  addToRadius    =  0;
 
   {
     int hs0 = highScore ^ SCORE_XOR_CODE;
@@ -256,26 +260,6 @@ void Game::Render()
 
   Logic(delta);
 
-  m.Render();
-
-  glUseProgram(birdProgram);
-  if(gameOver)
-  {
-    gameOverTime += delta;
-    float deltaGameOver = (1000000.0 - gameOverTime)/1000000.0;
-    if(deltaGameOver<=0)
-    {
-      glClearColor(0.0, 0.0, 0.0, 1.0);
-      deltaGameOver = 1.0;
-      blockMode = 2;
-    }
-    else glClearColor((1.0-deltaGameOver)/1.2, 0.0, 0.0, 1.0);
-    glUniform1f(vRadius,deltaGameOver);
-  }
-  glUniform4f(vOffset, x, y, changeSpeed, float(randomTime)/float(RANDOM_BONUS_US));
-  glUniform4f(vState, ((float)direction)/2.0, 0.5 - antiGravity, 
-    (autoPilot>0) + ((tapFire>0)<<1) + ((randomTime>0)<<2), float(autoPilot)/float(AUTOPILOT_TIME_US));
-  glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
   for(int i=0; i<MAX_COLUMNS; i++)
     gaps[i].Render();
@@ -293,6 +277,36 @@ void Game::Render()
   PrintScore();
 
   if(bonus!=NO_BONUS) b.Render();
+
+  if(changeRadius)
+    m.Render( ((float)1.0) + ((float)addToRadius) * ((float)changeRadius) / ((float)CHANGE_RADIUS_TIME) );
+  else m.Render(1);
+
+  glUseProgram(birdProgram);
+  if(gameOver)
+  {
+    gameOverTime += delta;
+    float deltaGameOver = (1000000.0 - gameOverTime)/1000000.0;
+    if(deltaGameOver<=0)
+    {
+      glClearColor(0.0, 0.0, 0.0, 1.0);
+      deltaGameOver = 1.0;
+      blockMode = 2;
+    }
+    else glClearColor((1.0-deltaGameOver)/1.2, 0.0, 0.0, 1.0);
+    glUniform1f(vRadius,deltaGameOver*( ((float)1.0) + ((float)addToRadius) * ((float)changeRadius) / ((float)CHANGE_RADIUS_TIME) ));
+  }
+  else if(changeRadius)
+  {
+    if(changeRadius > delta) changeRadius -= delta; else changeRadius = 0;
+    glUniform1f(vRadius, ((float)1.0) + ((float)addToRadius) * ((float)changeRadius) / ((float)CHANGE_RADIUS_TIME));
+    if(!changeRadius) addToRadius = 0;
+  }
+  glUniform4f(vOffset, x, y, changeSpeed, float(randomTime)/float(RANDOM_BONUS_US));
+  glUniform4f(vState, ((float)direction)/2.0, 0.5 - antiGravity, 
+    (autoPilot>0) + ((tapFire>0)<<1) + ((randomTime>0)<<2), float(autoPilot)/float(AUTOPILOT_TIME_US));
+  glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
 }
 
 void Game::PrintScore()
@@ -531,7 +545,7 @@ void Game::CheckColumns()
 
   for(int i=0; i<MAX_COLUMNS; i++)
   {
-    if(gaps[i].Collision(x, y, yMulValue))
+    if(gaps[i].Collision(x, y, BIRD_RADIUS * (1+addToRadius), yMulValue))
     {
       GameOver();
       return;
@@ -552,8 +566,16 @@ void Game::CheckBonus()
       autoPilot = AUTOPILOT_TIME_US;
       break;
     case RANDOM_BONUS:
-      randomTime = RANDOM_BONUS_US;
-      if(rand()%2 == 0) changeSpeed = 2; else changeSpeed = 0.5;
+      if(rand()%2)
+      {
+        randomTime = RANDOM_BONUS_US;
+        if(rand()%2 == 0) changeSpeed = 2; else changeSpeed = 0.5;
+      }
+      else
+      {
+        changeRadius = CHANGE_RADIUS_TIME;
+        addToRadius = ((float)(rand()%2)) - ((float)0.5);
+      }
       break;
   }
   SoundPlayer::PlayBonus();
@@ -728,6 +750,20 @@ void Game::SelectLevel(float x, float y)
     {
       if((newLevel == 12-5*back) && ((codePass&1)==back)) codePass++;
       else codePass = 0;
+      return;
+    }
+    if(codePass2 < 8)
+    {
+      if((newLevel == 11-7*back) && ((codePass2&1)==back)) codePass2++;
+      else codePass2 = 0;
+      if(codePass2>=8) { highScore = (2*NEXT_LEVEL_SCORE*NUMBER_OF_LEVELS+2307) ^ SCORE_XOR_CODE; showMenu = 0; }
+      return;
+    }
+    if(codePass3 < 29)
+    {
+      if((!newLevel) && back) codePass3++;
+      else codePass3 = 0;
+      if(codePass3>=29) {score = highScore = SCORE_XOR_CODE; codePass=0; codePass2=0; showMenu = 0; }
       return;
     }
   }

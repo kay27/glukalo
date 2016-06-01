@@ -21,10 +21,10 @@
 
   static const MyVertex vertices[] =
   {
-    {{   -BIRD_RADIUS*2.0f,   -BIRD_RADIUS*1.5f,  0.0f   }, {-2.0f,-1.5f}}, //  0 bird
-    {{   -BIRD_RADIUS*2.0f,    BIRD_RADIUS*1.5f,  0.0f   }, {-2.0f, 1.5f}},
-    {{    BIRD_RADIUS*2.0f,   -BIRD_RADIUS*1.5f,  0.0f   }, { 2.0f,-1.5f}},
-    {{    BIRD_RADIUS*2.0f,    BIRD_RADIUS*1.5f,  0.0f   }, { 2.0f, 1.5f}},
+    {{   -BIRD_RADIUS*2.9f,   -BIRD_RADIUS*1.5f,  0.0f   }, {-2.9f,-1.5f}}, //  0 bird
+    {{   -BIRD_RADIUS*2.9f,    BIRD_RADIUS*1.5f,  0.0f   }, {-2.9f, 1.5f}},
+    {{    BIRD_RADIUS*2.9f,   -BIRD_RADIUS*1.5f,  0.0f   }, { 2.9f,-1.5f}},
+    {{    BIRD_RADIUS*2.9f,    BIRD_RADIUS*1.5f,  0.0f   }, { 2.9f, 1.5f}},
     {{   -COLUMN_HALFWIDTH,                -1.0,  0.0f   }, { 0.0f, 0.0f}}, //  4 gap
     {{   -COLUMN_HALFWIDTH,                 1.0,  0.0f   }, { 0.0f, 2.0f}},
     {{    COLUMN_HALFWIDTH,                -1.0,  0.0f   }, { 2.0f, 0.0f}},
@@ -37,10 +37,10 @@
     {{        -CHAR_HEIGHT,   CHAR_HEIGHT*0.75f,  0.0f   }, {-2.0f, 1.5f}},
     {{         CHAR_HEIGHT,  -CHAR_HEIGHT*0.75f,  0.0f   }, { 2.0f,-1.5f}},
     {{         CHAR_HEIGHT,   CHAR_HEIGHT*0.75f,  0.0f   }, { 2.0f, 1.5f}},
-    {{-MISSILE_RADIUS*2.0f,-MISSILE_RADIUS*1.5f,  0.0f   }, {-2.0f,-1.5f}}, // 16 missile
-    {{-MISSILE_RADIUS*2.0f, MISSILE_RADIUS*1.5f,  0.0f   }, {-2.0f, 1.5f}},
-    {{ MISSILE_RADIUS*2.0f,-MISSILE_RADIUS*1.5f,  0.0f   }, { 2.0f,-1.5f}},
-    {{ MISSILE_RADIUS*2.0f, MISSILE_RADIUS*1.5f,  0.0f   }, { 2.0f, 1.5f}},
+    {{-MISSILE_RADIUS*2.9f,-MISSILE_RADIUS*1.5f,  0.0f   }, {-2.9f,-1.5f}}, // 16 missile
+    {{-MISSILE_RADIUS*2.9f, MISSILE_RADIUS*1.5f,  0.0f   }, {-2.9f, 1.5f}},
+    {{ MISSILE_RADIUS*2.9f,-MISSILE_RADIUS*1.5f,  0.0f   }, { 2.9f,-1.5f}},
+    {{ MISSILE_RADIUS*2.9f, MISSILE_RADIUS*1.5f,  0.0f   }, { 2.9f, 1.5f}},
     {{  -BONUS_RADIUS*2.0f,  -BONUS_RADIUS*1.5f,  0.0f   }, {-2.0f,-1.5f}}, // 20 bonus
     {{  -BONUS_RADIUS*2.0f,   BONUS_RADIUS*1.5f,  0.0f   }, {-2.0f, 1.5f}},
     {{   BONUS_RADIUS*2.0f,  -BONUS_RADIUS*1.5f,  0.0f   }, { 2.0f,-1.5f}},
@@ -346,8 +346,8 @@
     "  tc = vTC.xy;\n"
     "  if((phase>1.999)&&(phase<2.01))\n"
     "  {\n"
-//    "     gl_Position = vec4(vPos.xy * fract(sin(length(vOffs.xy)*11.33153+1.129)*119.333) * 8.0 +vOffs.xy, vPos.zw);\n"
-    "     gl_Position = vec4(vPos.xy * 8.0 +vOffs.xy, vPos.zw);\n"
+//    "     gl_Position = vec4(vPos.xy * 8.0 +vOffs.xy, vPos.zw);\n"
+    "     gl_Position = vec4(vPos.xy * 4.0 +vOffs.xy, vPos.zw);\n"
     "  }\n"
     "  else gl_Position = vPos + vec4(vOffs.xy, 0.0, 0.0);\n"
     "}\n"
@@ -355,16 +355,20 @@
 
   static const char * missileFragmentShader =
     "precision mediump float;\n"
+    "uniform float vRadius;\n"
     "varying vec4 vp;\n"
     "varying vec2 tc;\n"
     "varying float phase;\n"
     "varying float vMul;\n"
     "void main()\n"
     "{\n"
-//    "  if((phase > 1.999)&&(phase < 2.01)) { if(length(vec2(tc.x*vMul, tc.y))>1.0) {discard; return;} gl_FragColor = vec4(abs(fract(sin(tc.x*tc.y+vp.x+vp.y*131.1-11.1)*111.11)), 0.0, 0.0, 1.0); return; }\n"
-    "  if((phase > 1.999)&&(phase < 2.01)) { if(length(vec2(tc.x*vMul, tc.y))>fract(sin(length(tc.xy)*11.33153+1.129)*119.333)) {discard; return;} gl_FragColor = vec4(abs(fract(sin(tc.x*tc.y+vp.x+vp.y*131.1-11.1)*111.11)), 0.0, 0.0, 1.0); return; }\n"
     "  float dfc = distance(vec2(vp.x*vMul, vp.y), vec2(tc.x*vMul,tc.y));\n"
-    "  if(dfc > 1.0) {discard; return;}\n"
+    "  if(dfc > vRadius) {discard; return;}\n"
+//    "  if((phase > 1.999)&&(phase < 2.01)) { if(length(vec2(tc.x*vMul, tc.y))>fract(sin(length(tc.xy)*11.33153+1.129)*119.333)) {discard; return;} gl_FragColor = vec4(abs(fract(sin(tc.x*tc.y+vp.y*131.1-11.1)*111.11)), 0.0, 0.0, 1.0); return; }\n"
+//    "  if((phase > 1.999)&&(phase < 2.01)) { if(length(tc.xy) > sin(length(tc.xy)*11.33153+1.129)*119.333) {discard; return;} gl_FragColor = vec4(abs(vp.x*tc.x), 0.0, 0.0, 1.0); return; }\n"
+    "  if((phase > 1.999)&&(phase < 2.01)) { float q = length(vec2(tc.x*vMul, tc.y)); if(q > fract(sin(length(tc.xy)*11.33153+1.129)*119.333)) {discard; return;} gl_FragColor = vec4(fract(q*123.1122469), q, q, 1.0); return; }\n"
+//    "  float dfc = distance(vec2(vp.x*vMul, vp.y), vec2(tc.x*vMul,tc.y));\n"
+//    "  if(dfc > vRadius) {discard; return;}\n"
     "  if(phase > 32.999) gl_FragColor = vec4(0.0,0.0,0.0,1.0);\n"
     "  else gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0) * fract(vp.x*sin(vp.y)+tc.x*1.117);\n"
     "}\n"

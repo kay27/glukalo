@@ -1,6 +1,6 @@
 #include "game.h"
 
-int Game::blockMode = 0;
+int Game::blockMode = 0; // 0=constructing, 1=rendering, 2=calling restart, 3=performing restart
 
 Game::Game()
 {

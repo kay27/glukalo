@@ -264,13 +264,6 @@ void Game::Render()
   for(int i=0; i<MAX_COLUMNS; i++)
     gaps[i].Render();
 
-  glUseProgram(floorProgram);
-  if(antiGravity)
-    glUniform4f(vFloorOffset, floorOffset, yMulValue, 1, 0);
-  else
-    glUniform4f(vFloorOffset, floorOffset, yMulValue, 0, 0);
-  glDrawArrays(GL_TRIANGLE_STRIP, 8, 4);
-
   levelIcon.Render();
   soundIcon.Render();
 
@@ -307,6 +300,12 @@ void Game::Render()
     (autoPilot>0) + ((tapFire>0)<<1) + ((randomTime>0)<<2), float(autoPilot)/float(AUTOPILOT_TIME_US));
   glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
+  glUseProgram(floorProgram);
+  if(antiGravity)
+    glUniform4f(vFloorOffset, floorOffset, yMulValue, 1, 0);
+  else
+    glUniform4f(vFloorOffset, floorOffset, yMulValue, 0, 0);
+  glDrawArrays(GL_TRIANGLE_STRIP, 8, 4);
 }
 
 void Game::PrintScore()
